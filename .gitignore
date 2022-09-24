@@ -51,4 +51,14 @@ Thumbs.db
 testem.log
 **/typings
 
+**/.angular
+**/.ionic
+**/.sass-cache
+**/.sourcemaps
+**/.versions
+**/.vscode
+**/platforms
+**/plugins
+**/www
+
 
