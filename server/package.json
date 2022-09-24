@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "client:dev": "npm --prefix ../client run start",
     "app:dev": "npm --prefix ../app run start",
-    "dev": "concurrently \"npm run client:dev\" \"npm run start:dev\""
+    "dev": "concurrently \"npm run app:dev\" \"npm run start:dev\""
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
