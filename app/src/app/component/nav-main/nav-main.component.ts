@@ -18,7 +18,7 @@ export class NavMainComponent implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   ngAfterViewInit() {
-    this.popup['el'].click()
+    // this.popup['el'].click()
   }
 
   async presentPopover(e: Event) {
