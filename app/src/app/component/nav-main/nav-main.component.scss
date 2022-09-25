@@ -1,4 +1,6 @@
 .nav-main{
+  display: flex;
+  justify-content: flex-end;
   &__cell{
     display: flex;
     flex-direction: column;
@@ -26,5 +28,47 @@
   &__avatar_wrapper{
     height: auto;
     width: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-main{
+    justify-content: center;
+    &__cell{
+      padding: 0 6px;
+    }
+    &__ico{
+      font-size: 24px;
+    }
+    &__avatar{
+      height: 22px;
+      width: 22px;
+      object-fit: contain;
+    }
+    &__text{
+      white-space: nowrap;
+      font-size: 12px;
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-main{
+    justify-content: center;
+    &__cell{
+      padding: 0 4px;
+    }
+    &__ico{
+      font-size: 22px;
+    }
+    &__avatar{
+      height: 20px;
+      width: 20px;
+      object-fit: contain;
+    }
+    &__text{
+      white-space: nowrap;
+      font-size: 10px;
+    }
   }
 }

@@ -15,3 +15,22 @@
     --box-shadow: none;
   }
 }
+
+@media (max-width: 992px) {
+  .header{
+    &__logo{
+      font-size: 34px;
+    }
+    &__search-col{
+      display: none;
+    }
+  }
+}
+
+@media(max-width: 576px){
+  .header{
+    &__logo_wrapper{
+      width: 100%;
+    }
+  }
+}
