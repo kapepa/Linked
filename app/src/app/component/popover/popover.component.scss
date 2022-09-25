@@ -1,0 +1,11 @@
+.popover{
+  &__title{
+    padding-bottom: 7px;
+  }
+  &__btn-wrapper{
+    padding: 0 10px;
+  }
+  &__content{
+    border-bottom: 1px solid var(--ion-color-light-tint);
+  }
+}

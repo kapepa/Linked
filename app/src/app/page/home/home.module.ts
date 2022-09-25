@@ -5,6 +5,7 @@ import { HomeRoutingModule } from "./home-routing.module";
 import {IonicModule} from "@ionic/angular";
 import {FormsModule} from "@angular/forms";
 import {ExploreContainerComponentModule} from "../../explore-container/explore-container.module";
+import {HeaderModule} from "../../component/header/header.module";
 
 
 
@@ -13,6 +14,7 @@ import {ExploreContainerComponentModule} from "../../explore-container/explore-c
     HomeComponent,
   ],
   imports: [
+    HeaderModule,
     HomeRoutingModule,
     CommonModule,
     IonicModule,

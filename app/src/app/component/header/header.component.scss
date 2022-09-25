@@ -1,0 +1,17 @@
+.no-ripple {
+  --ripple-color: transparent;
+  padding: 0;
+}
+.header{
+  &__logo{
+    font-size: 44px;
+  }
+  &__logo_wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center
+  }
+  &__search{
+    --box-shadow: none;
+  }
+}
