@@ -1,0 +1,71 @@
+.tape-profile{
+  --ion-background-color: #fff;
+  &__header{
+    border-bottom: 1px solid gray;
+  }
+  &__back-bg{
+    height: 54px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 50px;
+  }
+  &__back-markup{
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    &::before{
+      content: "";
+      position: absolute;
+      top: -40%;
+      left: -20%;
+      bottom: -40%;
+      width: 90%;
+      background: radial-gradient(circle, rgba(160, 180, 183, 1) 75%, rgba(217, 229, 231, 1) 75%);
+    }
+    &::after{
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 30%;
+      background-color: #BFD3D6;
+    }
+  }
+  &__avatar{
+    width: 72px;
+    height: 72px;
+  }
+  &__avatar-wrapper{
+    position: absolute;
+
+    left: 50%;
+    transform: translate(-50%,17px);
+  }
+  &__text{
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+  }
+  &__content{
+    padding-top: 12px;
+  }
+  &__action{
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  &__count{
+    padding-left: 5px;
+    font-weight: bold;
+  }
+  &__manage{
+    font-size: 16px;
+    font-weight: bold;
+    padding-top: 10px;
+  }
+}

@@ -1,7 +1,15 @@
+<ion-router-outlet></ion-router-outlet>
 <app-header></app-header>
-
 <ion-content [fullscreen]="true">
-<!--  <app-explore-container name="Tab 1 page"></app-explore-container>-->
+  <ion-grid class="container home__container">
+    <aside class="home__profile">
+      <app-tape-profile></app-tape-profile>
+    </aside>
+    <main class="home__main">tape content</main>
+    <aside class="home__add">
+      <app-recommended></app-recommended>
+    </aside>
+  </ion-grid>
 </ion-content>
 
-<ion-router-outlet></ion-router-outlet>
+
