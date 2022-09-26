@@ -1,0 +1,34 @@
+.new-publications{
+  --ion-background-color: #fff;
+  &__header{
+    display: flex;
+    align-items: center;
+  }
+  &__img, &__avatar{
+    width: 48px;
+    height: 48px;
+  }
+  &__btn{
+    height: 48px;
+  }
+  &__btn-wrapper{
+    width: 100%;
+    padding-left: 8px;
+  }
+  &__action{
+    display: flex;
+  }
+  &__button{
+    flex-grow: 1;
+    &--event{
+      --color: #855050;
+    }
+  }
+  &__create{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
