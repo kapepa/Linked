@@ -1,0 +1,35 @@
+.home{
+  &__container{
+    display: grid;
+    grid-template-columns: minmax(180px, 225px) minmax(432px, auto) minmax(300px, 315px);
+    grid-gap: 15px;
+    grid-template-areas: 'profile main recommended';
+  }
+  &__profile{
+    grid-area: profile;
+  }
+  &__main{
+    grid-area: main;
+  }
+  &__add{
+    grid-area: recommended;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .home{
+    &__container{
+      grid-template-columns: 203px 1fr;
+      grid-template-areas: 'profile main' 'profile recommended';
+    }
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .home {
+    &__container {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'profile''main''recommended';
+    }
+  }
+}

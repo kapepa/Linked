@@ -2,12 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from "./home.component";
 import { HomeRoutingModule } from "./home-routing.module";
-import {IonicModule} from "@ionic/angular";
-import {FormsModule} from "@angular/forms";
-import {ExploreContainerComponentModule} from "../../explore-container/explore-container.module";
-import {HeaderModule} from "../../component/header/header.module";
-
-
+import { IonicModule } from "@ionic/angular";
+import { FormsModule } from "@angular/forms";
+import { HeaderModule } from "../../component/header/header.module";
+import { TapeProfileModule } from "../../component/tape-profile/tape-profile.module";
+import { RecommendedModule } from "../../component/recommended/recommended.module";
 
 @NgModule({
   declarations: [
@@ -19,7 +18,8 @@ import {HeaderModule} from "../../component/header/header.module";
     CommonModule,
     IonicModule,
     FormsModule,
-    ExploreContainerComponentModule,
+    TapeProfileModule,
+    RecommendedModule,
   ]
 })
 export class HomeModule { }

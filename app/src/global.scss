@@ -24,3 +24,18 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+ion-app{
+  min-width: 320px;
+  --ion-background-color: #F3F2EF;
+}
+.container{
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 992px){
+  .container{
+    max-width: 700px;
+  }
+}
