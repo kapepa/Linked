@@ -7,6 +7,7 @@ import { FormsModule } from "@angular/forms";
 import { HeaderModule } from "../../component/header/header.module";
 import { TapeProfileModule } from "../../component/tape-profile/tape-profile.module";
 import { RecommendedModule } from "../../component/recommended/recommended.module";
+import { NewPublicationsModule } from "../../component/new-publications/new-publications.module";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { RecommendedModule } from "../../component/recommended/recommended.modul
     FormsModule,
     TapeProfileModule,
     RecommendedModule,
+    NewPublicationsModule,
   ]
 })
 export class HomeModule { }
