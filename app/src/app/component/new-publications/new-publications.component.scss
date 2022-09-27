@@ -16,6 +16,7 @@
   }
   &__action{
     display: flex;
+    flex-wrap: wrap;
   }
   &__button{
     flex-grow: 1;
@@ -33,6 +34,19 @@
     &__action{
       display: flex;
       flex-wrap: wrap;
+    }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .new-publications{
+    &__action{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    &__button{
+      font-size: 15px;
+      padding: 8px;
     }
   }
 }
