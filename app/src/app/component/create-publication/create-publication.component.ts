@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-create-publication',
@@ -6,9 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./create-publication.component.scss'],
 })
 export class CreatePublicationComponent implements OnInit {
-
+  @Input() onClosePublication: () => void
   constructor() { }
 
   ngOnInit() {}
+
+  onClose(e: Event) {
+    this.onClosePublication();
+  }
 
 }

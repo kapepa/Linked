@@ -1,4 +1,7 @@
 .home{
+  &__content{
+    --background: #F3F2EF
+  }
   &__container{
     display: grid;
     grid-template-columns: minmax(180px, 225px) minmax(432px, auto) minmax(300px, 315px);
@@ -30,6 +33,14 @@
     &__container {
       grid-template-columns: 1fr;
       grid-template-areas: 'profile''main''recommended';
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .home{
+    &__content{
+      --background: #000;
     }
   }
 }

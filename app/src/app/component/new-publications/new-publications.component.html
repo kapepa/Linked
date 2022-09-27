@@ -4,7 +4,7 @@
       <img class="new-publications__img" alt="avatar" src="../../../assets/images/profile.png" />
     </ion-avatar>
     <div class="new-publications__btn-wrapper">
-      <ion-button (click)="onPublication($event)" class="new-publications__btn" shape="round" expand="block" fill="outline">Start a post</ion-button>
+      <ion-button #post (click)="onPublication($event)" class="new-publications__btn" shape="round" expand="block" fill="outline">Start a post</ion-button>
     </div>
   </ion-card-header>
 

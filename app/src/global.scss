@@ -27,7 +27,7 @@
 
 ion-app{
   min-width: 320px;
-  --ion-background-color: #F3F2EF;
+  //--ion-background-color: #F3F2EF;
 }
 .container{
   max-width: 1200px;
@@ -37,5 +37,17 @@ ion-app{
 @media screen and (max-width: 992px){
   .container{
     max-width: 700px;
+  }
+}
+
+.new-publications__create{
+  --width: 100%;
+  --max-width: 520px;
+  border-radius: 20px;
+}
+
+@media screen and (max-width: 760px){
+  .new-publications__create{
+    --width: 90%;
   }
 }
