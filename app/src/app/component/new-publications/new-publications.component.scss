@@ -1,5 +1,4 @@
 .new-publications{
-  --ion-background-color: #fff;
   &__header{
     display: flex;
     align-items: center;
@@ -25,10 +24,15 @@
     }
   }
   &__create{
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .new-publications{
+    &__action{
+      display: flex;
+      flex-wrap: wrap;
+    }
   }
 }
