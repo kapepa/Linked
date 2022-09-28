@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put, Query} from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {FeetService} from "./feet.service";
 import {Observable} from "rxjs";
@@ -30,9 +30,9 @@ export class FeetController {
   }
 
   @Get()
-  allFeet(): Observable<FeetInterface[]> {
+  allFeet(@Query('take') take: number, @Query('skip') skip: number): Observable<FeetInterface[]> {
     try {
-      return this.feetService.allFeet();
+      return this.feetService.allFeet(take, skip);
     } catch (err) {
       return err;
     }
