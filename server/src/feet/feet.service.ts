@@ -25,8 +25,10 @@ export class FeetService {
     )
   }
 
-  allFeet(): Observable<FeetInterface[]> {
-    return from(this.usersRepository.find()).pipe(
+  allFeet(take: number, skip: number): Observable<FeetInterface[]> {
+    return from(
+      this.usersRepository.find({ take, skip })
+    ).pipe(
       catchError(err => { throw new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND)})
     )
   }
