@@ -7,15 +7,21 @@
     grid-template-columns: minmax(180px, 225px) minmax(432px, auto) minmax(300px, 315px);
     grid-gap: 15px;
     grid-template-areas: 'profile main recommended';
+    height: 100%;
   }
   &__profile{
     grid-area: profile;
   }
   &__main{
     grid-area: main;
+    display: flex;
+    flex-direction: column;
   }
   &__add{
     grid-area: recommended;
+  }
+  &__tape-post{
+    flex-grow: 1;
   }
 }
 

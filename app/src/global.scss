@@ -34,6 +34,11 @@ ion-app{
   margin: 0 auto;
 }
 
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+}
+
 @media screen and (max-width: 992px){
   .container{
     max-width: 700px;

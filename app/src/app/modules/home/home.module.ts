@@ -4,10 +4,11 @@ import { HomeComponent } from "./home.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { IonicModule } from "@ionic/angular";
 import { FormsModule } from "@angular/forms";
-import { HeaderModule } from "../../component/header/header.module";
-import { TapeProfileModule } from "../../component/tape-profile/tape-profile.module";
-import { RecommendedModule } from "../../component/recommended/recommended.module";
-import { NewPublicationsModule } from "../../component/new-publications/new-publications.module";
+import { HeaderModule } from "../../shared/header/header.module";
+import { TapeProfileModule } from "../../shared/tape-profile/tape-profile.module";
+import { RecommendedModule } from "../../shared/recommended/recommended.module";
+import { NewPublicationsModule } from "../../shared/new-publications/new-publications.module";
+import { TapePostModule } from "../../shared/tape-post/tape-post.module";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { NewPublicationsModule } from "../../component/new-publications/new-publ
     TapeProfileModule,
     RecommendedModule,
     NewPublicationsModule,
+    TapePostModule,
   ]
 })
 export class HomeModule { }
