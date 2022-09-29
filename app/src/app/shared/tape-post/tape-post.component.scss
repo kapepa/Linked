@@ -1,3 +1,8 @@
 .tape-post{
-  //flex-grow: 1;
+  --background: inherit;
+  &__list{
+    --background: inherit;
+    padding: 0;
+  }
 }
+
