@@ -33,6 +33,9 @@
 
 @media (max-width: 576px) {
   .nav-main{
+    &__actions{
+      display: none;
+    }
     justify-content: center;
     &__cell{
       padding: 0 6px;

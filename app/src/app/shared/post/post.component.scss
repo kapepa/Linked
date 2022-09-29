@@ -1,4 +1,5 @@
 .post{
+  margin: 10px auto;
   &__header{
     display: flex;
     align-items: center;
@@ -20,5 +21,17 @@
   }
   &__btn-action{
     font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 576px){
+  .post{
+    &__footer{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    &__btn-action{
+      font-size: 13px;
+    }
   }
 }

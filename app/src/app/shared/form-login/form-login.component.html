@@ -1,0 +1,15 @@
+<div class="form_login" slot="fixed" >
+  <form [formGroup]="loginForm" class="form_login__shape">
+    <ion-item>
+      <ion-label for="email" position="floating">Email</ion-label>
+      <ion-input id="email" type="text" formControlName="email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label for="password" position="floating">Password</ion-label>
+      <ion-input id="password" type="password" formControlName="password"></ion-input>
+    </ion-item>
+    <ion-text></ion-text>
+    <ion-button class="form_login__submit" expand="full" shape="round">Sign in</ion-button>
+  </form>
+</div>

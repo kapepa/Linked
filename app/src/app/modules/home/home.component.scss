@@ -23,6 +23,21 @@
   &__tape-post{
     flex-grow: 1;
   }
+  &__tabs{
+    display: none;
+    position: absolute;
+    height: 57px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  &__tab-btn{
+    font-size: 11px;
+  }
+}
+
+ion-tabs{
+  padding: 0 5px;
 }
 
 @media screen and (max-width: 992px) {
@@ -38,7 +53,16 @@
   .home {
     &__container {
       grid-template-columns: 1fr;
+      grid-auto-rows: auto 100% auto;
       grid-template-areas: 'profile''main''recommended';
+    }
+  }
+}
+
+@media screen and (max-width: 576px){
+  .home{
+    &__tabs{
+      display: block;
     }
   }
 }
