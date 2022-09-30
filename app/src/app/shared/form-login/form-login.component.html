@@ -1,15 +1,36 @@
 <div class="form_login" slot="fixed" >
-  <form [formGroup]="loginForm" class="form_login__shape">
-    <ion-item>
-      <ion-label for="email" position="floating">Email</ion-label>
-      <ion-input id="email" type="text" formControlName="email"></ion-input>
-    </ion-item>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form_login__shape">
 
-    <ion-item>
-      <ion-label for="password" position="floating">Password</ion-label>
-      <ion-input id="password" type="password" formControlName="password"></ion-input>
-    </ion-item>
-    <ion-text></ion-text>
-    <ion-button class="form_login__submit" expand="full" shape="round">Sign in</ion-button>
+    <div class="form_login__cell">
+      <ion-item class="form_login__item">
+        <ion-label for="email" position="floating">Email</ion-label>
+        <ion-input color="success" id="email" type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <div *ngIf="email.invalid && (email.dirty || email.touched)" class="form_login__alert">
+        <ion-text *ngIf="email.errors?.['required'] && email.touched">
+          Name is required.
+        </ion-text>
+        <ion-text *ngIf="email.errors?.['email'] && email.touched">
+          Name must be email.
+        </ion-text>
+      </div>
+    </div>
+
+    <div class="form_login__cell">
+      <ion-item class="form_login__item">
+        <ion-label for="password" position="floating">Password</ion-label>
+        <ion-input id="password" type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="form_login__alert">
+        <ion-text *ngIf="password.errors?.['required'] && password.touched">
+          Name is required.
+        </ion-text>
+        <ion-text *ngIf="password.errors?.['minLength'] && password.touched">
+          Name must be min length five sing.
+        </ion-text>
+      </div>
+    </div>
+
+    <ion-button [disabled]="loginForm.invalid" type="submit" class="form_login__submit" expand="full" shape="round">Sign in</ion-button>
   </form>
 </div>

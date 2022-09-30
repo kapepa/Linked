@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
+import {NavigationEnd, Router} from "@angular/router";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-auth',
@@ -7,9 +9,15 @@ import {FormControl, FormGroup} from "@angular/forms";
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit {
+  url$: Subject<string> = new Subject<string>()
 
-  constructor() { }
+  constructor(private router: Router) {
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) this.url$.next(event.url)
+    });
+  }
 
   ngOnInit() {}
+
 
 }
