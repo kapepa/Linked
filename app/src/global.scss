@@ -40,9 +40,34 @@ cdk-virtual-scroll-viewport {
   width: 100%;
 }
 
-@media screen and (max-width: 992px){
-  .container{
-    max-width: 700px;
+.form{
+  padding: 24px;
+  width: 100%;
+  min-width: 320px;
+  &__shape{
+
+  }
+  &__submit{
+    margin-top: 20px;
+  }
+  &__cell{
+    position: relative;
+    padding-bottom: 18px;
+  }
+  &__item{
+    position: relative;
+  }
+  &__frame{
+    position: relative;
+    margin-bottom: 25px;
+    background-color: #2dd36f;
+  }
+  &__alert{
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    color: #eb445a;
   }
 }
 
@@ -52,8 +77,18 @@ cdk-virtual-scroll-viewport {
   border-radius: 20px;
 }
 
+@media screen and (max-width: 992px){
+  .container{
+    max-width: 700px;
+  }
+}
+
 @media screen and (max-width: 760px){
   .new-publications__create{
     --width: 90%;
   }
+}
+
+@media screen and (max-width: 576px){
+
 }
