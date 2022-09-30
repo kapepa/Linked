@@ -28,7 +28,17 @@
     font-size: 20px;
     margin-bottom: 15px;
   }
-  &__shape{
-    height: 220px;
+  &__login{
+    height: 260px;
+  }
+  &__registration{
+    height: 300px;
+  }
+  &__footer{
+    display: flex;
+    justify-content: center;
+  }
+  &__text{
+    margin-right: 5px;
   }
 }

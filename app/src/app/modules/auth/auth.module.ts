@@ -4,6 +4,7 @@ import { AuthComponent } from "./auth.component";
 import { RouterModule } from "@angular/router";
 import { AuthRoutingModule } from "./auth-routing.module";
 import { IonicModule } from "@ionic/angular";
+import {FormLoginModule} from "../../shared/form-login/form-login.module";
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { IonicModule } from "@ionic/angular";
     AuthRoutingModule,
     RouterModule,
     IonicModule,
+    FormLoginModule
   ]
 })
 export class AuthModule { }
