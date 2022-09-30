@@ -11,7 +11,7 @@
           </ion-router-link>
           <ion-title class="auth__title">Make the most of your professional life</ion-title>
         </ion-header>
-        <ion-card [ngClass]="{'auth__login': url === '/auth/login' || !url, 'auth__registration': url === '/auth/registration' }" >
+        <ion-card class="auth__card" [ngClass]="{'auth__login': url === '/auth/login' || !url, 'auth__registration': url === '/auth/registration' }" >
           <ion-router-outlet></ion-router-outlet>
         </ion-card>
         <ion-footer class="auth__footer ion-no-border">
@@ -20,7 +20,7 @@
             <ion-router-link routerLink="/auth/registration">Join now</ion-router-link>
           </ng-container>
           <ng-container *ngIf="url === '/auth/registration'">
-            <ion-text class="auth__text">New to LinkedIn</ion-text>
+            <ion-text class="auth__text">Sign in LinkedIn</ion-text>
             <ion-router-link routerLink="/auth/login">Login now</ion-router-link>
           </ng-container>
         </ion-footer>

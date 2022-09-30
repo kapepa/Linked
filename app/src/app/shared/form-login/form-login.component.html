@@ -1,36 +1,36 @@
-<div class="form_login" slot="fixed" >
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form_login__shape">
+<div class="form" slot="fixed" >
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form__shape form_login">
 
-    <div class="form_login__cell">
-      <ion-item class="form_login__item">
+    <div class="form__cell">
+      <ion-item class="form__item">
         <ion-label for="email" position="floating">Email</ion-label>
         <ion-input color="success" id="email" type="text" formControlName="email"></ion-input>
       </ion-item>
-      <div *ngIf="email.invalid && (email.dirty || email.touched)" class="form_login__alert">
+      <div *ngIf="email.invalid && (email.dirty || email.touched)" class="form__alert">
         <ion-text *ngIf="email.errors?.['required'] && email.touched">
-          Name is required.
+          Email is required.
         </ion-text>
         <ion-text *ngIf="email.errors?.['email'] && email.touched">
-          Name must be email.
+          Email must be filled out correctly
         </ion-text>
       </div>
     </div>
 
-    <div class="form_login__cell">
-      <ion-item class="form_login__item">
+    <div class="form__cell">
+      <ion-item class="form__item">
         <ion-label for="password" position="floating">Password</ion-label>
         <ion-input id="password" type="password" formControlName="password"></ion-input>
       </ion-item>
-      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="form_login__alert">
+      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="form__alert">
         <ion-text *ngIf="password.errors?.['required'] && password.touched">
-          Name is required.
+          Password is required.
         </ion-text>
         <ion-text *ngIf="password.errors?.['minLength'] && password.touched">
-          Name must be min length five sing.
+          Password must be min length five sing.
         </ion-text>
       </div>
     </div>
 
-    <ion-button [disabled]="loginForm.invalid" type="submit" class="form_login__submit" expand="full" shape="round">Sign in</ion-button>
+    <ion-button [disabled]="loginForm.invalid" type="submit" class="form__submit" expand="full" shape="round">Sign in</ion-button>
   </form>
 </div>
