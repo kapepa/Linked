@@ -20,7 +20,7 @@ export class FormRegistrationComponent implements OnInit {
 
   onSubmit() {
     if(this.regForm.invalid) return ;
-    console.log(this.regForm.value);
+    console.log(this.regForm.value)
   }
 
   get firstName() {
