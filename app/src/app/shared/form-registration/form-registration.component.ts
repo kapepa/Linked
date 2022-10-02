@@ -19,7 +19,7 @@ export class FormRegistrationComponent implements OnInit {
   ngOnInit() {}
 
   onSubmit() {
-    if(this.regForm.invalid) return ;
+    if(this.regForm.invalid) return
     console.log(this.regForm.value)
   }
 
