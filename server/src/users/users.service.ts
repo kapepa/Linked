@@ -4,6 +4,7 @@ import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import {UsersDto} from "./users.dto";
+import {UsersInterface} from "./users.interface";
 
 @Injectable()
 export class UsersService {
@@ -13,10 +14,8 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findOne(key: string, val: string, additional?: { relations?: [], select?: [] } ) {
-    return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional, })).pipe(
-      tap(user => console.log(user))
-    )
+  findOne(key: string, val: string, additional?: { relations?: string[], select?: string[] } ) {
+    return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional as {} }))
   }
 
   createUser(userDto: UsersDto): Observable<any> {
