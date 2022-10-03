@@ -35,7 +35,7 @@ export class AuthController {
   registration(@UploadedFile() file: Express.Multer.File, @Body() body: UsersDto): Observable<boolean> {
     try {
       let parse = JSON.parse(JSON.stringify(body))
-      if (!!parse) throw new HttpException('There is no registration data in the following request', HttpStatus.BAD_REQUEST)
+      if (!parse) throw new HttpException('There is no registration data in the following request', HttpStatus.BAD_REQUEST)
       return this.authService.registrationUser(parse);
     } catch (err) {
       return err

@@ -5,6 +5,8 @@ import * as bcrypt from "bcrypt";
 import { config } from "dotenv";
 import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
+import {User} from "../users/users.entity";
+import {Role} from "./role.enum";
 
 config();
 
@@ -15,15 +17,14 @@ export class AuthService {
   ) {}
 
   validateUser(email: string, pass: string): Observable<any> {
-    // const user = await this.usersService.findOne(username);
-    // if (user && user.password === pass) {
-    //   const { password, ...result } = user;
-    //   return result;
-    // }
-    return from(this.usersService.findOne('email', email)).pipe(
+    let select = ['id', 'firstName', 'lastName', 'email', 'password', 'role']
+    return from(this.usersService.findOne('email', email, {select})).pipe(
       switchMap((user: UsersInterface) => {
-        // console.log(user)
-        return''
+        return this.comparePassword(pass, user.password).pipe(
+          map((bol: boolean) => {
+            return bol ? user : null
+          })
+        )
       })
     )
   }
@@ -52,4 +53,9 @@ export class AuthService {
     );
   }
 
+  comparePassword(password: string, hash: string): Observable<boolean>{
+    return from(bcrypt.compare(password, hash)).pipe(
+      map( res => !!res )
+    )
+  }
 }
