@@ -3,9 +3,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FeetModule } from './feet/feet.module';
-import {ConfigModule} from "@nestjs/config";
-import {TypeOrmModule} from "@nestjs/typeorm";
-import {Feet} from "./feet/feet.entity";
+import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Feet } from "./feet/feet.entity";
+import { User } from "./users/users.entity";
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+
 
 dotenv.config();
 
@@ -21,10 +25,12 @@ dotenv.config();
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Feet],
+      entities: [User,Feet],
       synchronize: true,
     }),
     FeetModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
