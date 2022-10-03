@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {from, map, Observable, of, switchMap} from "rxjs";
+import {from, map, Observable, switchMap, tap} from "rxjs";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -13,8 +13,10 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findOne() {
-
+  findOne(key: string, val: string, additional?: { relations?: [], select?: [] } ) {
+    return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional, })).pipe(
+      tap(user => console.log(user))
+    )
   }
 
   createUser(userDto: UsersDto): Observable<any> {
