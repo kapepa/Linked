@@ -1,5 +1,6 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from 'typeorm';
 import {FeetInterface} from "./feet.interface";
+import {User} from "../users/users.entity";
 
 @Entity()
 export class Feet implements FeetInterface {
@@ -9,8 +10,8 @@ export class Feet implements FeetInterface {
   @Column()
   body: string;
 
-  // @Column()
-  // author?: object;
+  @ManyToOne(() => User, (user) => user.feet)
+  author: User;
 
   @CreateDateColumn({ name: 'created_at'})
   createdAt: Date;

@@ -1,9 +1,23 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put, Query} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  Req
+} from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {FeetService} from "./feet.service";
 import {Observable} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {DeleteResult, UpdateResult} from "typeorm";
+import {UsersDto} from "../users/users.dto";
 
 @Controller('feet')
 export class FeetController {
@@ -11,9 +25,9 @@ export class FeetController {
   }
 
   @Post('/create')
-  createFeet(@Body() body: FeetDto): Observable<FeetInterface> {
+  createFeet(@Body() body: FeetDto, @Req() user: UsersDto): Observable<FeetInterface> {
     try {
-      return this.feetService.createFeet(body);
+      return this.feetService.createFeet({...body, author: user});
     } catch (err) {
       return err;
 ;    }

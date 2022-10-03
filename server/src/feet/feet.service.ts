@@ -13,7 +13,7 @@ export class FeetService {
     private usersRepository: Repository<Feet>
   ) {}
 
-  createFeet(feet: FeetDto ): Observable<FeetInterface> {
+  createFeet(feet: FeetDto): Observable<FeetInterface> {
     return from(this.usersRepository.save(feet)).pipe(
       catchError(err => { throw err })
     );
