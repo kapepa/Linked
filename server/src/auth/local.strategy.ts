@@ -2,7 +2,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import {from, map, Observable} from "rxjs";
+import {from, map, Observable, of, switchMap} from "rxjs";
 import {UsersInterface} from "../users/users.interface";
 
 @Injectable()
@@ -11,22 +11,20 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  // async validate(email: string, password: string): Promise<any> {
-  //   const user = await this.authService.validateUser(email, password);
-  //   if (!user) {
-  //     throw new UnauthorizedException();
-  //   }
-  //   return user;
-  // }
-
   validate(email: string, password: string): Observable<UsersInterface> {
-    return from(this.authService.validateUser(email, password)).pipe(
-      map((user) => {
-          if (!user) {
-            throw new UnauthorizedException();
-          }
-          return user;
+    return this.authService.validateUser(email, password).pipe(
+      switchMap((user: UsersInterface | null ) => {
+        if (!user) throw new UnauthorizedException();
+        return of(user);
       })
-    );
+    )
+
+    // return of({} as UsersInterface)
+    // return from(this.authService.validateUser(email, password)).pipe(
+    //   map((user) => {
+    //       if (!user) throw new UnauthorizedException();
+    //       return user;
+    //   })
+    // );
   }
 }

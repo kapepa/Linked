@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import {from, map, Observable, switchMap, tap} from "rxjs";
+import {from, map, Observable, of, switchMap, tap} from "rxjs";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import {UsersDto} from "./users.dto";
 import {UsersInterface} from "./users.interface";
+import {use} from "passport";
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,9 @@ export class UsersService {
   ) {}
 
   findOne(key: string, val: string, additional?: { relations?: string[], select?: string[] } ) {
-    return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional as {} }))
+    return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional as {} })).pipe(
+      switchMap((user: UsersInterface) => (of(user)))
+    )
   }
 
   createUser(userDto: UsersDto): Observable<any> {

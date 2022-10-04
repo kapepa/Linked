@@ -26,20 +26,16 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() req) {
-    return req.user;
+  login(@Req() req): Observable<{access_token: string}> {
+    return this.authService.loginUser(req.user);
   }
 
   @Post('registration')
   @UseInterceptors(FileInterceptor('file'))
   registration(@UploadedFile() file: Express.Multer.File, @Body() body: UsersDto): Observable<boolean> {
-    try {
-      let parse = JSON.parse(JSON.stringify(body))
-      if (!parse) throw new HttpException('There is no registration data in the following request', HttpStatus.BAD_REQUEST)
-      return this.authService.registrationUser(parse);
-    } catch (err) {
-      return err
-    }
+    let parse = JSON.parse(JSON.stringify(body))
+    if (!parse) throw new HttpException('There is no registration data in the following request', HttpStatus.BAD_REQUEST)
+    return this.authService.registrationUser(parse);
   }
 
   @Put('/role')
