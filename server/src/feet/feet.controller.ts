@@ -10,7 +10,7 @@ import {
   Post,
   Put,
   Query,
-  Req
+  Req, SetMetadata, UseGuards
 } from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {FeetService} from "./feet.service";
@@ -18,6 +18,10 @@ import {Observable} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {DeleteResult, UpdateResult} from "typeorm";
 import {UsersDto} from "../users/users.dto";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {Roles} from "../auth/roles.decorator";
+import {Role} from "../auth/role.enum";
+import {RolesGuard} from "../auth/roles.guard";
 
 @Controller('feet')
 export class FeetController {
@@ -25,21 +29,23 @@ export class FeetController {
   }
 
   @Post('/create')
-  createFeet(@Body() body: FeetDto, @Req() user: UsersDto): Observable<FeetInterface> {
+  @UseGuards(JwtAuthGuard)
+  createFeet(@Body() body: FeetDto, @Req() req): Observable<FeetInterface> {
     try {
-      return this.feetService.createFeet({...body, author: user});
+      return this.feetService.createFeet({...body, author: req.user});
     } catch (err) {
       return err;
 ;    }
   }
 
   @Get('/:id')
+  @Roles(Role.User)
   getFeet(@Param('id') id): Observable<FeetInterface> {
     try {
       if (!id) throw new HttpException('server didn\'t get id feet', HttpStatus.NOT_FOUND);
       return this.feetService.getFeet(id);
     } catch (err) {
-      return err
+      return err;
     }
   }
 
