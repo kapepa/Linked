@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
+import {AuthService} from "../../core/service/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-form-registration',
@@ -8,19 +10,33 @@ import {FormBuilder, Validators} from "@angular/forms";
 })
 export class FormRegistrationComponent implements OnInit {
   regForm = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(3)]],
-    lastName: ['', [Validators.required, , Validators.minLength(3)]],
-    email: ['', [Validators.required, , Validators.email]],
-    password: ['', [Validators.required, , Validators.minLength(5)]],
+    firstName: ['TestName', [Validators.required, Validators.minLength(3)]],
+    lastName: ['TestName', [Validators.required, , Validators.minLength(3)]],
+    email: ['testEmail@mail.com', [Validators.required, , Validators.email]],
+    password: ['testPassword', [Validators.required, , Validators.minLength(5)]],
   });
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private authService: AuthService,
+  ) { }
 
   ngOnInit() {}
 
   onSubmit() {
     if(this.regForm.invalid) return;
-    console.log(this.regForm.value)
+    const from = new FormData();
+    const formValues = this.regForm.value;
+
+    Object.keys(formValues).forEach( key => from.append(key, formValues[key]));
+
+    this.authService.registration(from).subscribe((bol: boolean) => {
+      if(bol){
+        this.router.navigate(['/auth/login']);
+        this.regForm.reset();
+      }
+    });
   }
 
   get firstName() {
