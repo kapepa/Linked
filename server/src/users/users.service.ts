@@ -3,9 +3,8 @@ import {from, map, Observable, of, switchMap, tap} from "rxjs";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import {UsersDto} from "./users.dto";
-import {UsersInterface} from "./users.interface";
-import {use} from "passport";
+import { UsersDto } from "./users.dto";
+import { UsersInterface } from "./users.interface";
 
 @Injectable()
 export class UsersService {

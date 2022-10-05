@@ -1,4 +1,11 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+  HttpException,
+  HttpStatus
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from "./role.enum";
 import { ROLES_KEY } from "./roles.decorator";
@@ -19,13 +26,12 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!requiredRoles) return true;
-
     const req = context.switchToHttp().getRequest();
-    const token = req.headers.authorization.split(' ').pop();
+    if (!requiredRoles || !req?.user) return true;
 
-    const { role } = this.jwtService.verify(token);
+    const res = requiredRoles.includes(req.user.role);
+    if(!res) throw new HttpException('No access to this content', HttpStatus.GONE);
 
-    return requiredRoles.includes(role);
+    return res;
   }
 }
