@@ -22,7 +22,9 @@ import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {Roles} from "../auth/roles.decorator";
 import {Role} from "../auth/role.enum";
 import {RolesGuard} from "../auth/roles.guard";
+import {ApiResponse, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('feet')
 @Controller('feet')
 export class FeetController {
   constructor(private feetService: FeetService) {
@@ -30,6 +32,8 @@ export class FeetController {
 
   @Post('/create')
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(@Body() body: FeetDto, @Req() req): Observable<FeetInterface> {
     try {
       return this.feetService.createFeet({...body, author: req.user});
@@ -39,7 +43,8 @@ export class FeetController {
   }
 
   @Get('/:id')
-  @Roles(Role.User)
+  @ApiResponse({ status: 200, description: 'The received has been successfully feet on id.', type: FeetDto})
+  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   getFeet(@Param('id') id): Observable<FeetInterface> {
     try {
       if (!id) throw new HttpException('server didn\'t get id feet', HttpStatus.NOT_FOUND);
@@ -50,6 +55,8 @@ export class FeetController {
   }
 
   @Get()
+  @ApiResponse({ status: 200, description: 'The received has been successfully feet on params.', type: FeetDto})
+  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   allFeet(@Query('take') take: number, @Query('skip') skip: number): Observable<FeetInterface[]> {
     try {
       return this.feetService.allFeet(take, skip);
@@ -59,6 +66,10 @@ export class FeetController {
   }
 
   @Patch('/update/:id')
+  @Roles(Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
+  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<UpdateResult>{
     try {
       if(!Object.keys(body).length) throw new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND);
@@ -69,6 +80,10 @@ export class FeetController {
   }
   
   @Delete('/:id')
+  @Roles(Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiResponse({ status: 200, description: 'The received has been successfully delete feet.'})
+  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   deleteFeet(@Param('id') id): Observable<DeleteResult>{
     try {
       if(!id) throw new HttpException('Not found feet for id', HttpStatus.NOT_FOUND);

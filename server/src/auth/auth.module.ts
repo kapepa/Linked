@@ -7,8 +7,8 @@ import { PassportModule } from '@nestjs/passport';
 import {JwtModule, JwtService} from "@nestjs/jwt";
 import { config } from "dotenv";
 import { JwtStrategy } from "./jwt.strategy";
-import {APP_GUARD} from "@nestjs/core";
-import {RolesGuard} from "./roles.guard";
+import { APP_GUARD } from "@nestjs/core";
+import { RolesGuard } from "./roles.guard";
 
 config()
 
