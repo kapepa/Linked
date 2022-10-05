@@ -25,6 +25,7 @@ export class NavMainComponent implements OnInit, AfterViewInit {
     const popover = await this.popoverController.create({
       component: PopoverComponent,
       showBackdrop: false,
+      componentProps: {closePresentPopover: () => popover.dismiss(),},
       event: e,
     });
 
