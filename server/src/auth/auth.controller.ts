@@ -10,8 +10,8 @@ import {
   UseInterceptors
 } from '@nestjs/common';
 import { AuthService } from "./auth.service";
-import {FileInterceptor} from "@nestjs/platform-express";
-import {Observable} from "rxjs";
+import {AnyFilesInterceptor, FileInterceptor} from "@nestjs/platform-express";
+import {Observable, of} from "rxjs";
 import {UsersDto} from "../users/users.dto";
 import {Roles} from "./roles.decorator";
 import {Role} from "./role.enum";
@@ -26,10 +26,11 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @UseInterceptors(AnyFilesInterceptor())
   @UseGuards(LocalAuthGuard)
   @ApiCreatedResponse({ status: 201, description: 'The user has been successfully login.'})
   @ApiForbiddenResponse({ status: 401, description: 'Unauthorized.'})
-  login(@Req() req): Observable<{access_token: string}> {
+  login(@Req() req, @Body() body): Observable<{access_token: string}> {
     return this.authService.loginUser(req.user);
   }
 
