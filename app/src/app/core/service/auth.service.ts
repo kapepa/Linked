@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
-import {Observable, BehaviorSubject, throwError} from "rxjs";
-import {catchError, take, tap} from "rxjs/operators";
+import {Observable, BehaviorSubject, throwError, of, from} from "rxjs";
+import {catchError, switchMap, take, tap} from "rxjs/operators";
 import {StorageService} from "./storage.service";
 import jwt_decode from "jwt-decode";
-import {UserJwtDto} from "../dto/user-jwt.dto";
+import {Role, UserJwtDto} from "../dto/user-jwt.dto";
 import {Router} from "@angular/router";
 
 const httpOptions = {
@@ -59,5 +59,33 @@ export class AuthService {
     this.user$.next(null);
     this.router.navigate(['/auth','login']);
     this.storageService.remove('token');
+  }
+
+  get userRole(): Observable<Role> {
+    return this.user$.asObservable().pipe(
+      switchMap((user: UserJwtDto) => {
+        return of(user.role);
+      })
+    )
+  }
+
+  get isLogin(): Observable<boolean> {
+    return this.user$.asObservable().pipe(
+      take(1),
+      switchMap((user: UserJwtDto) => {
+        return of(!!user)
+      })
+    )
+  }
+
+  get tokenExp(): Observable<boolean> {
+    return from(this.storageService.get('token')).pipe(
+      take(1),
+      switchMap((token: string) => {
+        if(!token) return of(false);
+        const parseToken = jwt_decode(token);
+        return of(parseToken['exp'] * 1000 > Date.now());
+      })
+    )
   }
 }

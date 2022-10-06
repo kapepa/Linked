@@ -23,6 +23,7 @@ import {Roles} from "../auth/roles.decorator";
 import {Role} from "../auth/role.enum";
 import {RolesGuard} from "../auth/roles.guard";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
+import {FounderGuard} from "../auth/founder.guard";
 
 @ApiTags('feet')
 @Controller('feet')
@@ -31,7 +32,8 @@ export class FeetController {
   }
 
   @Post('/create')
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(@Body() body: FeetDto, @Req() req): Observable<FeetInterface> {
@@ -59,15 +61,14 @@ export class FeetController {
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   allFeet(@Query('take') take: number, @Query('skip') skip: number): Observable<FeetInterface[]> {
     try {
-      return this.feetService.allFeet(take, skip);
+      return this.feetService.allFeet({take: Number(take), skip: Number(skip)});
     } catch (err) {
       return err;
     }
   }
 
   @Patch('/update/:id')
-  @Roles(Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, FounderGuard)
   @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<UpdateResult>{
@@ -80,8 +81,7 @@ export class FeetController {
   }
   
   @Delete('/:id')
-  @Roles(Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, FounderGuard)
   @ApiResponse({ status: 200, description: 'The received has been successfully delete feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   deleteFeet(@Param('id') id): Observable<DeleteResult>{

@@ -21,6 +21,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     ReactiveFormsModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot()
+
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
