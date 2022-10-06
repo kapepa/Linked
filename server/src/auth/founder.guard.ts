@@ -18,7 +18,7 @@ export class FounderGuard implements CanActivate {
     return this.feetService.allFeet({ where: { 'author': { id: user.id } } , relations: [ 'author' ] }).pipe(
       take(1),
       switchMap((feetList: FeetInterface[]) => {
-        return of(feetList.some(feet => feet.id === request.params.id));
+        return of(feetList.some(feet => feet.id === request.params.id))
       })
     );
   }
