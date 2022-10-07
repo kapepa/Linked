@@ -26,7 +26,7 @@ export class FeetService {
   }
 
   allFeet(options: { where?: {[key: string]: string | {[key: string]: string }}, take?: number, skip?: number, relations?: string[] }): Observable<FeetInterface[]> {
-    return from(this.usersRepository.find(options)).pipe(
+    return from(this.usersRepository.find({...options, order: { createdAt: 'DESC' }})).pipe(
       catchError(err => { throw new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND)})
     )
   }

@@ -7,6 +7,7 @@ import {StorageService} from "./storage.service";
 import jwt_decode from "jwt-decode";
 import {Role, UserJwtDto} from "../dto/user-jwt.dto";
 import {Router} from "@angular/router";
+import {HttpService} from "./http.service";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -25,21 +26,13 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     private storageService: StorageService,
+    private httpService: HttpService
   ) {}
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-    } else {
-      console.error(`Backend returned code ${error.status}, body was: `, error.error);
-    }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
-  }
 
   registration(form: FormData): Observable<boolean> {
     return this.http.post<boolean>(`${this.baseUrl}/api/auth/registration`,form).pipe(
       take(1),
-      catchError(this.handleError),
+      catchError(this.httpService.handleError),
     );
   }
 
@@ -51,7 +44,7 @@ export class AuthService {
         this.user$.next(jwt_decode(token))
       }),
       take(1),
-      catchError(this.handleError)
+      catchError(this.httpService.handleError)
     )
   }
 

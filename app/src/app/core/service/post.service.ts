@@ -1,31 +1,71 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { Observable, throwError } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
-import { catchError, tap } from "rxjs/operators";
+import { catchError, switchMap, take, tap } from "rxjs/operators";
+import { HttpService } from "./http.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
   configUrl = environment.configUrl;
+  posts: PostInterface[] = [] as PostInterface[];
+  posts$: BehaviorSubject<PostInterface[]> = new BehaviorSubject<PostInterface[]>(null);
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private httpService: HttpService
+  ) { }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-    } else {
-      console.error(`Backend returned code ${error.status}, body was: `, error.error);
-    }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
+  getPosts(query: PostQueryDto): Observable<PostInterface[]> {
+    return this.http.get<PostInterface[]>(`${this.configUrl}/api/feet`,{
+      params: {...query},
+    }).pipe(
+      take(1),
+      tap((posts: PostInterface[]) => {
+        if(posts.length) {
+          this.posts.push(...posts);
+          this.posts$.next(this.posts);
+        }
+      }),
+      catchError(this.httpService.handleError),
+    )
   }
 
-  getPosts({take, skip}: PostQueryDto): Observable<PostInterface[]> {
-    return this.http.get<PostInterface[]>(`${this.configUrl}/api/feet`,{
-      params: {take, skip}
-    }).pipe(catchError(this.handleError))
+  createPost(body: {body: string}): Observable<PostInterface> {
+    return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,body).pipe(
+      take(1),
+      tap((post: PostInterface) => {
+        console.log(post)
+        this.posts.unshift(post);
+        this.posts$.next(this.posts);
+      }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
+  updatePost(id: string, body: PostInterface): Observable<any> {
+    return this.http.patch(`${this.configUrl}/api/feet/update/${id}`, body).pipe(
+      take(1),
+      catchError(this.httpService.handleError)
+    )
+  }
+
+  deletePost(id: string): Observable<any> {
+    return this.http.delete(`${this.configUrl}/api/feet/${id}`).pipe(
+      take(1),
+      catchError(this.httpService.handleError)
+    )
+  }
+
+  get postLength() {
+    return this.posts$.asObservable().pipe(
+      switchMap( (posts: PostInterface[]) => {
+        return of(posts?.length ?? 0);
+      })
+    )
   }
 }

@@ -10,34 +10,31 @@ import { BehaviorSubject } from "rxjs";
   styleUrls: ['./tape-post.component.scss'],
 })
 export class TapePostComponent implements OnInit {
-  stopPost: boolean = false;
-  posts: PostInterface[] = [];
-  posts$ = new BehaviorSubject<PostInterface[]>([] as PostInterface[]);
+  postLength: number
 
   constructor(
     private postService: PostService,
   ) { }
 
   ngOnInit() {
-    this.getPost({take: 5, skip: 0}, () => {});
+    this.postService.postLength.subscribe((postLength: number) => {
+      if (postLength) this.postLength = postLength;
+    })
   }
 
   getPost(query: PostQueryDto, cd: () => void){
-    if(this.stopPost) return cd();
     this.postService.getPosts(query).subscribe({
-      next: (posts: PostInterface[]) => {
-        if(posts.length === 0) this.stopPost = ! this.stopPost;
-        if(posts.length){
-          this.posts.push(...posts);
-          this.posts$.next(this.posts);
-        }
-      },
+      next: () => {},
       complete: () => cd()
     });
   }
 
   loadData(event) {
-    this.getPost({take: 5, skip: this.posts.length}, () => event.target.complete());
+    this.getPost({take: 5, skip: this.postLength}, () => event.target.complete());
+  }
+
+  get posts() {
+    return this.postService.posts$
   }
 
 }
