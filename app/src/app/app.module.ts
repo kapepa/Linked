@@ -21,8 +21,7 @@ import { JwtInterceptor } from "./core/interceptor/jwt.interceptor";
     HttpClientModule,
     ReactiveFormsModule,
     IonicModule.forRoot(),
-    IonicStorageModule.forRoot()
-
+    IonicStorageModule.forRoot(),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

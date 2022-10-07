@@ -1,65 +1,68 @@
 <ion-content class="create-publication" >
-  <ion-item class="create-publication__header">
-    <ion-label class="create-publication__label">Create a post</ion-label>
-    <ion-button class="create-publication__close ion-no-padding" fill="clear" color="medium" shape="round" (click)="onClose($event)">
-      <ion-icon class="create-publication__x-close" name="close-outline" ></ion-icon>
-    </ion-button>
-  </ion-item>
-  <ion-content scroll-y="false" class="create-publication__content">
-    <div class="create-publication__grid">
-      <div class="create-publication__avatar-g">
-        <ion-avatar>
-          <img alt="Silhouette of a person's head" src="../../../assets/images/profile.png" />
-        </ion-avatar>
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit($event)">
+    <ion-item class="create-publication__header">
+      <ion-label class="create-publication__label">{{ edit ? 'Edit a post' : 'Create a post' }}</ion-label>
+      <ion-button class="create-publication__close ion-no-padding" fill="clear" color="medium" shape="round" (click)="onClose($event)">
+        <ion-icon class="create-publication__x-close" name="close-outline" ></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-content scroll-y="false" class="create-publication__content">
+      <div class="create-publication__grid">
+        <div class="create-publication__avatar-g">
+          <ion-avatar>
+            <img alt="Silhouette of a person's head" src="../../../assets/images/profile.png" />
+          </ion-avatar>
+        </div>
+        <div class="create-publication__name-g">
+          <ion-title class="ion-no-padding create-publication__title">My Name</ion-title>
+        </div>
+        <div class="create-publication__anyone-g">
+          <ion-chip class="ion-no-margin" [outline]="true">
+            <ion-icon name="earth"></ion-icon>
+            Anyone
+            <ion-icon name="caret-down"></ion-icon>
+          </ion-chip>
+        </div>
       </div>
-      <div class="create-publication__name-g">
-        <ion-title class="ion-no-padding create-publication__title">My Name</ion-title>
+      <div class="create-publication__textarea-area">
+        <ion-textarea
+          placeholder="What do you want to talk about?"
+          rows="6"
+          auto-grow="true"
+          formControlName="body"
+        >
+        </ion-textarea>
       </div>
-      <div class="create-publication__anyone-g">
-        <ion-chip class="ion-no-margin" [outline]="true">
-          <ion-icon name="earth"></ion-icon>
-          Anyone
-          <ion-icon name="caret-down"></ion-icon>
-        </ion-chip>
+      <div>
+        <ion-button fill="clear">Add hashtag</ion-button>
       </div>
-    </div>
-    <div class="create-publication__textarea-area">
-      <ion-textarea
-        placeholder="What do you want to talk about?"
-        rows="6"
-        auto-grow="true"
-      >
-      </ion-textarea>
-    </div>
-    <div>
-      <ion-button fill="clear">Add hashtag</ion-button>
-    </div>
-  </ion-content>
-  <ion-footer class="ion-no-border" collapse="fade">
-    <div class="create-publication__footer">
-      <div class="create-publication__shape_btn">
-        <ion-fab-button class="create-publication__fab" color="light">
-          <ion-icon name="image"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button class="create-publication__fab" color="light">
-          <ion-icon name="logo-youtube"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button class="create-publication__fab" color="light">
-          <ion-icon name="document-text"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button class="create-publication__fab" color="light">
-          <ion-icon name="briefcase"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button class="create-publication__fab" color="light">
-          <ion-icon name="contract"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button class="create-publication__fab" color="light">
-          <ion-icon name="git-pull-request"></ion-icon>
-        </ion-fab-button>
+    </ion-content>
+    <ion-footer class="ion-no-border" collapse="fade">
+      <div class="create-publication__footer">
+        <div class="create-publication__shape_btn">
+          <ion-fab-button class="create-publication__fab" color="light">
+            <ion-icon name="image"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button class="create-publication__fab" color="light">
+            <ion-icon name="logo-youtube"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button class="create-publication__fab" color="light">
+            <ion-icon name="document-text"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button class="create-publication__fab" color="light">
+            <ion-icon name="briefcase"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button class="create-publication__fab" color="light">
+            <ion-icon name="contract"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button class="create-publication__fab" color="light">
+            <ion-icon name="git-pull-request"></ion-icon>
+          </ion-fab-button>
+        </div>
+        <div class="create-publication__post_shape">
+          <ion-button [disabled]="!postForm.valid" type="submit" shape="round">{{ edit ? 'Edit' : 'Post'}}</ion-button>
+        </div>
       </div>
-      <div class="create-publication__post_shape">
-        <ion-button shape="round">Post</ion-button>
-      </div>
-    </div>
-  </ion-footer>
+    </ion-footer>
+  </form>
 </ion-content>

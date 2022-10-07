@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {FeetService} from "./feet.service";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {DeleteResult, UpdateResult} from "typeorm";
 import {UsersDto} from "../users/users.dto";
