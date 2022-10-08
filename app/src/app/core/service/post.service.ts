@@ -39,7 +39,6 @@ export class PostService {
     return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,body).pipe(
       take(1),
       tap((post: PostInterface) => {
-        console.log(post)
         this.posts.unshift(post);
         this.posts$.next(this.posts);
       }),
@@ -47,16 +46,24 @@ export class PostService {
     )
   }
 
-  updatePost(id: string, body: PostInterface): Observable<any> {
+  updatePost(index: number, id: string, body: PostInterface): Observable<any> {
     return this.http.patch(`${this.configUrl}/api/feet/update/${id}`, body).pipe(
       take(1),
+      tap((post: PostInterface) => {
+        this.posts.splice(index,1, post);
+        this.posts$.next(this.posts);
+      }),
       catchError(this.httpService.handleError)
     )
   }
 
-  deletePost(id: string): Observable<any> {
+  deletePost(index: number, id: string): Observable<any> {
     return this.http.delete(`${this.configUrl}/api/feet/${id}`).pipe(
       take(1),
+      tap(() => {
+        this.posts.splice(index,1);
+        this.posts$.next(this.posts);
+      }),
       catchError(this.httpService.handleError)
     )
   }
@@ -68,4 +75,5 @@ export class PostService {
       })
     )
   }
+
 }

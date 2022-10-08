@@ -76,8 +76,18 @@ export class AuthService {
       take(1),
       switchMap((token: string) => {
         if(!token) return of(false);
-        const parseToken = jwt_decode(token);
+        const parseToken: UserJwtDto = jwt_decode(token);
+        if (!!parseToken) this.user$.next(parseToken);
         return of(parseToken['exp'] * 1000 > Date.now());
+      })
+    )
+  }
+
+  get userID(): Observable<string>{
+    return this.user$.asObservable().pipe(
+      take(1),
+      switchMap((user: UserJwtDto) => {
+        return of(user?.id ?? null);
       })
     )
   }

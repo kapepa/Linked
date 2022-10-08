@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PostInterface } from "../../core/interface/post.interface";
 import { PostService } from "../../core/service/post.service";
 import { PostQueryDto } from "../../core/dto/post-query.dto";
-import { BehaviorSubject } from "rxjs";
+import {AuthService} from "../../core/service/auth.service";
 
 @Component({
   selector: 'app-tape-post',
@@ -10,16 +9,20 @@ import { BehaviorSubject } from "rxjs";
   styleUrls: ['./tape-post.component.scss'],
 })
 export class TapePostComponent implements OnInit {
-  postLength: number
+  postLength: number;
+  userID: string;
 
   constructor(
     private postService: PostService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
     this.postService.postLength.subscribe((postLength: number) => {
       if (postLength) this.postLength = postLength;
-    })
+    });
+
+    this.authService.userID.subscribe((userID: string) => this.userID = userID);
   }
 
   getPost(query: PostQueryDto, cd: () => void){
@@ -30,11 +33,10 @@ export class TapePostComponent implements OnInit {
   }
 
   loadData(event) {
-    this.getPost({take: 5, skip: this.postLength}, () => event.target.complete());
+    this.getPost({take: 6, skip: this.postLength}, () => event.target.complete());
   }
 
   get posts() {
     return this.postService.posts$
   }
-
 }

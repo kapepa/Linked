@@ -71,7 +71,8 @@ export class FeetController {
   @UseGuards(JwtAuthGuard, FounderGuard)
   @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
-  updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<UpdateResult>{
+  // updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<UpdateResult>{
+  updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<FeetInterface>{
     try {
       if(!Object.keys(body).length) throw new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND);
       return this.feetService.updateFeet(id, body);

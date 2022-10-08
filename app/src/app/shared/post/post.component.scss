@@ -3,9 +3,19 @@
   &__header{
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+  &__header-name{
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  &__header-left{
+    display: flex;
+    align-items: center;
   }
   &__header-right{
-    padding-left: 15px;
+    display: flex;
+    gap: 10px;
   }
   &__img, &__avatar{
     width: 48px;
@@ -21,6 +31,17 @@
   }
   &__btn-action{
     font-size: 14px;
+  }
+  &__icon{
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    pointer-events: none;
+  }
+  &__btn-icon{
+    --padding-end: 0;
+    --padding-start: 0;
+    --ripple-color: transparent;
   }
 }
 
