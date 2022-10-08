@@ -10,6 +10,7 @@ import { User } from "./users/users.entity";
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import {JwtModule} from "@nestjs/jwt";
+import { FileModule } from './file/file.module';
 
 dotenv.config();
 
@@ -31,7 +32,8 @@ dotenv.config();
     FeetModule,
     UsersModule,
     AuthModule,
-    JwtModule
+    JwtModule,
+    FileModule
   ],
   controllers: [AppController],
   providers: [AppService],
