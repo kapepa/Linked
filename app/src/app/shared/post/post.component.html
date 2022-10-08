@@ -4,10 +4,20 @@
       <ion-avatar class="post__avatar">
         <img class="post__img" alt="avatar" src="../../../assets/images/profile.png" />
       </ion-avatar>
+      <div class="post__header-name">
+        <ion-card-subtitle class="post__subtitle">My Name</ion-card-subtitle>
+        <ion-card-subtitle class="post__subtitle">Full Stack Developer</ion-card-subtitle>
+      </div>
     </div>
     <div class="post__header-right">
-      <ion-card-subtitle class="post__subtitle">My Name</ion-card-subtitle>
-      <ion-card-subtitle class="post__subtitle">Full Stack Developer</ion-card-subtitle>
+      <ng-container *ngIf="userID === post.author.id">
+        <ion-button (click)="onEdit($event)" class="post__btn-icon" title="Edit" fill="clear">
+          <ion-icon class="post__icon" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="onDelete($event)" class="post__btn-icon" title="Delete" fill="clear">
+          <ion-icon class="post__icon" color="danger" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ng-container>
     </div>
   </ion-card-header>
 

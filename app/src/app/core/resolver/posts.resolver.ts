@@ -16,7 +16,7 @@ export class PostsResolver implements Resolve<boolean> {
     private postService: PostService,
   ) {}
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.postService.getPosts({take:5, skip:0}).pipe(
+    return this.postService.getPosts({take: 6, skip:0}).pipe(
       switchMap(() => of(true))
     )
   }

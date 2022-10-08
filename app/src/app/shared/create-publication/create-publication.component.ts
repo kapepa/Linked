@@ -12,6 +12,8 @@ import {PostInterface} from "../../core/interface/post.interface";
 })
 export class CreatePublicationComponent implements OnInit {
   @Input() onClosePublication: () => void;
+  @Input() post?: PostInterface;
+  @Input() index?: number;
   postForm: FormGroup;
 
   constructor(
@@ -20,10 +22,17 @@ export class CreatePublicationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.postForm = this.fb.group({
-      id: [''],
-      body: ['', Validators.required],
-    });
+    if ( this.index !== null && !!this.post ){
+      this.postForm = this.fb.group({
+        id: [this.post.id],
+        body: [this.post.body, Validators.required],
+      });
+    } else {
+      this.postForm = this.fb.group({
+        id: [''],
+        body: ['', Validators.required],
+      });
+    }
   }
 
   onClose(e: Event) {
@@ -31,10 +40,17 @@ export class CreatePublicationComponent implements OnInit {
   }
 
   onSubmit(e: Event) {
-    this.postService.createPost({body: this.body.value}).subscribe((post: PostInterface) => {
-      this.onClosePublication();
-      this.postForm.reset();
-    })
+    if( this.index !== null && !!this.post ){
+      this.postService.updatePost(this.index, this.edit, {body: this.body.value}).subscribe((post: PostInterface) => {
+        this.onClosePublication();
+        this.postForm.reset();
+      })
+    } else {
+      this.postService.createPost({body: this.body.value}).subscribe((post: PostInterface) => {
+        this.onClosePublication();
+        this.postForm.reset();
+      })
+    }
   }
 
   get body (){
