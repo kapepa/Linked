@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersDto } from "./users.dto";
 import { UsersInterface } from "./users.interface";
+import {FileService} from "../file/file.service";
 
 @Injectable()
 export class UsersService {
@@ -12,6 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private fileService: FileService,
   ) {}
 
   findOne(key: string, val: string, additional?: { relations?: string[], select?: string[] } ) {
