@@ -1,19 +1,19 @@
 import {Role} from "../auth/role.enum";
-import {FeetInterface} from "../feet/feet.interface";
 import {ApiProperty} from "@nestjs/swagger";
 import {IsEmail, IsNotEmpty, IsString} from "class-validator";
+import {FeetDto} from "../feet/feet.dto";
 
 export class UsersDto {
   @ApiProperty()
-  id: string;
+  id?: string;
 
   @ApiProperty()
   @IsString()
-  firstName: string;
+  firstName?: string;
 
   @ApiProperty()
   @IsString()
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty()
   @IsEmail()
@@ -23,11 +23,14 @@ export class UsersDto {
   @IsNotEmpty()
   password?: string;
 
+  @ApiProperty()
+  avatar?: string
+
   @ApiProperty({ enum: Role })
   role?: Role;
 
-  @ApiProperty()
-  feet?: FeetInterface[];
+  @ApiProperty({type: () => FeetDto})
+  feet?: FeetDto[];
 
   @ApiProperty()
   created_at?: Date;

@@ -11,6 +11,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import {JwtModule} from "@nestjs/jwt";
 import { FileModule } from './file/file.module';
+import {ServeStaticModule} from "@nestjs/serve-static";
+import { join } from 'path';
 
 dotenv.config();
 
@@ -28,6 +30,9 @@ dotenv.config();
       database: process.env.DB_NAME,
       entities: [User,Feet],
       synchronize: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '/static'),
     }),
     FeetModule,
     UsersModule,
