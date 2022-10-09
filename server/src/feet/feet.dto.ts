@@ -10,6 +10,6 @@ export class FeetDto {
   @IsString()
   body?: string
 
-  @ApiProperty()
+  @ApiProperty({ type: () => UsersDto })
   author?: UsersDto
 }

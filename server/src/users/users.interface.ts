@@ -7,6 +7,7 @@ export class UsersInterface {
   lastName: string;
   email: string;
   password?: string;
+  avatar?: string;
   role: Role;
   feet?: FeetInterface[];
   created_at?: Date;
