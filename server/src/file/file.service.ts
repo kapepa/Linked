@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {from, Observable, of, switchMap} from "rxjs";
 import {FileTypeResult, fromFile} from 'file-type';
 import {join} from "path";
+import * as sharp from "sharp";
 import * as fs from "fs";
 
 export const multerOption = {
@@ -24,7 +25,7 @@ export const multerOption = {
   },
   limits: {
     fieldNameSize: 300,
-    fileSize: 10000
+    fileSize: 50000
   }
 }
 
@@ -33,12 +34,31 @@ export class FileService {
 
   formFile( filePath:string ): Observable<boolean> {
     const existPath = join(__dirname, '..', '..', 'static', filePath)
+
     return from(fromFile(existPath)).pipe(
       switchMap((fileType: FileTypeResult) => {
-        if(!fileType) of(false)
-        return of(!!fileType)
+        if(!fileType) of(false);
+        return from(this.sharpFile(existPath)).pipe(
+          switchMap((compressing: boolean) => {
+            if (!compressing) of(false);
+            return of(true);
+          })
+        )
       })
     );
+  }
+
+  async sharpFile(filePath:string): Promise<boolean> {
+    await sharp(filePath)
+      .resize(300, 300)
+      .toBuffer()
+      .then( buffer => { fs.writeFile(filePath, buffer, (err) => {
+        if(err)throw new HttpException('An error occurred while compressing the image', HttpStatus.BAD_REQUEST);
+      })})
+      .catch( err => {
+        throw new HttpException('An error occurred while compressing the image', HttpStatus.BAD_REQUEST)
+      });
+    return true
   }
 
   async removeFile( filePath:string ): Promise<boolean> {
