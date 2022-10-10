@@ -8,16 +8,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule } from "@angular/forms";
-import {CommonModule, IMAGE_LOADER, ImageLoaderConfig, NgOptimizedImage, provideImgixLoader} from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { JwtInterceptor } from "./core/interceptor/jwt.interceptor";
-import {environment} from "../environments/environment";
+import { DirectiveModule } from "./core/directive/directive.module";
+import {PipeModule} from "./core/pipe/pipe.module";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    PipeModule,
     CommonModule,
     BrowserModule,
+    DirectiveModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -27,11 +30,6 @@ import {environment} from "../environments/environment";
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true, },
-    {
-      provide: IMAGE_LOADER,
-      useValue: (config: ImageLoaderConfig) => {
-        return `https://example.com/images?src=${config.src}&width=${config.width}` }
-    }
   ],
   bootstrap: [AppComponent],
 })

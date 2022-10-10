@@ -14,6 +14,8 @@ export class PostComponent implements OnInit {
   @Input() index: number;
   @Input() userID: string;
   @Input() post: PostInterface;
+  @Input() userAvatar: string;
+
   constructor(
     public popoverController: PopoverController,
     private postService: PostService
@@ -38,5 +40,9 @@ export class PostComponent implements OnInit {
 
   onDelete(e: Event) {
     this.postService.deletePost(this.index, this.post.id).subscribe(() => {})
+  }
+
+  get avatar () {
+    return this.userID === this.post.author.id  ? this.userAvatar : this.post.author.avatar
   }
 }

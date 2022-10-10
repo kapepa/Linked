@@ -2,7 +2,12 @@
   <ion-card-header class="post__header">
     <div class="post__header-left">
       <ion-avatar class="post__avatar">
-        <img class="post__img" alt="avatar" src="../../../assets/images/profile.png" />
+        <ng-container *ngIf="post.author.avatar">
+          <img class="post__img" alt="avatar" src="{{ avatar | url }}" />
+        </ng-container>
+        <ng-template #avatarIco>
+          <ion-icon  class="post__img" name="person-outline"></ion-icon>
+        </ng-template>
       </ion-avatar>
       <div class="post__header-name">
         <ion-card-subtitle class="post__subtitle">My Name</ion-card-subtitle>

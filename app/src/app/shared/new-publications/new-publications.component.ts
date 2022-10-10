@@ -1,22 +1,34 @@
-import {  AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {  AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
+import {AuthService} from "../../core/service/auth.service";
 
 @Component({
   selector: 'app-new-publications',
   templateUrl: './new-publications.component.html',
   styleUrls: ['./new-publications.component.scss'],
 })
-export class NewPublicationsComponent implements OnInit, AfterViewInit {
+export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestroy {
+  userAvatar: string = '';
+  userAvatarSubscription: Subscription;
   @ViewChild('post') post: ElementRef;
 
-  constructor(public popoverController: PopoverController) { }
+  constructor(
+    public popoverController: PopoverController,
+    private authService: AuthService,
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar)
+  }
 
   ngAfterViewInit() {
     // this.post['el'].click()
+  }
+
+  ngOnDestroy() {
+    this.userAvatarSubscription.unsubscribe();
   }
 
   closePublication(){

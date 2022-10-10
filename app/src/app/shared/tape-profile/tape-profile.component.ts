@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {from, of, Subscription} from "rxjs";
+import {BehaviorSubject, from, of, Subject, Subscription} from "rxjs";
 import {switchMap} from "rxjs/operators";
 import {AuthService} from "../../core/service/auth.service";
 
@@ -18,7 +18,9 @@ export class TapeProfileComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
+    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => {
+      this.userAvatar = avatar;
+    });
   }
 
   ngOnDestroy() {

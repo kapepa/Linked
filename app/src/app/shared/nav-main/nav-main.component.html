@@ -24,7 +24,10 @@
     </ion-row>
     <ion-col class="nav-main__cell" size="auto" #popupAnchor (click)="presentPopover($event)">
       <ion-avatar class="nav-main__avatar_wrapper">
-        <img class="nav-main__avatar" alt="avatar" src="../../../assets/images/profile.png" />
+        <img *ngIf="userAvatar; else avatarIco" class="nav-main__avatar" alt="avatar" src="{{userAvatar | url}}" />
+        <ng-template #avatarIco>
+          <ion-icon  class="nav-main__avatar" name="person-outline"></ion-icon>
+        </ng-template>
       </ion-avatar>
 <!--      <ion-icon name="person" class="nav-main__ico"></ion-icon>-->
       <div class="nav-main__text nav-main__text__center">Me <ion-icon name="chevron-down-outline"></ion-icon></div>

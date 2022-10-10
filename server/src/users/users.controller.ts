@@ -2,8 +2,7 @@ import {Controller, Post, Req, UploadedFile, UseGuards, UseInterceptors} from '@
 import {ApiBody, ApiConsumes, ApiForbiddenResponse, ApiTags} from "@nestjs/swagger";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {FileService, multerOption} from "../file/file.service";
-import {Request} from "express";
+import {multerOption} from "../file/file.service";
 import {UsersService} from "./users.service";
 import {Observable} from "rxjs";
 
