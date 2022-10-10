@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import { UsersService } from "../users/users.service";
 import {from, map, Observable, of, switchMap, tap} from "rxjs";
 import * as bcrypt from "bcrypt";
@@ -13,6 +13,7 @@ config();
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
     private jwtService: JwtService
   ) {}
@@ -46,11 +47,11 @@ export class AuthService {
     )
   }
 
-  loginUser(user: any): Observable<{access_token: string}> {
+  loginUser(user: Observable<UsersDto>): Observable<{access_token: string}> {
     return user.pipe(
       switchMap((user: any) => {
-        let { firstName, lastName, id, role } = user;
-        return of({access_token: this.jwtService.sign({firstName, lastName, id, role})})
+        let { firstName, lastName, id, role, avatar } = user;
+        return of({access_token: this.jwtService.sign({firstName, lastName, id, role, avatar})})
       })
     )
   }

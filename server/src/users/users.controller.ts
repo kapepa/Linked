@@ -24,7 +24,7 @@ export class UsersController {
   })
   @ApiForbiddenResponse({ description: 'Forbidden.'})
   @UseInterceptors(FileInterceptor('file', multerOption ))
-  avatarLoad(@UploadedFile() file: Express.Multer.File, @Req() req): Observable<any> {
+  avatarLoad(@UploadedFile() file: Express.Multer.File, @Req() req): Observable<{access_token: string}> {
     return this.usersService.avatarUser(file, req.user);
   }
 }

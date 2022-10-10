@@ -1,11 +1,12 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {from, map, Observable, of, switchMap, tap} from "rxjs";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersDto } from "./users.dto";
 import { UsersInterface } from "./users.interface";
-import {FileService} from "../file/file.service";
+import { FileService } from "../file/file.service";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => AuthService))
+    private authService: AuthService,
     private fileService: FileService,
   ) {}
 
@@ -36,9 +39,13 @@ export class UsersService {
     );
   }
 
-  avatarUser(file: Express.Multer.File, user: UsersDto): Observable<any> {
+  avatarUser(file: Express.Multer.File, user: UsersDto): Observable<{access_token: string}> {
     let updateUser = () => {
-      return from(this.updateUser('id', user.id, {avatar: file.filename}))
+      return from(this.updateUser('id', user.id, {avatar: file.filename})).pipe(
+        switchMap(() => {
+          return this.authService.loginUser(of({...user, avatar: file.filename}));
+        })
+      )
     }
 
     return this.fileService.formFile(file.filename).pipe(

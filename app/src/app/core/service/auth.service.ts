@@ -15,11 +15,14 @@ const httpOptions = {
   })
 };
 
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   baseUrl = environment.configUrl;
+  user: UserJwtDto | null = null;
   user$ = new BehaviorSubject<UserJwtDto>(null);
 
   constructor(
@@ -41,7 +44,8 @@ export class AuthService {
       tap((res: { access_token: string }) => {
         let token = res.access_token
         this.storageService.set('token', token)
-        this.user$.next(jwt_decode(token))
+        this.user = jwt_decode(token);
+        this.user$.next(this.user);
       }),
       take(1),
       catchError(this.httpService.handleError)
@@ -49,9 +53,23 @@ export class AuthService {
   }
 
   logout(){
-    this.user$.next(null);
+    this.user = null;
+    this.user$.next(this.user);
     this.router.navigate(['/auth','login']);
     this.storageService.remove('token');
+  }
+
+  avatar(form: FormData): Observable<{access_token: string}> {
+    return this.http.post<{access_token: string}>(`${this.baseUrl}/api/users/avatar`, form).pipe(
+      take(1),
+      tap((res: {access_token: string}) => {
+        let token = res.access_token
+        this.storageService.set('token', token)
+        this.user = jwt_decode(token);
+        this.user$.next(this.user);
+      }),
+      catchError(this.httpService.handleError)
+    )
   }
 
   get userRole(): Observable<Role> {
@@ -88,6 +106,14 @@ export class AuthService {
       take(1),
       switchMap((user: UserJwtDto) => {
         return of(user?.id ?? null);
+      })
+    )
+  }
+
+  get userAvatar () {
+    return this.user$.asObservable().pipe(
+      switchMap((user: UserJwtDto) => {
+        return of(user.avatar);
       })
     )
   }
