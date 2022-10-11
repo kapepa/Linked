@@ -7,11 +7,13 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Feet } from "./feet/feet.entity";
 import { User } from "./users/users.entity";
+import { FriendsEntity } from "./friends/friends.entity";
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import {JwtModule} from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
 import { FileModule } from './file/file.module';
-import {ServeStaticModule} from "@nestjs/serve-static";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { FriendsModule } from './friends/friends.module';
 import { join } from 'path';
 
 dotenv.config();
@@ -28,7 +30,7 @@ dotenv.config();
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User,Feet],
+      entities: [User,Feet, FriendsEntity],
       synchronize: true,
     }),
     ServeStaticModule.forRoot({
@@ -38,7 +40,8 @@ dotenv.config();
     UsersModule,
     AuthModule,
     JwtModule,
-    FileModule
+    FileModule,
+    FriendsModule
   ],
   controllers: [AppController],
   providers: [AppService],

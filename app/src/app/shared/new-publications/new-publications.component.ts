@@ -10,7 +10,7 @@ import {AuthService} from "../../core/service/auth.service";
   styleUrls: ['./new-publications.component.scss'],
 })
 export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestroy {
-  userAvatar: string = '';
+  userAvatar: string;
   userAvatarSubscription: Subscription;
   @ViewChild('post') post: ElementRef;
 

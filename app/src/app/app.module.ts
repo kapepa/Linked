@@ -12,8 +12,9 @@ import { CommonModule } from "@angular/common";
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { JwtInterceptor } from "./core/interceptor/jwt.interceptor";
 import { DirectiveModule } from "./core/directive/directive.module";
-import {PipeModule} from "./core/pipe/pipe.module";
-import {PopoverModule} from "./shared/popover/popover.module";
+import { PipeModule } from "./core/pipe/pipe.module";
+import { PopoverModule } from "./shared/popover/popover.module";
+import { CreatePublicationModule } from "./shared/create-publication/create-publication.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import {PopoverModule} from "./shared/popover/popover.module";
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    CreatePublicationModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
   ],

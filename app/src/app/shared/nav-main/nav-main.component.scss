@@ -23,6 +23,9 @@
   &__avatar{
     height: 26px;
     width: 26px;
+    border-radius: 50%;
+    background-color: grey;
+    color: #737373;
     object-fit: contain;
   }
   &__avatar_wrapper{

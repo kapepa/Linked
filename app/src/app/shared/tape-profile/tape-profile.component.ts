@@ -2,6 +2,7 @@ import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core
 import {BehaviorSubject, from, of, Subject, Subscription} from "rxjs";
 import {switchMap} from "rxjs/operators";
 import {AuthService} from "../../core/service/auth.service";
+import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 
 @Component({
   selector: 'app-tape-profile',
@@ -9,8 +10,8 @@ import {AuthService} from "../../core/service/auth.service";
   styleUrls: ['./tape-profile.component.scss'],
 })
 export class TapeProfileComponent implements OnInit, OnDestroy {
-  userAvatar: string = '';
-  userAvatarSubscription: Subscription;
+  user: UserJwtDto;
+  userSub: Subscription;
   @ViewChild('avatar') avatar: ElementRef;
 
   constructor(
@@ -18,13 +19,11 @@ export class TapeProfileComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => {
-      this.userAvatar = avatar;
-    });
+    this.userSub = this.authService.getUser.subscribe((user: UserJwtDto) => this.user = user);
   }
 
   ngOnDestroy() {
-    this.userAvatarSubscription.unsubscribe();
+    this.userSub.unsubscribe();
   }
 
   onAvatar(e: Event) { (this.avatar.nativeElement as HTMLInputElement).click() };
