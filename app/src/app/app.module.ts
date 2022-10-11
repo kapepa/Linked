@@ -13,6 +13,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { JwtInterceptor } from "./core/interceptor/jwt.interceptor";
 import { DirectiveModule } from "./core/directive/directive.module";
 import {PipeModule} from "./core/pipe/pipe.module";
+import {PopoverModule} from "./shared/popover/popover.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import {PipeModule} from "./core/pipe/pipe.module";
     PipeModule,
     CommonModule,
     BrowserModule,
+    PopoverModule,
     DirectiveModule,
     AppRoutingModule,
     HttpClientModule,

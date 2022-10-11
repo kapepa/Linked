@@ -3,8 +3,11 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-avatar>
-            <img alt="avatar" src="../../../assets/images/profile.png" />
+          <ion-avatar >
+            <img *ngIf="userAvatar" alt="avatar" src="{{userAvatar | url}}" />
+            <ng-template #avatarIco>
+              <ion-icon name="person-outline"></ion-icon>
+            </ng-template>
           </ion-avatar>
         </ion-col>
         <ion-col>

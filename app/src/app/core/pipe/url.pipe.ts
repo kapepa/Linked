@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import {environment} from "../../../environments/environment";
 
 @Pipe({
-  name: 'url'
+  name: 'url',
 })
 export class UrlPipe implements PipeTransform {
 
