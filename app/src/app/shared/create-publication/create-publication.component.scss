@@ -31,6 +31,13 @@
   &__avatar-g{
     grid-area: avatar;
   }
+  &__ico{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: grey;
+    color: #737373;
+  }
   &__name-g{
     grid-area: name;
   }

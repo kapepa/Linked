@@ -22,7 +22,7 @@ export class UsersService {
   findOne(key: string, val: string, additional?: { relations?: string[], select?: string[] } ) {
     return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional as {} })).pipe(
       switchMap((user: UsersInterface) => (of(user)))
-    )
+    );
   }
   
   updateUser(key: string, val: string, data: UsersDto): Observable<any> {
@@ -31,7 +31,7 @@ export class UsersService {
 
   createUser(userDto: UsersDto): Observable<any> {
     return from(this.usersRepository.save(userDto));
-  }
+  };
 
   existUser(key: string, val: string): Observable<any> {
     return from(this.usersRepository.findOne({ where:{ [key]: val } })).pipe(
@@ -52,7 +52,7 @@ export class UsersService {
       switchMap((existFile: Boolean) => {
         if(!existFile) throw new HttpException('Your avatar has not been saved', HttpStatus.BAD_REQUEST);
         return this.findOne('id', user.id).pipe(
-          switchMap((user: UsersDto) => {
+          switchMap((user: UsersInterface) => {
             if(user.avatar.trim()) return from(this.fileService.removeFile(user.avatar)).pipe(
               switchMap(updateUser)
             )

@@ -1,6 +1,16 @@
-import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn
+} from "typeorm";
 import {Feet} from "../feet/feet.entity";
 import {Role} from "../auth/role.enum";
+import {FriendsEntity} from "../friends/friends.entity";
 
 @Entity()
 export class User {
@@ -20,7 +30,17 @@ export class User {
   password: string;
 
   @Column({ default: '' })
-  avatar: string
+  avatar: string;
+
+  @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.user)
+  request: FriendsEntity[];
+
+  @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.friends)
+  suggest: FriendsEntity[];
+
+  @ManyToMany(() => User,{cascade: true})
+  @JoinTable({ name: 'user-friends' })
+  friends: User[]
 
   @Column({ type: "enum", enum: Role, default: Role.User})
   role: Role;

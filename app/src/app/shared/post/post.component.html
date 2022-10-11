@@ -2,7 +2,7 @@
   <ion-card-header class="post__header">
     <div class="post__header-left">
       <ion-avatar class="post__avatar">
-        <ng-container *ngIf="post.author.avatar">
+        <ng-container *ngIf="!!avatar; else avatarIco">
           <img class="post__img" alt="avatar" src="{{ avatar | url }}" />
         </ng-container>
         <ng-template #avatarIco>
@@ -10,7 +10,7 @@
         </ng-template>
       </ion-avatar>
       <div class="post__header-name">
-        <ion-card-subtitle class="post__subtitle">My Name</ion-card-subtitle>
+        <ion-card-subtitle class="post__subtitle">{{ post.author.firstName }} {{ post.author.lastName }}</ion-card-subtitle>
         <ion-card-subtitle class="post__subtitle">Full Stack Developer</ion-card-subtitle>
       </div>
     </div>

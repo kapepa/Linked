@@ -10,11 +10,14 @@
       <div class="create-publication__grid">
         <div class="create-publication__avatar-g">
           <ion-avatar>
-            <img alt="Silhouette of a person's head" src="../../../assets/images/profile.png" />
+            <img *ngIf="user.avatar; else avatarIco" alt="Silhouette of a person's head" src="{{ user.avatar | url }}" />
+            <ng-template #avatarIco>
+              <ion-icon  class="create-publication__ico" name="person-outline"></ion-icon>
+            </ng-template>
           </ion-avatar>
         </div>
         <div class="create-publication__name-g">
-          <ion-title class="ion-no-padding create-publication__title">My Name</ion-title>
+          <ion-title class="ion-no-padding create-publication__title">{{ user.firstName }} {{user.lastName}}</ion-title>
         </div>
         <div class="create-publication__anyone-g">
           <ion-chip class="ion-no-margin" [outline]="true">

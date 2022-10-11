@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {AuthService} from "../../core/service/auth.service";
 import {Subscription} from "rxjs";
+import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 
 @Component({
   selector: 'app-popover',
@@ -8,8 +9,8 @@ import {Subscription} from "rxjs";
   styleUrls: ['./popover.component.scss'],
 })
 export class PopoverComponent implements OnInit, OnDestroy {
-  userAvatar: string;
-  userAvatarSubscription: Subscription;
+  user: UserJwtDto;
+  userSub: Subscription;
   @Input() closePresentPopover: () => void;
 
   constructor(
@@ -17,14 +18,11 @@ export class PopoverComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => {
-      console.log(avatar)
-      this.userAvatar = avatar
-    })
+    this.userSub = this.authService.getUser.subscribe((user: UserJwtDto) => this.user = user);
   }
 
   ngOnDestroy() {
-    this.userAvatarSubscription.unsubscribe();
+    this.userSub.unsubscribe();
   }
 
   onSignOut(e: Event){
