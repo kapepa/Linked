@@ -48,6 +48,6 @@ export class User {
   @OneToMany(() => Feet, (feet) => feet.author)
   feet: Feet[];
 
-  @CreateDateColumn({ name: 'created_at'})
+  @CreateDateColumn({ select: false, name: 'created_at'})
   created_at: Date;
 }

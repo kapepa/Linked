@@ -29,14 +29,14 @@ export class UsersService {
     return from(this.usersRepository.update({[key]: val}, data));
   }
 
-  createUser(userDto: UsersDto): Observable<any> {
-    return from(this.usersRepository.save(userDto));
-  };
-
   existUser(key: string, val: string): Observable<any> {
     return from(this.usersRepository.findOne({ where:{ [key]: val } })).pipe(
       map((user: UsersDto) => !!user)
     );
+  }
+
+  saveUser(data: UsersDto): Observable<UsersInterface>{
+    return from(this.usersRepository.save(data));
   }
 
   avatarUser(file: Express.Multer.File, user: UsersDto): Observable<{access_token: string}> {

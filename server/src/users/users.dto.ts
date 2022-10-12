@@ -44,4 +44,7 @@ export class UsersDto {
 
   @ApiProperty()
   created_at?: Date;
+
+  iat?: number;
+  exp?: number;
 }
