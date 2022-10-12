@@ -3,10 +3,10 @@ import {FeetInterface} from "../feet/feet.interface";
 import {FriendsInterface} from "../friends/friends.interface";
 
 export class UsersInterface {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   password?: string;
   avatar?: string;
   request?: FriendsInterface[];

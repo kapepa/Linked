@@ -38,7 +38,7 @@ export class AuthService {
         if(exist) throw new HttpException('This email already exists', HttpStatus.CONFLICT)
         return this.hashPassword(body.password).pipe(
           switchMap((password: string) => {
-            return this.usersService.createUser({...body, password}).pipe(
+            return this.usersService.saveUser({...body, password}).pipe(
               map((user: UsersInterface) => user.id ? !!user.id : false)
             )
           })
