@@ -2,11 +2,11 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
-import {DeleteResult, Repository} from "typeorm";
-import {from, map, Observable, of, switchMap, take, tap, toArray,} from "rxjs";
-import {UsersService} from "../users/users.service";
-import {UsersInterface} from "../users/users.interface";
-import {FriendsInterface} from "./friends.interface";
+import { DeleteResult, Repository } from "typeorm";
+import { from, Observable, of, switchMap, tap, toArray } from "rxjs";
+import { UsersService } from "../users/users.service";
+import { UsersInterface } from "../users/users.interface";
+import { FriendsInterface } from "./friends.interface";
 
 @Injectable()
 export class FriendsService {
