@@ -1,9 +1,10 @@
-import {Controller, Get, HttpStatus, Param, Post, Put, Query, Req, UseGuards} from '@nestjs/common';
+import {Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, UseGuards} from '@nestjs/common';
 import {ApiForbiddenResponse, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {Observable, tap} from "rxjs";
 import {FriendsService} from "./friends.service";
 import {FriendsInterface} from "./friends.interface";
+import {DeleteResult} from "typeorm";
 
 @ApiTags('friends')
 @Controller('friends')
@@ -32,10 +33,18 @@ export class FriendsController {
 
   @Put('/confirm/:requestID')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'Confirm successfully  add to friends'})
+  @ApiResponse({ status: 200, description: 'Confirm successfully add to friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Such a friend is already in friends'})
   confirm(@Param('requestID') requestID, @Req() req): Observable<any>{
     return this.friendsService.confirm(requestID, req.user)
   }
 
+  @Delete('/cancel/:requestID')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Cancel to friend'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
+  cancel(@Param('requestID') requestID, @Req() req): Observable<DeleteResult>{
+    return this.friendsService.cancel(requestID, req.user)
+  }
 }

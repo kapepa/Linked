@@ -7,8 +7,6 @@ import {from, map, Observable, of, switchMap, take, tap, toArray,} from "rxjs";
 import {UsersService} from "../users/users.service";
 import {UsersInterface} from "../users/users.interface";
 import {FriendsInterface} from "./friends.interface";
-import {Role} from "../auth/role.enum";
-import {FeetInterface} from "../feet/feet.interface";
 
 @Injectable()
 export class FriendsService {
@@ -73,6 +71,16 @@ export class FriendsService {
         )
       }),
     );
+  }
+
+  cancel(requestID: string, user: UsersDto): Observable<DeleteResult>{
+    return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
+      switchMap((friend: FriendsInterface) => {
+        if(user.id !== friend.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
+
+        return this.deleteRequest(requestID);
+      })
+    )
   }
 
   deleteRequest(requestID: string): Observable<DeleteResult>{
