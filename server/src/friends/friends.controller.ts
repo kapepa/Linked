@@ -1,10 +1,10 @@
-import {Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, UseGuards} from '@nestjs/common';
-import {ApiForbiddenResponse, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {Observable, tap} from "rxjs";
-import {FriendsService} from "./friends.service";
-import {FriendsInterface} from "./friends.interface";
-import {DeleteResult} from "typeorm";
+import { Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { ApiForbiddenResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { Observable } from "rxjs";
+import { FriendsService } from "./friends.service";
+import { FriendsInterface } from "./friends.interface";
+import { DeleteResult } from "typeorm";
 
 @ApiTags('friends')
 @Controller('friends')
