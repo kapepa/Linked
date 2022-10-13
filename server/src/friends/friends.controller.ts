@@ -31,6 +31,14 @@ export class FriendsController {
     return this.friendsService.suggest(req.user.id)
   }
 
+  @Get('/offer')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'My offer on friends'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
+  offer(@Req() req): Observable<FriendsInterface[]>{
+    return this.friendsService.offer(req.user)
+  }
+
   @Put('/confirm/:requestID')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Confirm successfully add to friends'})
@@ -47,4 +55,13 @@ export class FriendsController {
   cancel(@Param('requestID') requestID, @Req() req): Observable<DeleteResult>{
     return this.friendsService.cancel(requestID, req.user)
   }
+
+  @Delete('/delete/:friendID')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Cancel to friend'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
+  delFriend(@Param('friendID') friendID, @Req() req): Observable<any> {
+    return this.friendsService.delFriend(friendID, req.user);
+  }
+
 }
