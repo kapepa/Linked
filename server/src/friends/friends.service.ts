@@ -1,9 +1,10 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
 import { DeleteResult, Repository } from "typeorm";
 import { from, Observable, of, switchMap, tap, toArray } from "rxjs";
+import { filter } from 'rxjs/operators';
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { FriendsInterface } from "./friends.interface";
@@ -57,7 +58,7 @@ export class FriendsService {
   confirm(requestID: string, user: UsersDto): Observable<any>{
     return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
       switchMap((friend: FriendsInterface) => {
-        if(user.id !== friend.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
+        if(user.id !== friend.friends.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
 
         return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(
           switchMap((profile: UsersInterface ) => {
@@ -73,12 +74,36 @@ export class FriendsService {
     );
   }
 
+  offer(user: UsersDto): Observable<FriendsInterface[]> {
+    return this.usersService.findOne('id', user.id ,{relations: ['request']}).pipe(
+      switchMap(( user: UsersInterface ) => {
+        return of(user.request);
+      })
+    )
+  }
+
   cancel(requestID: string, user: UsersDto): Observable<DeleteResult>{
     return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
       switchMap((friend: FriendsInterface) => {
         if(user.id !== friend.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
-
         return this.deleteRequest(requestID);
+      })
+    )
+  }
+
+  delFriend(friendID: string, user: UsersDto): Observable<UsersInterface[]> {
+    return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
+      switchMap((profile: UsersInterface) => {
+        if(!profile.friends || !profile.friends.length) return of([] as UsersInterface[]);
+        return from(profile.friends).pipe(
+          filter((person: UsersInterface) => person.id !== friendID),
+          toArray(),
+          switchMap(( friendList: UsersInterface[] ) => {
+            return this.usersService.saveUser({ ...user, friends: friendList }).pipe(
+              switchMap(() => of(friendList)),
+            );
+          }),
+        )
       })
     )
   }
