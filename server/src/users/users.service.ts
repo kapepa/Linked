@@ -1,5 +1,5 @@
 import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
-import {from, map, Observable, of, switchMap, tap} from "rxjs";
+import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -7,6 +7,8 @@ import { UsersDto } from "./users.dto";
 import { UsersInterface } from "./users.interface";
 import { FileService } from "../file/file.service";
 import { AuthService } from "../auth/auth.service";
+import { filter } from "rxjs/operators";
+import {FriendsInterface} from "../friends/friends.interface";
 
 @Injectable()
 export class UsersService {
@@ -37,6 +39,32 @@ export class UsersService {
 
   saveUser(data: UsersDto): Observable<UsersInterface>{
     return from(this.usersRepository.save(data));
+  }
+
+  person(personID: string, user: UsersDto): Observable<UsersInterface> {
+    return this.findOne('id', personID, { relations: ['request', 'friends', 'suggest', 'suggest.user', 'suggest.friends', 'request.user', 'request.friends'] }).pipe(
+      switchMap((person: UsersInterface) => {
+        return from(person.friends).pipe(
+          filter((friend: UsersInterface) => friend.id === user.id),
+          toArray(),
+          switchMap((friends: UsersInterface[]) => {
+            return from(person.request).pipe(
+              filter((request: FriendsInterface) => (request?.user.id === user?.id || request.friends.id === user.id) ),
+              toArray(),
+              switchMap((request: FriendsInterface[]) => {
+                return from(person.suggest).pipe(
+                  filter((suggest: FriendsInterface) => (suggest.user.id === user.id || suggest.friends.id === user.id)),
+                  toArray(),
+                  switchMap((suggest: FriendsInterface[]) => {
+                    return of({...person, friends, request, suggest })
+                  })
+                )
+              })
+            )
+          })
+        )
+      })
+    )
   }
 
   avatarUser(file: Express.Multer.File, user: UsersDto): Observable<{access_token: string}> {

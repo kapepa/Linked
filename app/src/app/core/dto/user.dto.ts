@@ -1,14 +1,15 @@
 import {FriendDto} from "./friend.dto";
-import {Role} from "./user.dto";
 
-export class UserJwtDto {
+export type Role = 'admin' | 'ghost' | 'user';
+
+export class UserDto {
   id: string
   firstName: string
   lastName: string
   avatar: string
-  request?: any[]
-  suggest?: any[]
-  friends?: any[]
+  request?: FriendDto[]
+  suggest?: FriendDto[]
+  friends?: UserDto[]
   role: Role
   exp: number
   iat: number

@@ -1,0 +1,11 @@
+.person{
+  height: 100%;
+  padding-top: 20px;
+  &__sheet{
+    max-width: 800px;
+    padding: 20px;
+    border: 1px solid rgba(0,0,0, .2);
+    border-radius: 5px;
+    margin: 0 auto;
+  }
+}
