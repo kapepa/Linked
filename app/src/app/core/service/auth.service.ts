@@ -5,9 +5,10 @@ import {Observable, BehaviorSubject, throwError, of, from} from "rxjs";
 import {catchError, switchMap, take, tap} from "rxjs/operators";
 import {StorageService} from "./storage.service";
 import jwt_decode from "jwt-decode";
-import {Role, UserJwtDto} from "../dto/user-jwt.dto";
+import {UserJwtDto} from "../dto/user-jwt.dto";
 import {Router} from "@angular/router";
 import {HttpService} from "./http.service";
+import {Role} from "../dto/user.dto";
 
 const httpOptions = {
   headers: new HttpHeaders({
