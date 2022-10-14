@@ -33,6 +33,7 @@ export class FriendsService {
         return this.findOne({where: { 'friends': {'id': friendsID} }, relations: ['friends'] }).pipe(
           switchMap(( existFriends: FriendsInterface ) => {
             if(!!existFriends) throw new HttpException('Your request already exists', HttpStatus.BAD_REQUEST)
+
             return from(this.friendsRepository.save({ user: myUser, friends: friend }));
           })
         )
@@ -56,23 +57,33 @@ export class FriendsService {
   }
 
   confirm(requestID: string, user: UsersDto): Observable<UsersInterface>{
-    return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
-      switchMap((friend: FriendsInterface) => {
-        console.log(friend)
-        if(user.id !== friend.friends.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
+    return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
+      switchMap((person: UsersInterface) => {
+        return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
+          switchMap((friend: FriendsInterface) => {
+            if(user.id !== friend.friends.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
 
-        return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(
-          switchMap((profile: UsersInterface ) => {
-            if(profile.friends.some( prof => prof.id === friend.user.id)) throw new HttpException('Such a friend is already in friends', HttpStatus.BAD_REQUEST)
-            profile.friends.push({id: friend.user.id} as UsersInterface)
+            return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(
+              switchMap((profile: UsersInterface ) => {
+                if(profile.friends.some( prof => prof.id === friend.user.id)) throw new HttpException('Such a friend is already in friends', HttpStatus.BAD_REQUEST)
+                profile.friends.push({id: friend.friends.id} as UsersInterface)
+                person.friends.push(profile);
 
-            return this.usersService.saveUser(profile).pipe(
-              tap(this.deleteRequest(requestID))
+                return this.usersService.saveUser(person).pipe(
+                  switchMap(() => {
+                    return this.usersService.saveUser(profile).pipe(
+                      tap(this.deleteRequest(requestID))
+                    )
+                  })
+                )
+              })
             )
-          })
-        )
-      }),
-    );
+          }),
+        );
+      })
+    )
+
+
   }
 
   offer(user: UsersDto): Observable<FriendsInterface[]> {
@@ -93,17 +104,31 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, user: UsersDto): Observable<UsersInterface[]> {
-    return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
-      switchMap((profile: UsersInterface) => {
-        if(!profile.friends || !profile.friends.length) return of([] as UsersInterface[]);
-        return from(profile.friends).pipe(
-          filter((person: UsersInterface) => person.id !== friendID),
+    return this.usersService.findOne('id', friendID, { relations: ['friends'] }).pipe(
+      switchMap((person: UsersInterface) => {
+        return from(person.friends).pipe(
+          filter((friend: UsersInterface) => friend.id !== user.id),
           toArray(),
-          switchMap(( friendList: UsersInterface[] ) => {
-            return this.usersService.saveUser({ ...user, friends: friendList }).pipe(
-              switchMap(() => of(friendList)),
-            );
-          }),
+          switchMap(( personFriend: UsersInterface[]) => {
+            return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
+              switchMap((profile: UsersInterface) => {
+                if(!profile.friends || !profile.friends.length) return of([] as UsersInterface[]);
+                return from(profile.friends).pipe(
+                  filter((person: UsersInterface) => person.id !== friendID),
+                  toArray(),
+                  switchMap(( friendList: UsersInterface[] ) => {
+                    return this.usersService.saveUser({...person, friends: personFriend}).pipe(
+                      switchMap(() => {
+                        return this.usersService.saveUser({ ...user, friends: friendList }).pipe(
+                          switchMap(() => of(friendList)),
+                        );
+                      })
+                    )
+                  }),
+                )
+              })
+            )
+          })
         )
       })
     )

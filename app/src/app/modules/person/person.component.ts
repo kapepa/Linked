@@ -27,7 +27,7 @@ export class PersonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person; console.log(person)});
+    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person});
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
@@ -49,11 +49,10 @@ export class PersonComponent implements OnInit, OnDestroy {
         return this.personService.confirmFriends(request.id)
       })
     ).subscribe(() => {})
-    // this.personService.confirmFriends(this.person.id).subscribe(() => {});
   }
 
-  onCancel() {
-
+  onDelete() {
+    this.personService.deleteFriend(this.person.id).subscribe(() => {})
   }
 
 }

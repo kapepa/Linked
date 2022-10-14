@@ -33,7 +33,7 @@
               <ion-button [disabled]="true" class="person__btn" shape="round">Pending</ion-button>
             </ng-template>
             <ng-template [ngIf]="!!person.friends.length">
-              <ion-button (click)="onCancel()" class="person__btn" shape="round">Cancel</ion-button>
+              <ion-button (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
             </ng-template>
 
             <ion-button class="person__btn" fill="outline"><ion-icon slot="start" name="lock-closed"></ion-icon>Message</ion-button>
