@@ -56,7 +56,6 @@ export class UsersService {
                   filter((suggest: FriendsInterface) => (suggest.user.id === user.id || suggest.friends.id === user.id)),
                   toArray(),
                   switchMap((suggest: FriendsInterface[]) => {
-                    console.log(person)
                     return of({...person, friends, request, suggest })
                   })
                 )

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {HttpService} from "./http.service";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {catchError, take, tap} from "rxjs/operators";
 import {FriendsInterface} from "../interface/friends.interface";
@@ -35,7 +35,7 @@ export class PersonService {
     return this.http.post<FriendsInterface>(`${this.httpUrl}/api/friends/add/${friendID}`,{}).pipe(
       take(1),
       tap((friends: FriendsInterface) => {
-        this.person.request.push(friends);
+        this.person.suggest.push(friends);
         this.person$.next(this.person);
       }),
       catchError(this.httpService.handleError),
@@ -48,6 +48,17 @@ export class PersonService {
       tap((person: UserInterface) => {
         this.person.request = []
         this.person.friends.push(person);
+        this.person$.next(this.person);
+      }),
+      catchError(this.httpService.handleError)
+    )
+  }
+
+  deleteFriend(friendID: string): Observable<UserInterface[]>{
+    return this.http.delete<UserInterface[]>(`${this.httpUrl}/api/friends/delete/${friendID}`).pipe(
+      take(1),
+      tap((friends: UserInterface[]) => {
+        this.person.friends = friends
         this.person$.next(this.person);
       }),
       catchError(this.httpService.handleError)
