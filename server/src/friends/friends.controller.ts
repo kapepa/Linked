@@ -5,6 +5,7 @@ import { Observable } from "rxjs";
 import { FriendsService } from "./friends.service";
 import { FriendsInterface } from "./friends.interface";
 import { DeleteResult } from "typeorm";
+import {UsersInterface} from "../users/users.interface";
 
 @ApiTags('friends')
 @Controller('friends')
@@ -44,7 +45,7 @@ export class FriendsController {
   @ApiResponse({ status: 200, description: 'Confirm successfully add to friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Such a friend is already in friends'})
-  confirm(@Param('requestID') requestID, @Req() req): Observable<any>{
+  confirm(@Param('requestID') requestID, @Req() req): Observable<UsersInterface>{
     return this.friendsService.confirm(requestID, req.user)
   }
 

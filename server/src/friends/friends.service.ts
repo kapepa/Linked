@@ -55,9 +55,10 @@ export class FriendsService {
     );
   }
 
-  confirm(requestID: string, user: UsersDto): Observable<any>{
+  confirm(requestID: string, user: UsersDto): Observable<UsersInterface>{
     return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
       switchMap((friend: FriendsInterface) => {
+        console.log(friend)
         if(user.id !== friend.friends.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
 
         return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(

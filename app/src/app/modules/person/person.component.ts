@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {PersonService} from "../../core/service/person.service";
 import {UserInterface} from "../../core/interface/user.interface";
-import {BehaviorSubject, Subscription} from "rxjs";
+import {BehaviorSubject, from, of, Subscription} from "rxjs";
 import {person} from "ionicons/icons";
 import {AuthService} from "../../core/service/auth.service";
 import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 import {Event} from "@angular/router";
+import {filter, switchMap} from "rxjs/operators";
+import {FriendsInterface} from "../../core/interface/friends.interface";
 
 @Component({
   selector: 'app-person',
@@ -25,7 +27,7 @@ export class PersonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => this.person = person);
+    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person; console.log(person)});
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
@@ -36,6 +38,18 @@ export class PersonComponent implements OnInit, OnDestroy {
 
   onFriends() {
     this.personService.addFriends(this.person.id).subscribe(() => {})
+  }
+
+  onConfirm() {
+    from(this.person.request).pipe(
+      filter((request: FriendsInterface ) => {
+        return request.friends.id === this.user.id || request.user.id === this.user.id
+      }),
+      switchMap((request: FriendsInterface) => {
+        return this.personService.confirmFriends(request.id)
+      })
+    ).subscribe(() => {})
+    // this.personService.confirmFriends(this.person.id).subscribe(() => {});
   }
 
   onCancel() {
