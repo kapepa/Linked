@@ -2,24 +2,44 @@
   <ion-row>
     <ion-row class="nav-main__actions">
       <ion-col class="nav-main__cell" size="auto">
-        <ion-icon name="home" class="nav-main__ico"></ion-icon>
-        <div class="nav-main__text">Home</div>
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="home" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Home</div>
+          </div>
+        </ion-router-link>
       </ion-col>
       <ion-col class="nav-main__cell" size="auto">
-        <ion-icon name="people" class="nav-main__ico"></ion-icon>
-        <div class="nav-main__text">Network</div>
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="people" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Network</div>
+          </div>
+        </ion-router-link>
       </ion-col>
       <ion-col class="nav-main__cell" size="auto">
-        <ion-icon name="briefcase" class="nav-main__ico"></ion-icon>
-        <div class="nav-main__text">Jobs</div>
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="briefcase" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Jobs</div>
+          </div>
+        </ion-router-link>
       </ion-col>
       <ion-col class="nav-main__cell" size="auto">
-        <ion-icon name="chatbox-ellipses" class="nav-main__ico"></ion-icon>
-        <div class="nav-main__text">Message</div>
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="chatbox-ellipses" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Message</div>
+          </div>
+        </ion-router-link>
       </ion-col>
       <ion-col class="nav-main__cell" size="auto">
-        <ion-icon name="notifications" class="nav-main__ico"></ion-icon>
-        <div class="nav-main__text">Notification</div>
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="notifications" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Notification</div>
+          </div>
+        </ion-router-link>
       </ion-col>
     </ion-row>
     <ion-col class="nav-main__cell" size="auto" #popupAnchor (click)="presentPopover($event)">

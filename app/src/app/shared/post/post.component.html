@@ -1,19 +1,21 @@
 <ion-card class="post">
   <ion-card-header class="post__header">
-    <div class="post__header-left">
-      <ion-avatar class="post__avatar">
-        <ng-container *ngIf="!!avatar; else avatarIco">
-          <img class="post__img" alt="avatar" src="{{ avatar | url }}" />
-        </ng-container>
-        <ng-template #avatarIco>
-          <ion-icon  class="post__img" name="person-outline"></ion-icon>
-        </ng-template>
-      </ion-avatar>
-      <div class="post__header-name">
-        <ion-card-subtitle class="post__subtitle">{{ post.author.firstName }} {{ post.author.lastName }}</ion-card-subtitle>
-        <ion-card-subtitle class="post__subtitle">Full Stack Developer</ion-card-subtitle>
-      </div>
-    </div>
+    <ion-router-link  [routerLink]="userID === post.author.id ? null :['/person', post.author.id]" class="post__header-left">
+      <ion-row style="display: flex; align-items: center">
+        <ion-avatar class="post__avatar">
+          <ng-container *ngIf="!!avatar; else avatarIco">
+            <img class="post__img" alt="avatar" src="{{ avatar | url }}" />
+          </ng-container>
+          <ng-template #avatarIco>
+            <ion-icon  class="post__img" name="person-outline"></ion-icon>
+          </ng-template>
+        </ion-avatar>
+        <div class="post__header-name">
+          <ion-card-subtitle class="post__subtitle">{{ post.author.firstName }} {{ post.author.lastName }}</ion-card-subtitle>
+          <ion-card-subtitle class="post__subtitle">Full Stack Developer</ion-card-subtitle>
+        </div>
+      </ion-row>
+    </ion-router-link>
     <div class="post__header-right">
       <ng-container *ngIf="userID === post.author.id">
         <ion-button (click)="onEdit($event)" class="post__btn-icon" title="Edit" fill="clear">

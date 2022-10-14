@@ -5,7 +5,39 @@
 <ion-content [fullscreen]="true">
   <div class="container person">
     <div class="person__sheet">
+      <div class="person__bg-header"></div>
+      <div class="person__content">
+        <div class="person__avatar">
+          <ng-container *ngIf="!!person.avatar; else avatarIco">
+            <img class="person__img" alt="avatar" src="{{ person.avatar | url }}" />
+          </ng-container>
+          <ng-template #avatarIco>
+            <ion-icon  class="person__img" name="person-outline"></ion-icon>
+          </ng-template>
+        </div>
+        <div class="person__basement">
+          <div class="person__information">
+            <ion-text>
+              <h5 class="person__h">{{person.firstName}} {{person.lastName}}</h5>
+              <span class="person__span">Full stack developer</span>
+            </ion-text>
+          </div>
+          <div class="person__cooperation">
+            <ng-template [ngIf]="(!person.suggest.length && !person.request.length)">
+              <ion-button (click)="onFriends()" class="person__btn" shape="round">Connect</ion-button>
+            </ng-template>
+            <ng-template [ngIf]="person.suggest.length">
+              <ion-button [disabled]="true" class="person__btn" shape="round">Pending</ion-button>
+            </ng-template>
+            <ng-template [ngIf]="person.friends.length">
+              <ion-button (click)="onCancel()" [disabled]="true" class="person__btn" shape="round">Cancel</ion-button>
+            </ng-template>
 
+            <ion-button class="person__btn" fill="outline"><ion-icon slot="start" name="lock-closed"></ion-icon>Message</ion-button>
+            <ion-button class="person__btn" shape="round">More</ion-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ion-content>
