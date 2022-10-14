@@ -42,6 +42,18 @@ export class PersonService {
     )
   }
 
+  confirmFriends(friendID: string): Observable<UserInterface>{
+    return this.http.put<UserInterface>(`${this.httpUrl}/api/friends/confirm/${friendID}`,{}).pipe(
+      take(1),
+      tap((person: UserInterface) => {
+        this.person.request = []
+        this.person.friends.push(person);
+        this.person$.next(this.person);
+      }),
+      catchError(this.httpService.handleError)
+    )
+  }
+
   get personProfile() {
     return this.person$.asObservable()
   }
