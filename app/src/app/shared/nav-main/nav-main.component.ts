@@ -2,7 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, OnDestroy } fr
 import { PopoverController } from "@ionic/angular";
 import { PopoverComponent } from "../popover/popover.component";
 import { AuthService } from "../../core/service/auth.service";
-import {Subscription} from "rxjs";
+import { Subscription } from "rxjs";
+import {PopupFriendsComponent} from "../popup-friends/popup-friends.component";
 
 @Component({
   selector: 'app-nav-main',
@@ -11,8 +12,9 @@ import {Subscription} from "rxjs";
 })
 export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
   userAvatar: string;
-  userAvatarSubscription: Subscription;
+  userAvatarSub: Subscription;
   @ViewChild('popupAnchor') popup: ElementRef;
+  @ViewChild('popupFriends') friends: ElementRef;
 
   constructor(
     public popoverController: PopoverController,
@@ -20,28 +22,39 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
+    this.userAvatarSub = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
   }
 
   ngAfterViewInit() {
     // this.popup['el'].click()
+    this.friends.nativeElement.click()
   }
 
   ngOnDestroy() {
-    this.userAvatarSubscription.unsubscribe();
+    this.userAvatarSub.unsubscribe();
   }
 
   async presentPopover(e: Event) {
     const popover = await this.popoverController.create({
       component: PopoverComponent,
       showBackdrop: false,
-      componentProps: {closePresentPopover: () => popover.dismiss(),},
+      componentProps: {closePresentPopover: () => popover.dismiss() },
       event: e,
     });
 
     await popover.present();
+  }
 
-    const { role } = await popover.onDidDismiss();
-    // this.roleMsg = `Popover dismissed with role: ${role}`;
+  async onFriends(e: Event) {
+    e.preventDefault();
+    const popover = await this.popoverController.create({
+      component: PopupFriendsComponent,
+      showBackdrop: false,
+      componentProps: { closePopupFriends: () => popover.dismiss() },
+      event: e,
+      side: 'bottom',
+    });
+
+    await popover.present();
   }
 }

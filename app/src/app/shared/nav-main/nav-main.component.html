@@ -10,8 +10,9 @@
         </ion-router-link>
       </ion-col>
       <ion-col class="nav-main__cell" size="auto">
-        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+        <ion-router-link #popupFriends (click)="onFriends($event)" color="medium" class="nav-main__link">
           <div class="nav-main__link-col">
+            <ion-badge class="nav-main__badge" slot="start">11</ion-badge>
             <ion-icon name="people" class="nav-main__ico"></ion-icon>
             <div class="nav-main__text">Network</div>
           </div>
