@@ -4,6 +4,7 @@ import { NavMainComponent } from "./nav-main.component";
 import { IonicModule } from "@ionic/angular";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { RouterModule } from "@angular/router";
+import { PopupFriendsModule } from "../popup-friends/popup-friends.module";
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { RouterModule } from "@angular/router";
     CommonModule,
     IonicModule,
     RouterModule,
+    PopupFriendsModule,
   ]
 })
 export class NavMainModule { }

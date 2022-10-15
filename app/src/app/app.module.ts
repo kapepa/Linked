@@ -15,6 +15,7 @@ import { DirectiveModule } from "./core/directive/directive.module";
 import { PipeModule } from "./core/pipe/pipe.module";
 import { PopoverModule } from "./shared/popover/popover.module";
 import { CreatePublicationModule } from "./shared/create-publication/create-publication.module";
+import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import { CreatePublicationModule } from "./shared/create-publication/create-publ
     DirectiveModule,
     AppRoutingModule,
     HttpClientModule,
+    PopupFriendsModule,
     ReactiveFormsModule,
     CreatePublicationModule,
     IonicModule.forRoot(),
