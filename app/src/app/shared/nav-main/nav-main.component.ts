@@ -4,6 +4,8 @@ import { PopoverComponent } from "../popover/popover.component";
 import { AuthService } from "../../core/service/auth.service";
 import { Subscription } from "rxjs";
 import {PopupFriendsComponent} from "../popup-friends/popup-friends.component";
+import {UserService} from "../../core/service/user.service";
+import {UserInterface} from "../../core/interface/user.interface";
 
 @Component({
   selector: 'app-nav-main',
@@ -11,17 +13,23 @@ import {PopupFriendsComponent} from "../popup-friends/popup-friends.component";
   styleUrls: ['./nav-main.component.scss'],
 })
 export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
+  user: UserInterface;
+  userSub: Subscription;
+
   userAvatar: string;
   userAvatarSub: Subscription;
+
   @ViewChild('popupAnchor') popup: ElementRef;
   @ViewChild('popupFriends') friends: ElementRef;
 
   constructor(
     public popoverController: PopoverController,
     private authService: AuthService,
+    private userService: UserService,
   ) { }
 
   ngOnInit() {
+    this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
     this.userAvatarSub = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
   }
 
@@ -32,6 +40,7 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.userAvatarSub.unsubscribe();
+    this.userSub.unsubscribe()
   }
 
   async presentPopover(e: Event) {
