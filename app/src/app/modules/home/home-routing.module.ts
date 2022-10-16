@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from "./home.component";
 import { AuthGuard } from "../../core/guard/auth.guard";
 import { PostsResolver } from "../../core/resolver/posts.resolver";
+import { UserResolver } from "../../core/resolver/user.resolver";
 
 const routes: Routes = [
   {
@@ -11,6 +12,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       hero: PostsResolver,
+      user: UserResolver,
     }
   }
 ];

@@ -46,11 +46,20 @@ export class PersonService {
     return this.http.put<UserInterface>(`${this.httpUrl}/api/friends/confirm/${friendID}`,{}).pipe(
       take(1),
       tap((person: UserInterface) => {
-        this.person.request = []
-        this.person.friends.push(person);
-        this.person$.next(this.person);
+        if(!!this.person && this.person.request.some((request: FriendsInterface) => request.id === friendID)) {
+          this.person.request = [];
+          this.person.friends.push(person);
+          this.person$.next(this.person);
+        }
       }),
       catchError(this.httpService.handleError)
+    )
+  }
+
+  cancelFriend(friendID: string): Observable<any> {
+    return this.http.delete(`${this.httpUrl}/api/friends/cancel/${friendID}`).pipe(
+      take(1),
+      catchError(this.httpService.handleError),
     )
   }
 
@@ -58,7 +67,7 @@ export class PersonService {
     return this.http.delete<UserInterface[]>(`${this.httpUrl}/api/friends/delete/${friendID}`).pipe(
       take(1),
       tap((friends: UserInterface[]) => {
-        this.person.friends = friends
+        this.person.friends = friends;
         this.person$.next(this.person);
       }),
       catchError(this.httpService.handleError)

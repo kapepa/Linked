@@ -1,14 +1,51 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {UserInterface} from "../../core/interface/user.interface";
+import {Observable, Subscription} from "rxjs";
+import {UserService} from "../../core/service/user.service";
+import {FriendsInterface} from "../../core/interface/friends.interface";
+import {PersonService} from "../../core/service/person.service";
 
 @Component({
   selector: 'app-popup-friends',
   templateUrl: './popup-friends.component.html',
   styleUrls: ['./popup-friends.component.scss'],
 })
-export class PopupFriendsComponent implements OnInit {
+export class PopupFriendsComponent implements OnInit, OnDestroy {
+  user: UserInterface;
+  userSub: Subscription;
+
   @Input('closePopupFriends') closePopupFriends: () => void;
-  constructor() { }
 
-  ngOnInit() {}
+  constructor(
+    private userService: UserService,
+    private personService: PersonService,
+  ) { }
 
+  ngOnInit() {
+    this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
+  }
+
+  ngOnDestroy() {
+    this.userSub.unsubscribe();
+  }
+
+  onAccept(request: FriendsInterface, index: number) {
+    this.personService.confirmFriends(request.id).subscribe((user: UserInterface) => {
+      this.userService.exceptRequest(index).subscribe(() => {
+        this.closePopupFriends();
+      });
+    })
+  }
+
+  onDecline(request: FriendsInterface ,index: number) {
+    this.personService.cancelFriend(request.id).subscribe(() => {
+      this.userService.exceptRequest(index).subscribe(() => {
+        this.closePopupFriends();
+      });
+    })
+  }
+
+  get getSuggest(): boolean {
+    return !!this.user.suggest.length;
+  }
 }

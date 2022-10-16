@@ -66,7 +66,7 @@ export class FriendsService {
             return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(
               switchMap((profile: UsersInterface ) => {
                 if(profile.friends.some( prof => prof.id === friend.user.id)) throw new HttpException('Such a friend is already in friends', HttpStatus.BAD_REQUEST)
-                profile.friends.push({id: friend.friends.id} as UsersInterface)
+                profile.friends.push({id: friend.friends.id} as UsersInterface);
                 person.friends.push(profile);
 
                 return this.usersService.saveUser(person).pipe(
@@ -97,7 +97,7 @@ export class FriendsService {
   cancel(requestID: string, user: UsersDto): Observable<DeleteResult>{
     return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
       switchMap((friend: FriendsInterface) => {
-        if(user.id !== friend.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
+        if(!(user.id === friend.user.id || user.id === friend.friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
         return this.deleteRequest(requestID);
       })
     )

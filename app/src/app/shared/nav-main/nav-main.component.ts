@@ -27,7 +27,7 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     // this.popup['el'].click()
-    this.friends.nativeElement.click()
+    // this.friends.nativeElement.click()
   }
 
   ngOnDestroy() {
