@@ -25,6 +25,14 @@ export class UsersController {
     return this.usersService.avatarUser(file, req.user);
   }
 
+  @Get('')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Get own profile'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with get profile'})
+  getUser(@Req() req): Observable<UsersInterface> {
+    return this.usersService.findOne('id', req.user.id, { relations: ['suggest', 'suggest.user'] });
+  }
+
   @Get('person/:id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Cancel to friend'})

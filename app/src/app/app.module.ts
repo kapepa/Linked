@@ -16,11 +16,13 @@ import { PipeModule } from "./core/pipe/pipe.module";
 import { PopoverModule } from "./shared/popover/popover.module";
 import { CreatePublicationModule } from "./shared/create-publication/create-publication.module";
 import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module";
+import { PersonModule } from "./modules/person/person.module";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     PipeModule,
+    PersonModule,
     CommonModule,
     BrowserModule,
     PopoverModule,
