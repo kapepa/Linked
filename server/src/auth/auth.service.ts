@@ -51,7 +51,7 @@ export class AuthService {
     return user.pipe(
       switchMap((user: any) => {
         let { firstName, lastName, id, role, avatar } = user;
-        return of({access_token: this.jwtService.sign({firstName, lastName, id, role, avatar})})
+        return of({access_token: this.jwtService.sign({firstName, lastName, id, role, avatar})});
       })
     )
   }
