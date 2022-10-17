@@ -40,7 +40,7 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.userAvatarSub.unsubscribe();
-    this.userSub.unsubscribe()
+    this.userSub.unsubscribe();
   }
 
   async presentPopover(e: Event) {
