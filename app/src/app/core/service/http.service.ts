@@ -3,28 +3,34 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {BehaviorSubject, throwError} from "rxjs";
 import {PopoverController} from "@ionic/angular";
 import {PopupNotificationComponent} from "../../shared/popup-notification/popup-notification.component";
+import {tap} from "rxjs/operators";
+import {error} from "protractor";
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
-  error: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  isError$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   constructor(
     public popoverController: PopoverController,
   ) {
-    this.error.subscribe(async (error: string) => {
-      if(!error) await this.presentPopover(error);
+    this.isError$.subscribe(async (error: string) => {
+      if(!!error) await this.presentPopover(error);
     })
   }
 
-  handleError(error: HttpErrorResponse) {
+  handleErrorFn(error: HttpErrorResponse) {
     if (error.status === 0) {
       console.error('An error occurred:', error.error);
     } else {
-      this.error.next(error.error.message);
+      this.isError$.next(error.error.message);
     }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
+    return throwError(() => new Error('Something bad happened; please try again later.'))
+  }
+
+  get handleError () {
+    return this.handleErrorFn.bind(this);
   }
 
   async presentPopover(error: string): Promise<void> {
@@ -35,7 +41,7 @@ export class HttpService {
         closePopupNotification: () => popover.dismiss(),
         titleColor: 'red',
         title: 'Error',
-        error: 'asdasdasd',
+        error,
       }
     });
 

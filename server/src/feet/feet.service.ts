@@ -33,7 +33,6 @@ export class FeetService {
 
   // updateFeet(id: string, feet: FeetDto): Observable<UpdateResult> {
   updateFeet(id: string, feet: FeetDto): Observable<FeetInterface> {
-    if(!!id) throw new HttpException('Test Forbidden', HttpStatus.FORBIDDEN);
     return from(this.usersRepository.update({ id }, feet )).pipe(
       switchMap(() => this.getFeet(id)),
       catchError(err => { throw new HttpException('Something went wrong.', HttpStatus.BAD_REQUEST)})
