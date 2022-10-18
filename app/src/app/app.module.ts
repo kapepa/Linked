@@ -17,6 +17,7 @@ import { PopoverModule } from "./shared/popover/popover.module";
 import { CreatePublicationModule } from "./shared/create-publication/create-publication.module";
 import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module";
 import { PersonModule } from "./modules/person/person.module";
+import { PopupNotificationModule } from "./shared/popup-notification/popup-notification.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { PersonModule } from "./modules/person/person.module";
     HttpClientModule,
     PopupFriendsModule,
     ReactiveFormsModule,
+    PopupNotificationModule,
     CreatePublicationModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
