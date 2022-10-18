@@ -18,6 +18,7 @@ import { CreatePublicationModule } from "./shared/create-publication/create-publ
 import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module";
 import { PersonModule } from "./modules/person/person.module";
 import { PopupNotificationModule } from "./shared/popup-notification/popup-notification.module";
+import {HttpService} from "./core/service/http.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +39,7 @@ import { PopupNotificationModule } from "./shared/popup-notification/popup-notif
     IonicStorageModule.forRoot(),
   ],
   providers: [
+    HttpService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true, },
   ],

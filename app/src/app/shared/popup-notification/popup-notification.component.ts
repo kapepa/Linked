@@ -19,7 +19,7 @@ export class PopupNotificationComponent implements OnInit {
 
   onClose(e: Event) {
     let target = e.target as HTMLElement;
-    if(target.classList.contains('popup-notification__title') || target.classList.contains('popup-notification__btn')){
+    if(target.classList.contains('popup-notification__close') || target.classList.contains('popup-notification__btn')){
       this.closePopupNotification();
     }
   }
