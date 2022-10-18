@@ -50,7 +50,7 @@ export class PostService {
     return this.http.patch(`${this.configUrl}/api/feet/update/${id}`, body).pipe(
       take(1),
       tap((post: PostInterface) => {
-        this.posts.splice(index,1, post);
+        this.posts.splice(index, 1, {...this.posts[index], ...post})
         this.posts$.next(this.posts);
       }),
       catchError(this.httpService.handleError)

@@ -72,10 +72,19 @@ cdk-virtual-scroll-viewport {
 }
 
 .new-publications__create{
-  --width: 100%;
+  --min-width: 320px;
   --max-width: 520px;
+  --width: 100%;
   border-radius: 20px;
 }
+
+.popup-notification__popover {
+  --min-width: 320px;
+  --max-width: 440px;
+  --width: 100%;
+}
+
+
 
 @media screen and (max-width: 992px){
   .container{
