@@ -3,8 +3,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {BehaviorSubject, throwError} from "rxjs";
 import {PopoverController} from "@ionic/angular";
 import {PopupNotificationComponent} from "../../shared/popup-notification/popup-notification.component";
-import {tap} from "rxjs/operators";
-import {error} from "protractor";
 
 @Injectable({
   providedIn: 'root'
