@@ -26,7 +26,7 @@ export class HttpService {
     } else {
       this.isError$.next(error.error.message);
     }
-    return throwError(() => new Error('Something bad happened; please try again later.'))
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 
   get handleError () {
