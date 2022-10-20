@@ -41,6 +41,24 @@ describe('FriendsController', () => {
       let compileAsk = {...friends, user: user as UsersInterface, friends: {id: friendsID} as UsersInterface}
       mocFriendsService.friends.push(compileAsk);
       return compileAsk
+    }),
+    suggest: jest.fn().mockImplementation((userID: string) => {
+      friends.user = { id: 'friendID' } as UsersInterface;
+      user.suggest.push(friends);
+      return user.suggest;
+    }),
+    offer: jest.fn().mockImplementation(( user: UsersDto ) => {
+      user.request.push(friends);
+      return user.request;
+    }),
+    confirm: jest.fn().mockImplementation((requestID: string, user: UsersDto ) => {
+      let friend = Object.assign(user, {id: 'friendID', firstName: 'friendName', friends: [user]} as UsersInterface);
+      user.friends.push(friend);
+      return Object.assign(user, {id: 'friendID', firstName: 'friendName', friends: [user]} as UsersInterface);
+    }),
+    cancel: jest.fn().mockImplementation((friendID: string, myProfile: UsersDto) => {
+      mocFriendsService.friends.push( {...friends, friends: user } as FriendsInterface)
+      return
     })
   }
 
@@ -67,6 +85,21 @@ describe('FriendsController', () => {
     })
   })
 
+  it('must receive all suggested from friends, suggest()', () => {
+    expect(controller.suggest({user} as Request)).toEqual([{...friends, user: { id: 'friendID' }}]);
+  })
 
+  it('should return all my friend offer, offer()', () => {
+    expect(controller.offer({user} as Request)).toEqual([friends])
+  })
+
+  it('accept offer in my friends ,confirm()', () => {
+    expect(controller.confirm('requestID', {user} as Request)).toEqual(Object.assign(user, {id: 'friendID', firstName: 'friendName', friends: [user]} as UsersInterface));
+    expect(user.friends).toEqual([Object.assign(user, {id: 'friendID', firstName: 'friendName', friends: [user]} as UsersInterface)])
+  })
+
+  it('cancel friend offer, cancel()', () => {
+
+  })
 
 });
