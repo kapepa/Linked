@@ -5,14 +5,11 @@ import { Request } from 'express';
 import { FriendsInterface } from "./friends.interface";
 import { UsersInterface } from "../users/users.interface";
 import { UsersDto } from "../users/users.dto";
+import { DeleteResult } from "typeorm";
 
 describe('FriendsController', () => {
   let controller: FriendsController;
   let friendsService: FriendsService;
-
-  const request: Partial<Response> = {
-    json: jest.fn().mockImplementation().mockReturnValue({name: 'test'}),
-  }
 
   let user = {
     id: 'userID',
@@ -35,6 +32,11 @@ describe('FriendsController', () => {
     created_at: new Date(),
   } as FriendsInterface;
 
+  const mockDeleteResult: DeleteResult = {
+    raw: [],
+    affected: 1,
+  };
+
   let mocFriendsService = {
     friends: [] as FriendsInterface[],
     create: jest.fn().mockImplementation((friendsID: string, user: UsersDto ) => {
@@ -56,9 +58,11 @@ describe('FriendsController', () => {
       user.friends.push(friend);
       return Object.assign(user, {id: 'friendID', firstName: 'friendName', friends: [user]} as UsersInterface);
     }),
-    cancel: jest.fn().mockImplementation((friendID: string, myProfile: UsersDto) => {
-      mocFriendsService.friends.push( {...friends, friends: user } as FriendsInterface)
-      return
+    cancel: jest.fn().mockImplementation((friendID: string, user: UsersDto) => {
+      return mockDeleteResult;
+    }),
+    delFriend: jest.fn().mockImplementation((friendID: string, user: UsersDto) => {
+      return mockDeleteResult;
     })
   }
 
@@ -99,7 +103,11 @@ describe('FriendsController', () => {
   })
 
   it('cancel friend offer, cancel()', () => {
+    expect(controller.cancel('requestID', {user} as Request)).toEqual(mockDeleteResult);
+  })
 
+  it('remove from friends ,delFriend()', () => {
+    expect(controller.delFriend('friendID', {user} as Request)).toEqual(mockDeleteResult);
   })
 
 });
