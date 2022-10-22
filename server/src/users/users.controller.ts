@@ -35,7 +35,7 @@ export class UsersController {
 
   @Get('person/:id')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'Cancel to friend'})
+  @ApiResponse({ status: 200, description: 'Find user on id, receive his data and friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   person(@Param('id') id, @Req() req): Observable<UsersInterface> {
     return this.usersService.person(id, req.user);
