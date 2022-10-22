@@ -48,9 +48,9 @@ export class FriendsService {
         return from(user.request).pipe(
           switchMap((friends: FriendsInterface) => {
             let {id} = friends.user;
-            return of({...friends, user: {id}})
+            return of({...friends, user: {id}});
           }),
-          toArray()
+          toArray(),
         )
       }),
     );
@@ -64,7 +64,7 @@ export class FriendsService {
             if(user.id !== friend.friends.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
             return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(
               switchMap((profile: UsersInterface ) => {
-                if(profile.friends.some( prof => prof.id === friend.user.id)) throw new HttpException('Such a friend is already in friends', HttpStatus.BAD_REQUEST)
+                if(profile.friends.some( prof => prof.id === person.id )) throw new HttpException('Such a friend is already in friends', HttpStatus.BAD_REQUEST)
                 profile.friends.push({id: friend.friends.id} as UsersInterface);
                 person.friends.push(profile);
 

@@ -77,43 +77,101 @@ describe('FriendsService', () => {
     });
   })
 
-  it('create new friend, create()', () => {
+  describe('create()', () => {
     let friendsID = 'friendID';
     jest.spyOn(mockUsersService, 'findOne').mockImplementation(() => of({...user, id: friendsID}));
-    jest.spyOn(mockFriendsEntity, 'findOne').mockImplementation(() => of(undefined));
 
-    service.create(friendsID, user).subscribe(() => {
-      expect(usersService.findOne).toHaveBeenCalledWith('id', friendsID);
-      expect(friendsRepository.findOne).toHaveBeenCalledWith({where: { 'friends': {'id': friendsID} }, relations: ['friends'] });
-      expect(friendsRepository.save).toHaveBeenCalledWith({ user, friends: {...user, id: friendsID} });
-    });
+    it('create new friend, ', () => {
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementation(() => of(undefined));
+
+      service.create(friendsID, user).subscribe(() => {
+        expect(usersService.findOne).toHaveBeenCalledWith('id', friendsID);
+        expect(friendsRepository.findOne).toHaveBeenCalledWith({where: { 'friends': {'id': friendsID} }, relations: ['friends'] });
+        expect(friendsRepository.save).toHaveBeenCalledWith({ user, friends: {...user, id: friendsID} });
+      });
+    })
+
+    it('request already exists', () => {
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementation(() => of(friend));
+
+      service.create(friendsID, user).subscribe({
+        error: (err) => {
+          expect(usersService.findOne).toHaveBeenCalledWith('id', friendsID);
+          expect(friendsRepository.findOne).toHaveBeenCalledWith({where: { 'friends': {'id': friendsID} }, relations: ['friends'] });
+          expect(err.response).toEqual('Your request already exists');
+        }
+      })
+    })
   })
 
-  it('receive all suggest on friend, suggest()', () => {
-    jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() =>
-      of({...user, request: [{...friend, user: {...user, id: 'profileID'}}]})
-    );
+  describe('suggest()', () => {
+    it('receive all suggest on friend', () => {
+      jest.spyOn(mockUsersService, 'findOne').mockImplementation(() =>
+        of({...user, request: [{...friend, user: {...user, id: 'profileID'}}]})
+      );
 
-    service.suggest(user.id).subscribe((friends: FriendsInterface[]) => {
-      expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['request', 'request.user'] });
-      expect(friends).toEqual([{...friend, user: { id: 'profileID' }}])
+      service.suggest(user.id).subscribe((friends: FriendsInterface[]) => {
+        expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['request', 'request.user'] });
+        expect(friends).toEqual([{...friend, user: { id: 'profileID' }}])
+      });
+    })
+
+    it('return empty request', () => {
+      jest.spyOn(mockUsersService, 'findOne').mockImplementation(() => of(user));
+
+      service.suggest(user.id).subscribe((friends: FriendsInterface[]) => {
+        expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['request', 'request.user'] });
+        expect(friends).toEqual([])
+      });
+    })
+  });
+
+  describe('confirm()', () => {
+    it('confirmed assumption of friendship', () => {
+      jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of(myProfile));
+      jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of({...user, friends: []}));
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() =>
+        of({...friend, user, friends: myProfile })
+      );
+
+      service.confirm(friend.id, myProfile).subscribe((profile: UsersInterface) => {
+        expect(usersService.findOne).toHaveBeenCalledWith('id', myProfile.id, { relations: ['friends'] });
+        expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
+        expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['friends'] });
+        expect(friendsRepository.delete).toHaveBeenCalledWith({id: friend.id});
+        expect(profile).toEqual({...user, friends: [ {id: myProfile.id} ]});
+      })
     });
-  })
 
-  it('confirmed assumption of friendship, confirm()', () => {
-    jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of(myProfile));
-    jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of({...user, friends: []}));
-    jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of(user));
-    jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() =>
-      of({...friend, user, friends: myProfile })
-    );
+    it('something went wrong with friend', () => {
+      jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of(myProfile));
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() =>
+        of({...friend, user, friends: {...user, id: 'otherID'} })
+      );
 
-    service.confirm(friend.id, myProfile).subscribe((profile: UsersInterface) => {
-      expect(usersService.findOne).toHaveBeenCalledWith('id', myProfile.id, { relations: ['friends'] });
-      expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
-      expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['friends'] });
-      expect(friendsRepository.delete).toHaveBeenCalledWith({id: friend.id});
-      expect(profile).toEqual({...user, friends: [ {id: myProfile.id} ]});
+      service.confirm(friend.id, myProfile).subscribe({
+        error: (err) => {
+          expect(usersService.findOne).toHaveBeenCalledWith('id', myProfile.id, { relations: ['friends'] });
+          expect(err.response).toEqual('Something went wrong with friend')
+        }
+      })
+    })
+
+    it('such a friend is already in friends', () => {
+      jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of(myProfile));
+      jest.spyOn(mockUsersService, 'findOne').mockImplementationOnce(() => of({...user, friends: [myProfile]}));
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() =>
+        of({...friend, user, friends: myProfile })
+      );
+
+      service.confirm(friend.id, myProfile).subscribe({
+        error: (err) => {
+          expect(usersService.findOne).toHaveBeenCalledWith('id', myProfile.id, { relations: ['friends'] });
+          expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
+          expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['friends'] });
+          expect(err.response).toEqual('Such a friend is already in friends');
+        }
+      })
     })
   })
 
@@ -126,13 +184,28 @@ describe('FriendsService', () => {
     })
   })
 
-  it('cancel offer add as friend, cancel()', () => {
-    jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() => of({...friend, user, friends: myProfile}));
+  describe('cancel()', () => {
+    it('cancel offer add as friend', () => {
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() => of({...friend, user, friends: myProfile}));
 
-    service.cancel(friend.id, myProfile).subscribe((delRes: DeleteResult) => {
-      expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
-      expect(friendsRepository.delete).toHaveBeenCalledWith({id: friend.id});
-      expect(delRes).toEqual(mockDeleteResult);
+      service.cancel(friend.id, myProfile).subscribe((delRes: DeleteResult) => {
+        expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
+        expect(friendsRepository.delete).toHaveBeenCalledWith({id: friend.id});
+        expect(delRes).toEqual(mockDeleteResult);
+      })
+    })
+
+    it('something went wrong with friend', () => {
+      jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() =>
+        of({...friend, user, friends: {...myProfile, id: 'otherID'}})
+      );
+
+      service.cancel(friend.id, myProfile).subscribe({
+        error: (err) => {
+          expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
+          expect(err.response).toEqual('Something went wrong with friend')
+        }
+      })
     })
   })
 
