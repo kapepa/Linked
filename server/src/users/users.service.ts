@@ -8,7 +8,7 @@ import { UsersInterface } from "./users.interface";
 import { FileService } from "../file/file.service";
 import { AuthService } from "../auth/auth.service";
 import { filter } from "rxjs/operators";
-import {FriendsInterface} from "../friends/friends.interface";
+import { FriendsInterface } from "../friends/friends.interface";
 
 @Injectable()
 export class UsersService {
