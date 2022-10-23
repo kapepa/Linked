@@ -1,7 +1,7 @@
 import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
 import { User } from "./users.entity";
-import { Repository } from "typeorm";
+import {Repository, UpdateResult} from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersDto } from "./users.dto";
 import { UsersInterface } from "./users.interface";
@@ -27,11 +27,11 @@ export class UsersService {
     );
   }
   
-  updateUser(key: string, val: string, data: UsersDto): Observable<any> {
+  updateUser(key: string, val: string, data: UsersDto): Observable<UpdateResult> {
     return from(this.usersRepository.update({[key]: val}, data));
   }
 
-  existUser(key: string, val: string): Observable<any> {
+  existUser(key: string, val: string): Observable<boolean> {
     return from(this.usersRepository.findOne({ where:{ [key]: val } })).pipe(
       map((user: UsersDto) => !!user)
     );

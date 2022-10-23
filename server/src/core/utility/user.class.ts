@@ -3,7 +3,7 @@ export const UserClass = {
   firstName: 'FirstName',
   lastName: 'LastName',
   email: 'test@mail.com',
-  avatar: 'MyAvatar',
+  avatar: 'MyAvatar.png',
   request: [],
   suggest: [],
   friends: [],
