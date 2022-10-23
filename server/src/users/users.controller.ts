@@ -1,4 +1,16 @@
-import {Controller, Get, HttpStatus, Param, Post, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common';
 import {ApiBody, ApiConsumes, ApiForbiddenResponse, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -6,6 +18,8 @@ import {multerOption} from "../file/file.service";
 import {UsersService} from "./users.service";
 import {Observable} from "rxjs";
 import {UsersInterface} from "./users.interface";
+import * as Path from "path";
+import {UpdateResult} from "typeorm";
 
 @ApiTags('users')
 @Controller('users')
@@ -41,4 +55,11 @@ export class UsersController {
     return this.usersService.person(id, req.user);
   }
 
+  @Patch('update')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Update own data'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong when update'})
+  update(@Body() body, @Req() req): Observable<UpdateResult>{
+    return this.usersService.updateUser('id', req.user.id, body);
+  }
 }

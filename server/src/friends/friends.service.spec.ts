@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FriendsService } from './friends.service';
 import { UsersService } from "../users/users.service";
-import {DeleteResult, Repository} from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { FriendsEntity } from "./friends.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { of } from "rxjs";
 import { UsersDto } from "../users/users.dto";
 import { UserClass } from "../core/utility/user.class";
-import {FriendCLass} from "../core/utility/friend.class";
-import {FriendsInterface} from "./friends.interface";
-import {UsersInterface} from "../users/users.interface";
+import { FriendCLass } from "../core/utility/friend.class";
+import { FriendsInterface } from "./friends.interface";
+import { UsersInterface } from "../users/users.interface";
 
 describe('FriendsService', () => {
   let service: FriendsService;

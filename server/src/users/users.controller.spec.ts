@@ -5,6 +5,7 @@ import { UserClass } from "../core/utility/user.class";
 import { UsersDto } from "./users.dto";
 import { of } from "rxjs";
 import { UsersInterface } from "./users.interface";
+import {UpdateResult} from "typeorm";
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -12,10 +13,13 @@ describe('UsersController', () => {
 
   let user = UserClass as UsersDto;
 
+  let updateResult = {generatedMaps: [], raw: [], affected: 1 } as UpdateResult;
+
   let mockUsersService = {
     avatarUser: jest.fn().mockImplementation((data) => of(data)),
     findOne: jest.fn().mockImplementation((data) => of(data)),
     person: jest.fn().mockImplementation((data) => of(data)),
+    updateUser: jest.fn().mockImplementation((data) => of(updateResult)),
   }
 
   beforeEach(async () => {
@@ -65,6 +69,14 @@ describe('UsersController', () => {
       expect(mockUsersService.person).toHaveBeenCalledWith(user.id, user);
       expect(person).toEqual(user);
     });
+  })
+
+  it('update own data, in profile', () => {
+    let mockBody = {firstName: "BestName"};
+    controller.update(mockBody, {user}).subscribe((res: UpdateResult) => {
+      expect(mockUsersService.updateUser).toHaveBeenCalledWith('id', user.id, mockBody);
+      expect(res).toEqual(updateResult);
+    })
   })
 
 });
