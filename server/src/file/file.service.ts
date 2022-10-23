@@ -2,7 +2,7 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { diskStorage } from "multer";
 import { Request } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import {from, Observable, of, switchMap} from "rxjs";
+import {catchError, from, Observable, of, switchMap} from "rxjs";
 import {FileTypeResult, fromFile} from 'file-type';
 import {join} from "path";
 import * as sharp from "sharp";
@@ -25,7 +25,7 @@ export const multerOption = {
   },
   limits: {
     fieldNameSize: 300,
-    fileSize: 50000
+    fileSize: 50000,
   }
 }
 
@@ -33,37 +33,43 @@ export const multerOption = {
 export class FileService {
 
   formFile( filePath:string ): Observable<boolean> {
-    const existPath = join(__dirname, '..', '..', 'static', filePath)
-
+    const existPath = join(__dirname, '..', '..', 'static', filePath);
     return from(fromFile(existPath)).pipe(
       switchMap((fileType: FileTypeResult) => {
-        if(!fileType) of(false);
-        return from(this.sharpFile(existPath)).pipe(
+        return this.sharpFile(existPath).pipe(
           switchMap((compressing: boolean) => {
             if (!compressing) of(false);
-            return of(true);
+            return of(!!compressing);
           })
         )
+      }),
+      catchError((err) => {
+        throw new HttpException('Such file not exist', HttpStatus.BAD_REQUEST);
       })
     );
   }
 
-  async sharpFile(filePath:string): Promise<boolean> {
-    await sharp(filePath)
-      .resize(300, 300)
-      .toBuffer()
-      .then( buffer => { fs.writeFile(filePath, buffer, (err) => {
-        if(err)throw new HttpException('An error occurred while compressing the image', HttpStatus.BAD_REQUEST);
-      })})
-      .catch( err => {
-        throw new HttpException('An error occurred while compressing the image', HttpStatus.BAD_REQUEST)
-      });
-    return true
-  }
+  sharpFile(filePath:string): Observable<any> {
+    return from(
+      sharp(filePath)
+        .resize(300, 300)
+        .toBuffer()
+        .then( buffer => {
+          fs.writeFile(filePath, buffer, (err) => {
+            if(err) throw new HttpException('An error occurred while compressing the image', HttpStatus.BAD_REQUEST);
+          })
+          return true;
+        })
+        .catch( err => {
+          throw new HttpException('An error occurred while compressing the image', HttpStatus.BAD_REQUEST);
+        })
+      );
+  };
 
   async removeFile( filePath:string ): Promise<boolean> {
     try {
       const existPath = join(__dirname, '..', '..', 'static', filePath);
+
       await fs.unlinkSync(existPath);
       return true;
     } catch (err) {
