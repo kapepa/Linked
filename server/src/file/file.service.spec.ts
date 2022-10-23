@@ -3,6 +3,8 @@ import { FileService } from './file.service';
 import * as fs from "fs";
 import {join, resolve} from "path";
 import DoneCallback = jest.DoneCallback;
+import {catchError} from "rxjs";
+import {HttpException, HttpStatus} from "@nestjs/common";
 
 describe('FileService', () => {
   let service: FileService;
@@ -34,6 +36,7 @@ describe('FileService', () => {
   describe('sharpFile()', () => {
     it('resize loaded images, sharpFile()', () => {
       service.sharpFile(mockImage).subscribe((bol: boolean) => {
+        expect(jest.spyOn(fs, 'writeFile')).not.toHaveBeenCalled()
         expect(bol).toBeTruthy();
       })
     })
@@ -63,12 +66,20 @@ describe('FileService', () => {
   describe('removeFile', () => {
     let avatar = 'face-14.jpg';
     it('success remove file',  async () => {
-      jest.spyOn(fs, 'unlinkSync').mockImplementation(() => {});
+      jest.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => {});
 
       expect(await service.removeFile(avatar)).toBeTruthy();
       expect(fs.unlinkSync).toHaveBeenCalledWith(join(__dirname, '..', '..', 'static', avatar));
     })
 
+    it('I made a mistake while deleting', async () => {
+      jest.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => Promise.reject(new Error('Err')));
+      try {
+        await service.removeFile(avatar)
+      } catch (err) {
+        expect(err.response).toEqual('I made a mistake while deleting');
+      }
+    })
   })
 
 });
