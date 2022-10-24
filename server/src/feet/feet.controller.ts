@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {FeetService} from "./feet.service";
-import {Observable, of} from "rxjs";
+import {Observable, of, throwError} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {DeleteResult, UpdateResult} from "typeorm";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -27,8 +27,7 @@ import {FounderGuard} from "../auth/founder.guard";
 @ApiTags('feet')
 @Controller('feet')
 export class FeetController {
-  constructor(private feetService: FeetService) {
-  }
+  constructor(private feetService: FeetService) {}
 
   @Post('/create')
   @Roles(Role.User)
@@ -43,7 +42,7 @@ export class FeetController {
   @ApiResponse({ status: 200, description: 'The received has been successfully feet on id.', type: FeetDto})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   getFeet(@Param('id') id): Observable<FeetInterface> {
-    if (!id) throw new HttpException('server didn\'t get id feet', HttpStatus.NOT_FOUND);
+    if (!id.trim()) return throwError(() => new HttpException('server didn\'t get id feet', HttpStatus.NOT_FOUND))
     return this.feetService.getFeet(id);
   }
 
@@ -60,7 +59,7 @@ export class FeetController {
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   // updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<UpdateResult>{
   updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<FeetInterface>{
-    if(!Object.keys(body).length) throw new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND);
+    if(!Object.keys(body).length) return throwError(() => new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND));
     return this.feetService.updateFeet(id, body);
   }
   
@@ -69,7 +68,7 @@ export class FeetController {
   @ApiResponse({ status: 200, description: 'The received has been successfully delete feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   deleteFeet(@Param('id') id): Observable<DeleteResult>{
-    if(!id) throw new HttpException('Not found feet for id', HttpStatus.NOT_FOUND);
+    if(!id.trim()) return throwError(() => new HttpException('Not found feet for id', HttpStatus.NOT_FOUND));
     return this.feetService.deleteFeet(id);
   }
 
