@@ -45,9 +45,9 @@ export class AuthController {
     return this.authService.registrationUser(parse);
   }
 
-  @Put('/role')
+  @Put('role')
   @Roles(Role.Admin)
   roleAdd(){
-
+    return JSON.stringify(true)
   }
 }
