@@ -26,7 +26,9 @@ describe('FounderGuard', () => {
           authorization: "providedToken"
         },
         user: mockUser,
-        params: mockFeet.id,
+        params: {
+          id: mockFeet.id,
+        },
       })
     }))
   } as any
@@ -51,7 +53,8 @@ describe('FounderGuard', () => {
     jest.spyOn(mockFeetService, 'allFeet').mockReturnValueOnce(of([{...mockFeet, author: mockUser}]));
 
     guard.canActivate(mockContext).subscribe((bol: boolean) => {
-      console.log(bol)
+      expect(mockFeetService.allFeet).toHaveBeenCalledWith({ where: { 'author': { id: mockUser.id } } , relations: [ 'author' ] });
+      expect(bol).toBeTruthy();
     });
 
   })
