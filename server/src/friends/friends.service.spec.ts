@@ -178,7 +178,7 @@ describe('FriendsService', () => {
   it('receive all request to add to friends, offer()', () => {
     jest.spyOn(mockUsersService,'findOne').mockImplementationOnce(() => of(user));
 
-    service.offer(user).subscribe((request: FriendsInterface[]) => {
+    service.offer(user.id).subscribe((request: FriendsInterface[]) => {
       expect(mockUsersService.findOne).toHaveBeenCalledWith('id', user.id ,{ relations: ['request']});
       expect(request).toEqual(user.request);
     })
