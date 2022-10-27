@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   HttpStatus,
   Param,
@@ -19,7 +19,7 @@ import {UsersService} from "./users.service";
 import {Observable} from "rxjs";
 import {UsersInterface} from "./users.interface";
 import * as Path from "path";
-import {UpdateResult} from "typeorm";
+import {DeleteResult, UpdateResult} from "typeorm";
 
 @ApiTags('users')
 @Controller('users')
@@ -61,5 +61,13 @@ export class UsersController {
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong when update'})
   update(@Body() body, @Req() req): Observable<UpdateResult>{
     return this.usersService.updateUser('id', req.user.id, body);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'delete user on id'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong when delete'})
+  del(@Param('id') userID): Observable<DeleteResult> {
+    return this.usersService.del(userID);
   }
 }

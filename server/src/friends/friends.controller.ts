@@ -17,11 +17,11 @@ export class FriendsController {
 
   @Post('/add/:friendsID')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'The record has been successfully created.', type: FriendsInterface})
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.', type: FriendsInterface})
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Your request already exists'})
   @ApiForbiddenResponse({ status: HttpStatus.NOT_FOUND, description: 'Not found friends'})
   create(@Param('friendsID') friendsID, @Req() req): Observable<FriendsInterface> {
-    return this.friendsService.create(friendsID, req.user)
+    return this.friendsService.create(friendsID, req.user);
   }
 
   @Get('/suggest')
@@ -29,7 +29,7 @@ export class FriendsController {
   @ApiResponse({ status: 200, description: 'Receive all suggest add to friends', type: FriendsInterface})
   @ApiForbiddenResponse({ status: HttpStatus.NOT_FOUND, description: 'Not found friends'})
   suggest(@Req() req): Observable<FriendsInterface[]> {
-    return this.friendsService.suggest(req.user.id)
+    return this.friendsService.suggest(req.user.id);
   }
 
   @Get('/offer')

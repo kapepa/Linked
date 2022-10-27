@@ -6,8 +6,7 @@ import { UserClass } from "../core/utility/user.class";
 import { UsersDto } from "../users/users.dto";
 import { of } from "rxjs";
 import * as bcrypt from "bcrypt";
-import {UsersInterface} from "../users/users.interface";
-
+import { UsersInterface } from "../users/users.interface";
 import { config } from "dotenv";
 
 config();
