@@ -3,7 +3,7 @@ import { FeetInterface } from "../../feet/feet.interface";
 
 export let FeetClass = {
   id: 'feetID',
-  body: 'body beet',
+  body: 'body feet',
   author: {} as UsersInterface,
-  createdAt: new Date(),
+  // createdAt: new Date(),
 } as FeetInterface;

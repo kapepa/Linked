@@ -42,7 +42,7 @@ export class FeetController {
   @ApiResponse({ status: 200, description: 'The received has been successfully feet on id.', type: FeetDto})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   getFeet(@Param('id') id): Observable<FeetInterface> {
-    if (!id.trim()) return throwError(() => new HttpException('server didn\'t get id feet', HttpStatus.NOT_FOUND))
+    if (!id.length) return throwError(() => new HttpException('server didn\'t get id feet', HttpStatus.NOT_FOUND));
     return this.feetService.getFeet(id);
   }
 
@@ -68,7 +68,7 @@ export class FeetController {
   @ApiResponse({ status: 200, description: 'The received has been successfully delete feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   deleteFeet(@Param('id') id): Observable<DeleteResult>{
-    if(!id.trim()) return throwError(() => new HttpException('Not found feet for id', HttpStatus.NOT_FOUND));
+    if(!id.length) return throwError(() => new HttpException('Not found feet for id', HttpStatus.NOT_FOUND));
     return this.feetService.deleteFeet(id);
   }
 

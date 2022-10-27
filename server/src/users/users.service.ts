@@ -1,7 +1,7 @@
 import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
 import { User } from "./users.entity";
-import {Repository, UpdateResult} from "typeorm";
+import {DeleteResult, Repository, UpdateResult} from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersDto } from "./users.dto";
 import { UsersInterface } from "./users.interface";
@@ -89,5 +89,9 @@ export class UsersService {
         );
       })
     )
+  }
+
+  del(userID: string): Observable<DeleteResult>{
+    return from(this.usersRepository.delete({id: userID}));
   }
 }
