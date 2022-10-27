@@ -56,7 +56,7 @@ export class FriendsService {
     );
   }
 
-  confirm(requestID: string, user: UsersDto): Observable<UsersInterface>{
+  confirm(requestID: string, user: UsersDto): Observable<UsersInterface> {
     return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
       switchMap((person: UsersInterface) => {
         return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
@@ -83,8 +83,8 @@ export class FriendsService {
     )
   }
 
-  offer(user: UsersDto): Observable<FriendsInterface[]> {
-    return this.usersService.findOne('id', user.id ,{relations: ['request']}).pipe(
+  offer(id: string): Observable<FriendsInterface[]> {
+    return this.usersService.findOne('id', id ,{relations: ['request']}).pipe(
       switchMap(( user: UsersInterface ) => {
         return of(user.request);
       })

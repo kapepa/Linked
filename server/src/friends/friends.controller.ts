@@ -37,7 +37,7 @@ export class FriendsController {
   @ApiResponse({ status: 200, description: 'My offer on friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   offer(@Req() req): Observable<FriendsInterface[]>{
-    return this.friendsService.offer(req.user)
+    return this.friendsService.offer(req.user.id);
   }
 
   @Put('/confirm/:requestID')
@@ -46,7 +46,7 @@ export class FriendsController {
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Such a friend is already in friends'})
   confirm(@Param('requestID') requestID, @Req() req): Observable<UsersInterface>{
-    return this.friendsService.confirm(requestID, req.user)
+    return this.friendsService.confirm(requestID, req.user);
   }
 
   @Delete('/cancel/:requestID')
@@ -54,7 +54,7 @@ export class FriendsController {
   @ApiResponse({ status: 200, description: 'Cancel to friend'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   cancel(@Param('requestID') requestID, @Req() req): Observable<DeleteResult>{
-    return this.friendsService.cancel(requestID, req.user)
+    return this.friendsService.cancel(requestID, req.user);
   }
 
   @Delete('/delete/:friendID')
