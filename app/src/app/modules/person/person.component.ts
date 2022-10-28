@@ -27,13 +27,13 @@ export class PersonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person});
-    this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
+    // this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person});
+    // this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
   ngOnDestroy() {
-    this.personSub.unsubscribe();
-    this.userSub.unsubscribe();
+    // this.personSub.unsubscribe();
+    // this.userSub.unsubscribe();
   }
 
   onFriends() {

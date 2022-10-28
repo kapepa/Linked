@@ -8,7 +8,7 @@
       <div class="person__bg-header"></div>
       <div class="person__content">
         <div class="person__avatar">
-          <ng-container *ngIf="!!person.avatar; else avatarIco">
+          <ng-container *ngIf="!!person?.avatar; else avatarIco">
             <img class="person__img" alt="avatar" src="{{ person.avatar | url }}" />
           </ng-container>
           <ng-template #avatarIco>
@@ -18,21 +18,21 @@
         <div class="person__basement">
           <div class="person__information">
             <ion-text>
-              <h5 class="person__h">{{person.firstName}} {{person.lastName}}</h5>
+              <h5 class="person__h">{{person?.firstName}} {{person?.lastName}}</h5>
               <span class="person__span">Full stack developer</span>
             </ion-text>
           </div>
           <div class="person__cooperation">
-            <ng-template [ngIf]="(!person.suggest.length && !person.request.length && !person.friends.length)">
+            <ng-template [ngIf]="(!person?.suggest.length && !person?.request.length && !person?.friends.length)">
               <ion-button (click)="onFriends()" class="person__btn" shape="round">Connect</ion-button>
             </ng-template>
-            <ng-template [ngIf]="!!person.request.length">
+            <ng-template [ngIf]="!!person?.request.length">
               <ion-button (click)="onConfirm()" class="person__btn" shape="round">Confirm</ion-button>
             </ng-template>
-            <ng-template [ngIf]="!!person.suggest.length">
+            <ng-template [ngIf]="!!person?.suggest.length">
               <ion-button [disabled]="true" class="person__btn" shape="round">Pending</ion-button>
             </ng-template>
-            <ng-template [ngIf]="!!person.friends.length">
+            <ng-template [ngIf]="!!person?.friends.length">
               <ion-button (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
             </ng-template>
 
