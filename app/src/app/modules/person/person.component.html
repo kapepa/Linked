@@ -24,16 +24,16 @@
           </div>
           <div class="person__cooperation">
             <ng-template [ngIf]="(!person?.suggest.length && !person?.request.length && !person?.friends.length)">
-              <ion-button (click)="onFriends()" class="person__btn" shape="round">Connect</ion-button>
+              <ion-button id="connect" (click)="onFriends()" class="person__btn" shape="round">Connect</ion-button>
             </ng-template>
             <ng-template [ngIf]="!!person?.request.length">
-              <ion-button (click)="onConfirm()" class="person__btn" shape="round">Confirm</ion-button>
+              <ion-button id="confirm" (click)="onConfirm()" class="person__btn" shape="round">Confirm</ion-button>
             </ng-template>
             <ng-template [ngIf]="!!person?.suggest.length">
               <ion-button [disabled]="true" class="person__btn" shape="round">Pending</ion-button>
             </ng-template>
             <ng-template [ngIf]="!!person?.friends.length">
-              <ion-button (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
+              <ion-button id="del" (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
             </ng-template>
 
             <ion-button class="person__btn" fill="outline"><ion-icon slot="start" name="lock-closed"></ion-icon>Message</ion-button>
