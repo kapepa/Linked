@@ -10,8 +10,8 @@ import {Router} from "@angular/router";
 })
 export class FormLoginComponent implements OnInit {
   loginForm = this.fb.group({
-    email: ['test@mail.com', [Validators.required, Validators.email]],
-    password: ['12345', [Validators.required, Validators.minLength(5)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(5)]],
   });
 
   constructor(
