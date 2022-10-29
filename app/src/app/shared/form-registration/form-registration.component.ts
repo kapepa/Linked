@@ -10,10 +10,10 @@ import {Router} from "@angular/router";
 })
 export class FormRegistrationComponent implements OnInit {
   regForm = this.fb.group({
-    firstName: ['TestName', [Validators.required, Validators.minLength(3)]],
-    lastName: ['TestName', [Validators.required, , Validators.minLength(3)]],
-    email: ['testEmail@mail.com', [Validators.required, , Validators.email]],
-    password: ['testPassword', [Validators.required, , Validators.minLength(5)]],
+    firstName: ['', [Validators.required, Validators.minLength(3)]],
+    lastName: ['', [Validators.required, , Validators.minLength(3)]],
+    email: ['', [Validators.required, , Validators.email]],
+    password: ['', [Validators.required, , Validators.minLength(5)]],
   });
 
   constructor(
