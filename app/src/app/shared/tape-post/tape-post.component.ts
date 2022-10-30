@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PostService } from "../../core/service/post.service";
 import { PostQueryDto } from "../../core/dto/post-query.dto";
-import {AuthService} from "../../core/service/auth.service";
-import {Subscription} from "rxjs";
+import { AuthService } from "../../core/service/auth.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-tape-post',

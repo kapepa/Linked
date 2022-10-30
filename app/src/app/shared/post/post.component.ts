@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { PostInterface } from "../../core/interface/post.interface";
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
-import {Observable} from "rxjs";
 import {PostService} from "../../core/service/post.service";
 
 @Component({
@@ -35,7 +34,6 @@ export class PostComponent implements OnInit {
     });
 
     await popover.present();
-    const { role } = await popover.onDidDismiss();
   }
 
   onDelete(e: Event) {
@@ -43,6 +41,6 @@ export class PostComponent implements OnInit {
   }
 
   get avatar () {
-    return this.userID === this.post.author.id  ? this.userAvatar : this.post.author.avatar
+    return this.userID === this.post?.author.id  ? this.userAvatar : this.post.author.avatar
   }
 }
