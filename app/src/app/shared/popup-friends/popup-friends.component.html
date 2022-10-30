@@ -11,8 +11,8 @@
         <ion-label class="popup-friend__label">{{request.user.firstName}} {{request.user.lastName}}</ion-label>
       </div>
       <div class="popup-friend__basement">
-        <ion-button (click)="onAccept(request, i)" size="small" fill="outline">Accept</ion-button>
-        <ion-button (click)="onDecline(request, i)" color="danger" size="small" fill="outline">Decline</ion-button>
+        <ion-button id="accept" (click)="onAccept(request, i)" size="small" fill="outline">Accept</ion-button>
+        <ion-button id="decline" (click)="onDecline(request, i)" color="danger" size="small" fill="outline">Decline</ion-button>
       </div>
     </ion-content>
   </ng-container>
