@@ -10,9 +10,9 @@
         </ion-router-link>
       </ion-col>
       <ion-col class="nav-main__cell" size="auto">
-        <ion-router-link #popupFriends (click)="onFriends($event)" color="medium" class="nav-main__link">
+        <ion-router-link id="friend" #popupFriends (click)="onFriends($event)" color="medium" class="nav-main__link">
           <div class="nav-main__link-col">
-            <ion-badge *ngIf="user.suggest.length" class="nav-main__badge" slot="start">{{user.suggest.length}}</ion-badge>
+            <ion-badge *ngIf="user?.suggest.length" class="nav-main__badge" slot="start">{{user?.suggest.length}}</ion-badge>
             <ion-icon name="people" class="nav-main__ico"></ion-icon>
             <div class="nav-main__text">Network</div>
           </div>
@@ -43,7 +43,7 @@
         </ion-router-link>
       </ion-col>
     </ion-row>
-    <ion-col class="nav-main__cell" size="auto" #popupAnchor (click)="presentPopover($event)">
+    <ion-col id="settings" class="nav-main__cell" size="auto" #popupAnchor (click)="presentPopover($event)">
       <ion-avatar class="nav-main__avatar_wrapper">
         <img *ngIf="userAvatar; else avatarIco" class="nav-main__avatar" alt="avatar" src="{{userAvatar | url}}" />
         <ng-template #avatarIco>
