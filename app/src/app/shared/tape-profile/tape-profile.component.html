@@ -2,12 +2,12 @@
   <ion-card-header class="tape-profile__header">
     <div class="tape-profile__back-bg">
       <div class="tape-profile__back-markup"></div>
-      <ion-avatar class="tape-profile__avatar-wrapper" (click)="onAvatar($event)">
+      <ion-avatar id="avatar" class="tape-profile__avatar-wrapper" (click)="onAvatar($event)">
         <img *ngIf="user.avatar; else avatarIco"  class="tape-profile__avatar" alt="avatar" src="{{ user.avatar | url }}" />
         <ng-template #avatarIco>
           <ion-icon  class="tape-profile__avatar" name="person-outline"></ion-icon>
         </ng-template>
-        <input (change)="onFile($event)" #avatar type="file" style="display: none">
+        <input id="file" (change)="onFile($event)" #avatar type="file" style="display: none">
       </ion-avatar>
     </div>
     <ion-card-title class="tape-profile__text">{{ user.firstName }} {{user.lastName}}</ion-card-title>

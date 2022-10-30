@@ -1,4 +1,5 @@
 import {FriendDto} from "./friend.dto";
+import {PostDto} from "./post.dto";
 
 export type Role = 'admin' | 'ghost' | 'user';
 
@@ -11,6 +12,7 @@ export class UserDto {
   suggest?: FriendDto[]
   friends?: UserDto[]
   role: Role
+  feet: PostDto[]
   exp: number
   iat: number
 }
