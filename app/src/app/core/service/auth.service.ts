@@ -42,9 +42,9 @@ export class AuthService {
   login(body: { password: string; email: string }): Observable<{ access_token: string }> {
     return this.http.post<{access_token: string}>(`${this.baseUrl}/api/auth/login`,body).pipe(
       tap((res: { access_token: string }) => {
-        let token = res.access_token
-        this.storageService.set('token', token)
-        this.user = jwt_decode(token);
+        let token = res.access_token;
+        this.storageService.set('token', token);
+        this.user = this.jwtDecode(token);
         this.user$.next(this.user);
       }),
       take(1),
@@ -65,15 +65,20 @@ export class AuthService {
       tap((res: {access_token: string}) => {
         let token = res.access_token
         this.storageService.set('token', token)
-        this.user = jwt_decode(token);
+        this.user = this.jwtDecode(token);
         this.user$.next(this.user);
       }),
       catchError(this.httpService.handleError)
     )
   }
 
+  jwtDecode(token: string): UserJwtDto {
+    return jwt_decode(token)
+  }
+
   get userRole(): Observable<Role> {
     return this.user$.asObservable().pipe(
+      take(1),
       switchMap((user: UserJwtDto) => {
         return of(user.role);
       })
@@ -94,7 +99,7 @@ export class AuthService {
       take(1),
       switchMap((token: string) => {
         if(!token) return of(false);
-        const parseToken: UserJwtDto = jwt_decode(token);
+        const parseToken: UserJwtDto = this.jwtDecode(token);
         if (!!parseToken) this.user$.next(parseToken);
         return of(parseToken['exp'] * 1000 > Date.now());
       })

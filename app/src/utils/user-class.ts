@@ -13,4 +13,5 @@ export const UserClass = {
   request: [] as FriendDto[],
   suggest: [] as FriendDto[],
   feet: [] as PostDto[],
+  exp: Date.now() + 1000 * 60 * 60
 } as UserDto

@@ -19,10 +19,10 @@ export class HttpService {
   }
 
   handleErrorFn(error: HttpErrorResponse) {
-    if (error.status === 0) {
+    if (error?.status === 0) {
       console.error('An error occurred:', error.error);
     } else {
-      this.isError$.next(error.error.message);
+      this.isError$.next(error.error?.message ? error.error.message : error.error);
     }
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
@@ -32,6 +32,7 @@ export class HttpService {
   }
 
   async presentPopover(error: string): Promise<void> {
+    console.log(error)
     const popover = await this.popoverController.create({
       component: PopupNotificationComponent,
       cssClass:  'popup-notification__popover',

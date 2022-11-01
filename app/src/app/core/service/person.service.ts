@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {HttpService} from "./http.service";
-import {BehaviorSubject, Observable, of} from "rxjs";
-import {environment} from "../../../environments/environment";
-import {catchError, take, tap} from "rxjs/operators";
-import {FriendsInterface} from "../interface/friends.interface";
-import {UserInterface} from "../interface/user.interface";
+import { HttpClient } from "@angular/common/http";
+import { HttpService } from "./http.service";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { environment } from "../../../environments/environment";
+import { catchError, take, tap } from "rxjs/operators";
+import { FriendsInterface } from "../interface/friends.interface";
+import { UserInterface } from "../interface/user.interface";
 
 @Injectable({
   providedIn: 'root'
