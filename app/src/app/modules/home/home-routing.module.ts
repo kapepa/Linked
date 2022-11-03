@@ -11,7 +11,7 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [AuthGuard],
     resolve: {
-      hero: PostsResolver,
+      post: PostsResolver,
       user: UserResolver,
     }
   }
