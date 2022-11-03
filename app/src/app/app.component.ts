@@ -14,5 +14,4 @@ export class AppComponent implements OnInit{
   async ngOnInit() {
     await this.storage.create();
   }
-
 }
