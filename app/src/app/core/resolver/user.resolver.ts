@@ -22,7 +22,9 @@ export class UserResolver implements Resolve<boolean> {
       switchMap((user: UserInterface) => {
         if(!!user) return of(true);
         return this.userService.getOwnProfile().pipe(
-          switchMap((user: UserInterface) => of(!!user))
+          switchMap((user: UserInterface) => {
+            return of(!!user)
+          })
         )
       })
     )
