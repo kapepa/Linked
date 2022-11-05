@@ -24,5 +24,17 @@ describe('The Home Page', () => {
       cy.get('textarea').type('e2e test');
       cy.get('#close').click();
     })
+
+    it('edit post', () => {
+      cy.get('#edit').click();
+      cy.get('ion-textarea').type('!');
+      cy.get('.create-publication #form').submit();
+    })
+
+    it('logout user', () => {
+      cy.get('#settings').click();
+      cy.get('#sign_out').click();
+    })
   })
+
 })
