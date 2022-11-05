@@ -37,4 +37,14 @@ describe('The Home Page', () => {
     })
   })
 
+  describe('should write create form', () => {
+    it('successfully loads', () => {
+      cy.visit('/auth/registration');
+      cy.get('#first-name').type('First-Name e2e');
+      cy.get('#last-name').type('Last-Name e2e');
+      cy.get('#email').type('e2e@email.com');
+      cy.get('#password').type('Last-Name e2e')
+    })
+
+  })
 })
