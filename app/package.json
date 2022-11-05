@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "cypress:open": "cypress open"
   },
   "private": true,
   "dependencies": {
@@ -28,6 +29,7 @@
     "@ionic/angular": "^6.1.9",
     "@ionic/storage": "^3.0.6",
     "@ionic/storage-angular": "^3.0.6",
+    "cypress": "^10.11.0",
     "ionicons": "^6.0.3",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
