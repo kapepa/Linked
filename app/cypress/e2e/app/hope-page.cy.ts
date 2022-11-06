@@ -10,7 +10,7 @@ describe('The Home Page', () => {
       cy.get('#password input').type('12345');
       cy.get('#form').submit();
     })
-  })
+  });
 
   describe('home page', () => {
     it('/home', () => {
