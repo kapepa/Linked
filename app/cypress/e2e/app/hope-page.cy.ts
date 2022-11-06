@@ -35,7 +35,7 @@ describe('The Home Page', () => {
       cy.get('#settings').click();
       cy.get('#sign_out').click();
     })
-  })
+  });
 
   describe('should write create form', () => {
     it('successfully loads', () => {
@@ -46,5 +46,5 @@ describe('The Home Page', () => {
       cy.get('#password').type('Last-Name e2e')
     })
 
-  })
+  });
 })
