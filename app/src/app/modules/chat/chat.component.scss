@@ -1,0 +1,76 @@
+.chat{
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  &-author{
+    &__avatar{
+      max-width: 30px;
+      height: 30px;
+    }
+    &__name{
+      font-size: 10px;
+      max-width: 60px;
+    }
+  }
+  &_message__del{
+    width: 20px;
+    height: 20px;
+    top: 0;
+    right: 2px;
+    position: absolute;
+    border-radius: 6px;
+    cursor: pointer;
+    &:before,&:after{
+      content: '';
+      position: absolute;
+      width: 17px;
+      height: 3px;
+      background-color: gray;
+      border-radius: 2px;
+      top: 45%;
+      box-shadow: 0 0 2px 0 #ccc;
+    }
+    &:before{
+      transform: rotate(45deg);
+      left: 2px;
+    }
+    &:after{
+      transform: rotate(-45deg);
+      right: 2px;
+    }
+  }
+  &__area{
+    width: 100%;
+    max-width: 600px;
+  }
+  &__conversation{
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+  }
+  &__cell{
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 10px;
+    border: 1px solid gray;
+    min-width: 300px;
+    width: 100%;
+    position: relative;
+    &--owner{
+      flex-direction: row-reverse;
+    }
+  }
+  &__author{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 5px;
+  }
+  &__message{
+    padding: 0 8px;
+    flex-grow: 1;
+  }
+}
