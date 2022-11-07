@@ -14,6 +14,9 @@
     "module": "es2020",
     "lib": ["es2018", "dom"]
   },
+  "exclude": [
+    "**/*.spec.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

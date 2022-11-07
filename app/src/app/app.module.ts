@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import {ActivatedRoute, RouteReuseStrategy} from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -16,15 +16,13 @@ import { PipeModule } from "./core/pipe/pipe.module";
 import { PopoverModule } from "./shared/popover/popover.module";
 import { CreatePublicationModule } from "./shared/create-publication/create-publication.module";
 import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module";
-import { PersonModule } from "./modules/person/person.module";
 import { PopupNotificationModule } from "./shared/popup-notification/popup-notification.module";
-import {HttpService} from "./core/service/http.service";
+import { HttpService } from "./core/service/http.service";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     PipeModule,
-    PersonModule,
     CommonModule,
     BrowserModule,
     PopoverModule,
