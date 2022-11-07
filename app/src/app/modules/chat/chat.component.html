@@ -1,3 +1,39 @@
-<p>
-  chat works!
-</p>
+<ion-router-outlet></ion-router-outlet>
+
+<app-header></app-header>
+
+<ion-content [fullscreen]="true">
+  <div class="container">
+    <div class="chat">
+      <div class="chat__area">
+        <div class="chat__conversation">
+
+          <div class="chat__cell" *ngFor="let message of chat; index as i" [ngClass]="{'chat__cell--owner': message.owner.id === user.id}">
+            <div class="chat__author">
+              <div *ngIf="message.owner.avatar; else avatarIco" class="chat-author__avatar">
+                <img alt="avatar" src="{{ message.owner.avatar | url }}" />
+              </div>
+              <ng-template #avatarIco>
+                <ion-icon  class="chat__author" name="person-outline"></ion-icon>
+              </ng-template>
+              <div class="chat-author__name">
+                {{message.owner.firstName}} {{message.owner.lastName}}
+              </div>
+            </div>
+            <div class="chat__message">
+              {{message.message}}
+            </div>
+            <div class="chat_message__del" (click)="onDel(i)"></div>
+          </div>
+
+        </div>
+        <div class="chat__interaction">
+          <form [formGroup]="textarea" (ngSubmit)="onSubmit()" class="chat__form">
+            <ion-textarea formControlName="message" class="chat__textarea" placeholder="Entering a new message"></ion-textarea>
+            <ion-button [disabled]="!textarea.valid" type="submit">Send</ion-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
