@@ -25,8 +25,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('message')
   handleMessage(client: any, payload: {id: string, message: any}): string {
-    console.log(payload)
-    return 'Hello world!';
+    return client.broadcast.to(payload.id).emit('new-message', payload.message);
+  }
+
+  @SubscribeMessage('append-to-room')
+  appendToRoom(client: any, payload: {roomID}) {
+    client.join(payload.roomID);
   }
 
   afterInit(server: Server) {}
