@@ -35,7 +35,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.chat = chat.chat;
       }
     })
-    this.socketService.requestChat('first').subscribe()
   }
 
   ngOnDestroy() {
@@ -49,7 +48,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.chat.push(newMessage);
     this.socketService.message(this.chatID, newMessage);
-
   }
 
   onDel(index: number) {

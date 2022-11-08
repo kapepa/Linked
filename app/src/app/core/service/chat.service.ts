@@ -25,10 +25,18 @@ export class SocketService {
 
   connect() {
     this.socket = io(environment.configUrl);
+    this.socket.on('new-message', (message: MessageInterface) => {
+      this.chat.chat.push(message);
+      this.chat$.next(this.chat);
+    })
   }
 
   message(chatID: string, message: MessageInterface) {
     this.socket.emit('message', {id: chatID, message});
+  }
+
+  appendToRoom(roomID: string) {
+    this.socket.emit('append-to-room', {roomID})
   }
 
   requestChat(id: string, params?: { take?: number, skip?: number }): Observable<ChatInterface> {

@@ -4,6 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { ChatComponent } from "./chat.component";
 import { AuthGuard } from "../../core/guard/auth.guard";
 import { UserResolver } from "../../core/resolver/user.resolver";
+import { ChatResolver } from "../../core/resolver/chat.resolver";
 
 const routes: Routes = [
   {
@@ -11,6 +12,7 @@ const routes: Routes = [
     component: ChatComponent,
     canActivate: [AuthGuard],
     resolve: {
+      chat: ChatResolver,
       user: UserResolver,
     }
   },
