@@ -1,6 +1,12 @@
 import {UserInterface} from "./user.interface";
 
+export class MessageInterface {
+  id?: string;
+  owner?: UserInterface;
+  message?: string;
+}
+
 export class ChatInterface {
-  owner: UserInterface;
-  message: string;
+  id: string;
+  chat: MessageInterface[];
 }

@@ -15,6 +15,8 @@ import { FileModule } from './file/file.module';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { FriendsModule } from './friends/friends.module';
 import { join } from 'path';
+import { ChatGateway } from "./chat/chat.gateway";
+import { ChatModule } from "./chat/chat.module";
 
 dotenv.config();
 
@@ -41,7 +43,9 @@ dotenv.config();
     AuthModule,
     JwtModule,
     FileModule,
-    FriendsModule
+    FriendsModule,
+    ConfigModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
