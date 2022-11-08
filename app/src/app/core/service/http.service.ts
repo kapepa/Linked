@@ -32,7 +32,6 @@ export class HttpService {
   }
 
   async presentPopover(error: string): Promise<void> {
-    console.log(error)
     const popover = await this.popoverController.create({
       component: PopupNotificationComponent,
       cssClass:  'popup-notification__popover',

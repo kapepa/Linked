@@ -6,18 +6,21 @@
   <div class="container">
     <div class="chat">
       <div class="chat__area">
-        <div class="chat__conversation">
-
-          <div class="chat__cell" *ngFor="let message of chat; index as i" [ngClass]="{'chat__cell--owner': message.owner.id === user.id}">
+        <div class="chat__conversation" *ngIf="!!chat?.length; else chatEmpty">
+          <div
+            class="chat__cell"
+            *ngFor="let message of chat; index as i"
+            [ngClass]="{'chat__cell--owner': message?.owner?.id === user?.id}"
+          >
             <div class="chat__author">
-              <div *ngIf="message.owner.avatar; else avatarIco" class="chat-author__avatar">
-                <img alt="avatar" src="{{ message.owner.avatar | url }}" />
+              <div *ngIf="message.owner?.avatar; else avatarIco" class="chat-author__avatar">
+                <img alt="avatar" src="{{ message.owner?.avatar | url }}" />
               </div>
               <ng-template #avatarIco>
                 <ion-icon  class="chat__author" name="person-outline"></ion-icon>
               </ng-template>
               <div class="chat-author__name">
-                {{message.owner.firstName}} {{message.owner.lastName}}
+                {{message.owner?.firstName}} {{message.owner?.lastName}}
               </div>
             </div>
             <div class="chat__message">
@@ -25,8 +28,10 @@
             </div>
             <div class="chat_message__del" (click)="onDel(i)"></div>
           </div>
-
         </div>
+        <ng-template #chatEmpty>
+          You not have conversation!
+        </ng-template>
         <div class="chat__interaction">
           <form [formGroup]="textarea" (ngSubmit)="onSubmit()" class="chat__form">
             <ion-textarea formControlName="message" class="chat__textarea" placeholder="Entering a new message"></ion-textarea>
