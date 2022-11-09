@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
 import { io, Socket } from "socket.io-client";
-import {ChatInterface, MessageInterface} from "../interface/chat.interface";
-import {BehaviorSubject, Observable, pipe} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {HttpService} from "./http.service";
-import {catchError, take, tap} from "rxjs/operators";
-import * as buffer from "buffer";
+import { ChatInterface, MessageInterface } from "../interface/chat.interface";
+import {BehaviorSubject, from, Observable, pipe} from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { HttpService } from "./http.service";
+import { catchError, take, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -29,10 +28,36 @@ export class SocketService {
       this.chat.chat.push(message);
       this.chat$.next(this.chat);
     })
+    this.socket.on('deleteMessage', (id: string) => {
+      let chat = this.chat.chat.filter(message => message.id !== id);
+
+      if(chat.length !== this.chat.chat.length) {
+        this.chat.chat = chat;
+        this.chat$.next(this.chat);
+      }
+    })
   }
 
   message(chatID: string, message: MessageInterface) {
-    this.socket.emit('message', {id: chatID, message});
+    return from([
+      this.socket.emit('message', {id: chatID, message}, (message) => {
+        this.chat.chat.push(message);
+        this.chat$.next(this.chat);
+      })
+    ]).pipe(
+      take(1),
+    );
+  }
+
+  deleteMessage(index: number, message: MessageInterface): Observable<any> {
+    return from([
+      this.socket.emit('delete', { chatID: this.chat.id , message }, () => {
+        this.chat.chat.splice(index, 1);
+        this.chat$.next(this.chat);
+      }),
+    ]).pipe(
+      take(1),
+    );
   }
 
   appendToRoom(roomID: string) {

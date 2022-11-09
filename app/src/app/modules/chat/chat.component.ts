@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {ChatInterface, MessageInterface} from "../../core/interface/chat.interface";
+import { ChatInterface, MessageInterface } from "../../core/interface/chat.interface";
 import { Subscription } from "rxjs";
 import { UserInterface } from "../../core/interface/user.interface";
 import { UserService } from "../../core/service/user.service";
@@ -46,11 +46,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     if(!this.textarea.valid) return;
     let newMessage = { owner: this.user, message: this.textarea.value.message } as MessageInterface;
 
-    this.chat.push(newMessage);
-    this.socketService.message(this.chatID, newMessage);
+    this.socketService.message(this.chatID, newMessage).subscribe(() => {
+      this.textarea.reset();
+    });
   }
 
   onDel(index: number) {
-    this.chat.splice(index, 1);
+    let message = Object.assign(this.chat[index],{});
+    this.socketService.deleteMessage(index, message).subscribe(() => {
+      this.textarea.reset();
+    });
   }
 }
