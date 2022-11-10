@@ -14,7 +14,7 @@ import { SocketService } from "../../core/service/chat.service";
 export class ChatComponent implements OnInit, OnDestroy {
   textarea = this.fb.group({
     message: ['', Validators.required],
-  })
+  });
   chatID: string;
   chat = [{}] as MessageInterface[];
   chatSub: Subscription;
