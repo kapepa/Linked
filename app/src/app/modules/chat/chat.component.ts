@@ -33,14 +33,14 @@ export class ChatComponent implements OnInit, OnDestroy {
       if(!!chat?.id || !!chat?.chat){
         this.chatID = chat.id;
         this.chat = chat.chat;
-      }
-    })
-  }
+      };
+    });
+  };
 
   ngOnDestroy() {
     this.userSub.unsubscribe();
     this.chatSub.unsubscribe();
-  }
+  };
 
   onSubmit() {
     if(!this.textarea.valid) return;
@@ -49,12 +49,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.socketService.message(this.chatID, newMessage).subscribe(() => {
       this.textarea.reset();
     });
-  }
+  };
 
   onDel(index: number) {
     let message = Object.assign(this.chat[index],{});
     this.socketService.deleteMessage(index, message).subscribe(() => {
       this.textarea.reset();
     });
-  }
+  };
 }
