@@ -12,8 +12,8 @@ const routes: Routes = [
     component: ChatComponent,
     canActivate: [AuthGuard],
     resolve: {
-      chat: ChatResolver,
       user: UserResolver,
+      chat: ChatResolver,
     }
   },
 ];

@@ -6,8 +6,9 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { UserService } from "../service/user.service";
-import {switchMap} from "rxjs/operators";
+import {switchMap, tap} from "rxjs/operators";
 import {UserInterface} from "../interface/user.interface";
+import {SocketService} from "../service/chat.service";
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class UserResolver implements Resolve<boolean> {
             return of(!!user)
           })
         )
-      })
+      }),
     )
   }
 }

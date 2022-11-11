@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {AuthService} from "../../core/service/auth.service";
-import {Router} from "@angular/router";
+import { FormBuilder, Validators } from "@angular/forms";
+import { AuthService } from "../../core/service/auth.service";
+import { Router } from "@angular/router";
+import { SocketService } from "../../core/service/chat.service";
 
 @Component({
   selector: 'app-form-login',
@@ -18,6 +19,7 @@ export class FormLoginComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
+    private socketService: SocketService
   ) { }
 
   ngOnInit() {}
@@ -26,9 +28,10 @@ export class FormLoginComponent implements OnInit {
     if(this.loginForm.invalid) return;
     const { email, password } = this.loginForm.value;
 
-    this.authService.login({ email, password }).subscribe(() => {
-      this.router.navigate(['/']);
+    this.authService.login({ email, password }).subscribe(async () => {
       this.loginForm.reset();
+      await this.socketService.createSocket();
+      await this.router.navigate(['/']);
     })
   }
 

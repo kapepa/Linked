@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
 import { io, Socket } from "socket.io-client";
 import { ChatInterface, MessageInterface } from "../interface/chat.interface";
-import {BehaviorSubject, from, Observable, pipe} from "rxjs";
+import { BehaviorSubject, from, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { HttpService } from "./http.service";
 import { catchError, take, tap } from "rxjs/operators";
+import { StorageService } from "./storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +21,12 @@ export class SocketService {
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
+    private storageService: StorageService
   ) {}
 
-  connect() {
-    this.socket = io(environment.configUrl);
+  async connect() {
+    if(!this.socket?.connected) await this.createSocket();
+
     this.socket.on('new-message', (message: MessageInterface) => {
       this.chat.chat.push(message);
       this.chat$.next(this.chat);
@@ -36,6 +39,14 @@ export class SocketService {
         this.chat$.next(this.chat);
       }
     })
+  }
+
+  async createSocket() {
+    let token = await this.storageService.get('token');
+
+    return this.socket = io(environment.configUrl,{
+      extraHeaders: {Authorization: `Bearer ${ token }`},
+    });
   }
 
   message(chatID: string, message: MessageInterface) {
