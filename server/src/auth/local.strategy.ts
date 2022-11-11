@@ -18,13 +18,5 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         return of(user);
       })
     )
-
-    // return of({} as UsersInterface)
-    // return from(this.authService.validateUser(email, password)).pipe(
-    //   map((user) => {
-    //       if (!user) throw new UnauthorizedException();
-    //       return user;
-    //   })
-    // );
   }
 }

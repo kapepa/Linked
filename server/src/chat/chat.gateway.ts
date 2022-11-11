@@ -8,7 +8,9 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from "./chat.service";
 import { MessageInterface } from "./message.interface";
-import { Observable, of, switchMap, take, tap } from "rxjs";
+import { take, tap } from "rxjs";
+import { UseGuards } from "@nestjs/common";
+import { SocketGuard } from "../auth/socket.guard";
 
 @WebSocketGateway({
   cors: {
@@ -25,6 +27,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   ) {}
 
   @SubscribeMessage('message')
+  @UseGuards(SocketGuard)
   handleMessage(client: any, payload: {id: string, message: MessageInterface}): any {
     return this.chatService.addNewMessage(payload.message).pipe(
       take(1),
@@ -33,6 +36,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('delete')
+  @UseGuards(SocketGuard)
   deleteMessage(client: any, mock: {chatID: string, message: MessageInterface}): any  {
     return this.chatService.deleteMessage(mock.message.id).pipe(
       take(1),
@@ -43,16 +47,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('append-to-room')
+  @UseGuards(SocketGuard)
   appendToRoom(client: any, payload: {roomID}) {
     client.join(payload.roomID);
   }
 
+  @UseGuards(SocketGuard)
   afterInit(server: Server) {}
 
+  @UseGuards(SocketGuard)
   handleConnection(client: Socket, ...args: any[]){
     console.log('connection')
   }
 
+  @UseGuards(SocketGuard)
   handleDisconnect(client: Socket){
     console.log('disconnection')
   }
