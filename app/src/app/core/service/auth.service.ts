@@ -9,6 +9,7 @@ import {UserJwtDto} from "../dto/user-jwt.dto";
 import {Router} from "@angular/router";
 import {HttpService} from "./http.service";
 import {Role} from "../dto/user.dto";
+import {SocketService} from "./chat.service";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -26,10 +27,11 @@ export class AuthService {
   user$ = new BehaviorSubject<UserJwtDto>(null);
 
   constructor(
-    private http: HttpClient,
     private router: Router,
+    private http: HttpClient,
+    private httpService: HttpService,
+    private socketService: SocketService,
     private storageService: StorageService,
-    private httpService: HttpService
   ) {}
 
   registration(form: FormData): Observable<boolean> {
@@ -52,11 +54,12 @@ export class AuthService {
     )
   }
 
-  logout(){
-    this.user = null;
-    this.user$.next(this.user);
-    this.router.navigate(['/auth','login']);
+  async logout(){
     this.storageService.remove('token');
+    await this.socketService.createSocket();
+    await this.router.navigate(['/auth','login']);
+    this.user = null;
+    this.user$.next({} as UserJwtDto);
   }
 
   avatar(form: FormData): Observable<{access_token: string}> {
@@ -112,18 +115,18 @@ export class AuthService {
       switchMap((user: UserJwtDto) => {
         return of(user?.id ?? null);
       })
-    )
+    );
   }
 
   get userAvatar (): Observable<string> {
     return this.user$.asObservable().pipe(
       switchMap((user: UserJwtDto) => {
         return of(user.avatar);
-      })
-    )
+      }),
+    );
   }
 
   get getUser(): Observable<UserJwtDto> {
-    return this.user$.asObservable()
-  }
+    return this.user$.asObservable();
+  };
 }

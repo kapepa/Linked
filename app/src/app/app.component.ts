@@ -15,6 +15,6 @@ export class AppComponent implements OnInit{
 
   async ngOnInit() {
     await this.storage.create();
-    this.socketService.connect();
+    await this.socketService.connect();
   }
 }
