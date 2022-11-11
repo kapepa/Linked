@@ -15,11 +15,11 @@ export class AuthService {
   constructor(
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   validateUser(email: string, pass: string): Observable<UsersInterface | null> {
-    let select = ['id', 'firstName', 'lastName', 'email', 'password', 'role'];
+    let select = ['id', 'firstName', 'lastName', 'email', 'password', 'role', 'avatar'];
 
     return this.usersService.findOne('email', email, {select}).pipe(
       switchMap((user: UsersInterface) => {
