@@ -25,7 +25,11 @@ export class SocketService {
   ) {}
 
   async connect() {
-    if(!this.socket?.connected) await this.createSocket();
+
+    if(!this.socket?.connected){
+      let token = await this.createSocket();
+      if(!token) return;
+    }
 
     this.socket.on('new-message', (message: MessageInterface) => {
       this.chat.chat.push(message);
@@ -43,10 +47,13 @@ export class SocketService {
 
   async createSocket() {
     let token = await this.storageService.get('token');
+    if( !token ) return false;
 
-    return this.socket = io(environment.configUrl,{
+    this.socket = io(environment.configUrl,{
       extraHeaders: {Authorization: `Bearer ${ token }`},
     });
+
+    return true;
   }
 
   message(chatID: string, message: MessageInterface) {
@@ -87,6 +94,12 @@ export class SocketService {
       }),
       catchError(this.httpService.handleError),
     )
+  }
+
+  async updateToken() {
+    let token = await this.storageService.get('token');
+    this.socket.io.opts.extraHeaders = {Authorization: `Bearer ${token}`};
+    this.socket.disconnect().connect();
   }
 
   get getChat(): Observable<ChatInterface> {
