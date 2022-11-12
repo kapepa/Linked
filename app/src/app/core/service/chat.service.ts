@@ -7,6 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { HttpService } from "./http.service";
 import { catchError, take, tap } from "rxjs/operators";
 import { StorageService } from "./storage.service";
+import { UserInterface } from "../interface/user.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ import { StorageService } from "./storage.service";
 export class SocketService {
   configUrl = environment.configUrl;
   socket: Socket;
+  friends: UserInterface[];
+  friends$: Observable<UserInterface[]> = new BehaviorSubject<UserInterface[]>(null);
   chat: ChatInterface;
   chat$: BehaviorSubject<ChatInterface> = new BehaviorSubject<ChatInterface>(null);
 
@@ -91,6 +94,16 @@ export class SocketService {
       tap((chat: ChatInterface) => {
         this.chat = chat;
         this.chat$.next(this.chat);
+      }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
+  receiveAllConversation(query?: {skip: number, take: number}): Observable<UserInterface[]> {
+    let params = !!Object.keys(query).length ? query : undefined;
+    return this.http.get<Observable<UserInterface[]>>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
+      tap((friends: Observable<UserInterface[]>) => {
+        console.log(friends)
       }),
       catchError(this.httpService.handleError),
     )
