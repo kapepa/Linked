@@ -1,8 +1,9 @@
 .chat{
-  padding-top: 10px;
   display: flex;
   justify-content: center;
+  column-gap: 14px;
   width: 100%;
+  padding: 10px 23px 0 23px;
   &-author{
     &__avatar{
       max-width: 30px;
@@ -74,5 +75,15 @@
   &__message{
     padding: 0 8px;
     flex-grow: 1;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .chat{
+    max-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    padding: 15px;
   }
 }

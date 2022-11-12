@@ -5,6 +5,7 @@ import { ChatComponent } from "./chat.component";
 import { AuthGuard } from "../../core/guard/auth.guard";
 import { UserResolver } from "../../core/resolver/user.resolver";
 import { ChatResolver } from "../../core/resolver/chat.resolver";
+import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module";
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
+    TapeFriendsModule,
     RouterModule.forChild(routes),
   ],
   exports: [

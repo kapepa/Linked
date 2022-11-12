@@ -65,11 +65,12 @@ export class AuthService {
   avatar(form: FormData): Observable<{access_token: string}> {
     return this.http.post<{access_token: string}>(`${this.baseUrl}/api/users/avatar`, form).pipe(
       take(1),
-      tap((res: {access_token: string}) => {
+      tap(async (res: {access_token: string}) => {
         let token = res.access_token
         this.storageService.set('token', token)
         this.user = this.jwtDecode(token);
         this.user$.next(this.user);
+        await this.socketService.updateToken();
       }),
       catchError(this.httpService.handleError)
     )

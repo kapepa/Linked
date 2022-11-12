@@ -5,6 +5,9 @@
 <ion-content [fullscreen]="true">
   <div class="container">
     <div class="chat">
+      <div class="chat__friends">
+        <app-tape-friends></app-tape-friends>
+      </div>
       <div class="chat__area">
         <div class="chat__conversation" *ngIf="!!chat?.length; else chatEmpty">
           <div

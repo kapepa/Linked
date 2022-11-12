@@ -57,12 +57,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @UseGuards(SocketGuard)
   handleConnection(client: Socket, ...args: any[]){
-    console.log('connection')
+    // console.log('connection')
   }
 
   @UseGuards(SocketGuard)
   handleDisconnect(client: Socket){
-    console.log('disconnection')
+    // console.log('disconnection')
   }
 
 
