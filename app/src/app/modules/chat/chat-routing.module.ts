@@ -6,6 +6,7 @@ import { AuthGuard } from "../../core/guard/auth.guard";
 import { UserResolver } from "../../core/resolver/user.resolver";
 import { ChatResolver } from "../../core/resolver/chat.resolver";
 import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module";
+import { ConversationResolver } from "../../core/resolver/conversation.resolver";
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       user: UserResolver,
-      chat: ChatResolver,
+      conversation: ConversationResolver,
+      // chat: ChatResolver,
     }
   },
 ];

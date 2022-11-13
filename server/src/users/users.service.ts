@@ -26,6 +26,10 @@ export class UsersService {
       switchMap((user: UsersInterface) => (of(user)))
     );
   }
+
+  findUsers(options?: { where: { [key:string] : string | number, }, relations?: string[], order?: { [key: string]: string | { [key: string]: string } } }) {
+    return from(this.usersRepository.find({...options}));
+  }
   
   updateUser(key: string, val: string, data: UsersDto): Observable<UpdateResult> {
     return from(this.usersRepository.update({[key]: val}, data));

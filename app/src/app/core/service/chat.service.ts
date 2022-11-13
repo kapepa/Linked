@@ -87,7 +87,7 @@ export class SocketService {
 
   requestChat(id: string, params?: { take?: number, skip?: number }): Observable<ChatInterface> {
     return this.http.get<ChatInterface>(
-      `${this.configUrl}/api/chat/${id}`,
+      `${this.configUrl}/api/chat/one/${id}`,
       {params: params}
     ).pipe(
       take(1),
@@ -100,7 +100,7 @@ export class SocketService {
   }
 
   receiveAllConversation(query?: {skip: number, take: number}): Observable<UserInterface[]> {
-    let params = !!Object.keys(query).length ? query : undefined;
+    let params = query && !!Object.keys(query).length ? query : undefined;
     return this.http.get<Observable<UserInterface[]>>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
       tap((friends: Observable<UserInterface[]>) => {
         console.log(friends)
