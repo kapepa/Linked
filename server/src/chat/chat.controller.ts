@@ -12,7 +12,7 @@ export class ChatController {
     private chatService: ChatService,
   ) {}
 
-  @Get(':id')
+  @Get('/one/:id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'Receive chat on id', type: ChatInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
@@ -25,7 +25,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'receive all conversation', type: ChatInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  getAllConversation(@Req() req, @Query() query) {
-    console.log(req)
+  getAllConversation(@Req() req, @Query() query): Observable<any> {
+    return this.chatService.conversation(req.user);
   }
 }
