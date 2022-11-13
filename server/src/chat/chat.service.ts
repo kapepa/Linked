@@ -17,7 +17,7 @@ export class ChatService {
         owner: {avatar: "0e7df187-6072-4b8b-b465-cb23ec24ae25png.png",email: "test@mail.com", firstName: "FirstName", id: "ca249d3f-9cfe-49ff-aafd-b2e2ab7323b7",lastName:"LastName", role: "user", suggest: []}
       }
     ],
-  } as ChatInterface
+  } as ChatInterface;
 
   constructor(
     private usersService: UsersService,
