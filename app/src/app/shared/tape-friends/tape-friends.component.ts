@@ -37,4 +37,8 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
     // }, 500);
   }
 
+  onFriends(id: string) {
+    console.log(id)
+  }
+
 }
