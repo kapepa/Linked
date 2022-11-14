@@ -17,7 +17,7 @@ export class SocketService {
   configUrl = environment.configUrl;
   socket: Socket;
   friends: UserInterface[];
-  friends$: Observable<UserInterface[]> = new BehaviorSubject<UserInterface[]>(null);
+  friends$: BehaviorSubject<UserInterface[]> = new BehaviorSubject<UserInterface[]>(null);
   chat: ChatInterface;
   chat$: BehaviorSubject<ChatInterface> = new BehaviorSubject<ChatInterface>(null);
 
@@ -101,9 +101,10 @@ export class SocketService {
 
   receiveAllConversation(query?: {skip: number, take: number}): Observable<UserInterface[]> {
     let params = query && !!Object.keys(query).length ? query : undefined;
-    return this.http.get<Observable<UserInterface[]>>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
-      tap((friends: Observable<UserInterface[]>) => {
-        console.log(friends)
+    return this.http.get<UserInterface[]>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
+      tap((friends: UserInterface[]) => {
+        this.friends = friends;
+        this.friends$.next(this.friends);
       }),
       catchError(this.httpService.handleError),
     )
@@ -117,5 +118,9 @@ export class SocketService {
 
   get getChat(): Observable<ChatInterface> {
     return this.chat$.asObservable();
+  }
+
+  get getFriends(): Observable<UserInterface[]> {
+    return this.friends$.asObservable();
   }
 }

@@ -42,11 +42,8 @@ export class ChatService {
     return this.usersService.findOne('id', user.id, {relations: ['friends']}).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
-
-        return of(users);
+        return of(users.friends);
       })
     )
-    // console.log(user)
-    // return from([{} as UsersInterface] as UsersInterface[])
   }
 }

@@ -16,8 +16,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     message: ['', Validators.required],
   });
   chatID: string;
+
   chat = [{}] as MessageInterface[];
   chatSub: Subscription;
+
   user: UserInterface;
   userSub: Subscription;
 
