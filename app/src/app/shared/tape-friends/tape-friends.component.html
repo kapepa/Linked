@@ -1,3 +1,22 @@
-<p>
-  tape-friends works!aaaaaaaaaaaaaaaaaaaa
-</p>
+<ion-content class="tape-friends">
+  <ion-list class="tape-friends__list" >
+    <ng-container *ngFor="let friend of friends; index as i">
+      <div class="tape-friends__item" [ngClass]="{'tape-friends__item--active': true}">
+        <div class="tape-friends__avatar">
+          <img *ngIf="friend.avatar; else avatarIco" class="tape-friends__avatar" alt="avatar" src="{{friend.avatar | url}}" />
+          <ng-template #avatarIco>
+            <ion-icon  class="tape-friends__avatar" name="person-outline"></ion-icon>
+          </ng-template>
+        </div>
+        <div class="tape-friends__naming">
+          <div class="tape-friends__name">{{friend.firstName}}</div>
+          <div class="tape-friends__name">{{friend.lastName}}</div>
+        </div>
+      </div>
+    </ng-container>
+  </ion-list>
+
+  <ion-infinite-scroll [disabled]="false" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

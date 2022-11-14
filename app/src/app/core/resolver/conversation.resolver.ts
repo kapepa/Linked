@@ -21,7 +21,6 @@ export class ConversationResolver implements Resolve<boolean> {
     return this.socketService.receiveAllConversation().pipe(
       take(1),
       switchMap(( friends: UserInterface[] ) => {
-        console.log(friends)
         return of(true);
       })
     )
