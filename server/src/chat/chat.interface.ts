@@ -1,6 +1,9 @@
 import { MessageInterface } from "./message.interface";
+import {UsersInterface} from "../users/users.interface";
 
 export class ChatInterface {
   id?: string;
-  chat?: MessageInterface[]
+  conversation?: UsersInterface[];
+  chat?: MessageInterface[];
+  updated_at?: Date;
 }

@@ -28,8 +28,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('message')
   @UseGuards(SocketGuard)
-  handleMessage(client: any, payload: {id: string, message: MessageInterface}): any {
-    console.log(payload)
+  handleMessage(client: any, payload: {id: string, dto: MessageInterface}): any {
     return this.chatService.addNewMessage(payload).pipe(
       take(1),
       tap((message: MessageInterface) => client.broadcast.to(payload.id).emit('new-message', message)),

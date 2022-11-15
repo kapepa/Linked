@@ -62,9 +62,8 @@ export class SocketService {
   }
 
   message(chatID: string | undefined, message: MessageInterface) {
-    console.log(chatID)
     return from([
-      this.socket.emit('message', {id: chatID, message}, (message) => {
+      this.socket.emit('message', {id: chatID, dto: message}, (message) => {
         // this.chat.chat.push(message);
         // this.chat$.next(this.chat);
       })

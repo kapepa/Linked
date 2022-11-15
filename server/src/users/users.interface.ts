@@ -2,6 +2,7 @@ import { Role } from "../auth/role.enum";
 import { FeetInterface } from "../feet/feet.interface";
 import { FriendsInterface } from "../friends/friends.interface";
 import { ChatInterface } from "../chat/chat.interface";
+import { MessageInterface } from "../chat/message.interface";
 
 export class UsersInterface {
   id?: string;
@@ -15,6 +16,7 @@ export class UsersInterface {
   friends?: UsersInterface[];
   role: Role;
   feet?: FeetInterface[];
-  conversation?: ChatInterface[]
+  chat?: ChatInterface[];
+  messages?: MessageInterface[]
   created_at?: Date;
 }
