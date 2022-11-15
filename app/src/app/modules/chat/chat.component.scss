@@ -4,6 +4,10 @@
   column-gap: 14px;
   width: 100%;
   padding: 10px 23px 0 23px;
+  height: 100%;
+  &__container{
+    height: 100%;
+  }
   &-author{
     &__avatar{
       max-width: 30px;
@@ -51,6 +55,7 @@
     width: 100%;
     max-width: 600px;
     flex-grow: 1;
+    padding-top: 8px;
   }
   &__conversation{
     display: flex;

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ChatInterface } from "./chat.interface";
-import {from, Observable, of, switchMap, take} from "rxjs";
+import { from, Observable, of, switchMap, take } from "rxjs";
 import { MessageInterface } from "./message.interface";
 import { UsersDto } from "../users/users.dto";
-import {UsersService} from "../users/users.service";
-import {UsersInterface} from "../users/users.interface";
+import { UsersService } from "../users/users.service";
+import { UsersInterface } from "../users/users.interface";
 
 @Injectable()
 export class ChatService {
@@ -27,8 +27,8 @@ export class ChatService {
     return of(this.chat)
   }
 
-  addNewMessage(message: MessageInterface) {
-    let createMessage = Object.assign({id: Date.now()}, message);
+  addNewMessage(payload: {id: string, message: MessageInterface}): Observable<any> {
+    let createMessage = Object.assign({id: Date.now()}, payload.message);
     this.chat.chat.push(createMessage);
     return from([createMessage]);
   }
@@ -38,11 +38,11 @@ export class ChatService {
     return from([id]);
   }
 
-  conversation(user: UsersDto) {
+  conversation(user: UsersDto): Observable<any> {
     return this.usersService.findOne('id', user.id, {relations: ['friends']}).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
-        return of(users.friends);
+        return of({ friends: users.friends });
       })
     )
   }

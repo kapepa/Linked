@@ -17,7 +17,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   });
   chatID: string;
 
-  chat = [{}] as MessageInterface[];
+  chat = [] as MessageInterface[];
   chatSub: Subscription;
 
   user: UserInterface;
