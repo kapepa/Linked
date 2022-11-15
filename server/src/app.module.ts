@@ -15,8 +15,9 @@ import { FileModule } from './file/file.module';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { FriendsModule } from './friends/friends.module';
 import { join } from 'path';
-import { ChatGateway } from "./chat/chat.gateway";
 import { ChatModule } from "./chat/chat.module";
+import { Chat } from "./chat/chat.entity";
+import { MessageEntity } from "./chat/message.entity";
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ dotenv.config();
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User,Feet, FriendsEntity],
+      entities: [ User, Feet, FriendsEntity, Chat, MessageEntity ],
       synchronize: true,
     }),
     ServeStaticModule.forRoot({

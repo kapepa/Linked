@@ -4,13 +4,14 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
 import {Feet} from "../feet/feet.entity";
 import {Role} from "../auth/role.enum";
 import {FriendsEntity} from "../friends/friends.entity";
+import {Chat} from "../chat/chat.entity";
+import {MessageEntity} from "../chat/message.entity";
 
 @Entity()
 export class User {
@@ -47,6 +48,12 @@ export class User {
 
   @OneToMany(() => Feet, (feet) => feet.author)
   feet: Feet[];
+
+  @ManyToMany(() => Chat, (chat) => chat.conversation)
+  chat: Chat[];
+
+  @OneToMany(() => MessageEntity, (message) => message.owner)
+  messages: MessageEntity[];
 
   @CreateDateColumn({ select: false, name: 'created_at'})
   created_at: Date;

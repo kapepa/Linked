@@ -5,6 +5,10 @@ import { MessageInterface } from "./message.interface";
 import { UsersDto } from "../users/users.dto";
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Chat} from "./chat.entity";
+import {Repository} from "typeorm";
+import {MessageEntity} from "./message.entity";
 
 @Injectable()
 export class ChatService {
@@ -21,14 +25,19 @@ export class ChatService {
 
   constructor(
     private usersService: UsersService,
+    @InjectRepository(Chat)
+    private chatRepository: Repository<Chat>,
+    @InjectRepository(MessageEntity)
+    private messageRepository: Repository<MessageEntity>,
   ) {}
 
   findOne(id: string, query?: { take?: number, skip: number }): Observable<ChatInterface> {
     return of(this.chat)
   }
 
-  addNewMessage(payload: {id: string, message: MessageInterface}): Observable<any> {
-    let createMessage = Object.assign({id: Date.now()}, payload.message);
+  addNewMessage(payload: {id: string, dto: MessageInterface}): Observable<any> {
+    if(!payload.id) this.createChat(payload.dto)
+    let createMessage = Object.assign({id: Date.now()}, payload.dto);
     this.chat.chat.push(createMessage);
     return from([createMessage]);
   }
@@ -45,5 +54,14 @@ export class ChatService {
         return of({ friends: users.friends });
       })
     )
+  }
+
+  createChat(dto: MessageInterface){
+    return from(this.chatRepository.save({}))
+    console.log(dto)
+  }
+
+  createMessage(dto: MessageInterface){
+
   }
 }

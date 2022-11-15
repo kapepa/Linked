@@ -1,4 +1,4 @@
-import {Controller, Get, Param, Query, Req, UseGuards} from '@nestjs/common';
+import {Controller, Get, Param, Post, Query, Req, UseGuards} from '@nestjs/common';
 import {ChatService} from "./chat.service";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -27,5 +27,13 @@ export class ChatController {
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   getAllConversation(@Req() req, @Query() query): Observable<any> {
     return this.chatService.conversation(req.user);
+  }
+
+  @Post('/create/:friendID')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'create new conversation', type: ChatInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  createNewChat(@Req() req, @Param() param) {
+    console.log(param)
   }
 }
