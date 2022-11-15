@@ -20,7 +20,7 @@ export class ConversationResolver implements Resolve<boolean> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.socketService.receiveAllConversation().pipe(
       take(1),
-      switchMap(( friends: UserInterface[] ) => {
+      switchMap(( dto: {friends: UserInterface[]}  ) => {
         return of(true);
       })
     )

@@ -16,8 +16,10 @@ import { UserInterface } from "../interface/user.interface";
 export class SocketService {
   configUrl = environment.configUrl;
   socket: Socket;
+
   friends: UserInterface[];
   friends$: BehaviorSubject<UserInterface[]> = new BehaviorSubject<UserInterface[]>(null);
+
   chat: ChatInterface;
   chat$: BehaviorSubject<ChatInterface> = new BehaviorSubject<ChatInterface>(null);
 
@@ -59,11 +61,12 @@ export class SocketService {
     return true;
   }
 
-  message(chatID: string, message: MessageInterface) {
+  message(chatID: string | undefined, message: MessageInterface) {
+    console.log(chatID)
     return from([
       this.socket.emit('message', {id: chatID, message}, (message) => {
-        this.chat.chat.push(message);
-        this.chat$.next(this.chat);
+        // this.chat.chat.push(message);
+        // this.chat$.next(this.chat);
       })
     ]).pipe(
       take(1),
@@ -99,11 +102,11 @@ export class SocketService {
     )
   }
 
-  receiveAllConversation(query?: {skip: number, take: number}): Observable<UserInterface[]> {
+  receiveAllConversation(query?: {skip: number, take: number}): Observable<{friends: UserInterface[]}> {
     let params = query && !!Object.keys(query).length ? query : undefined;
-    return this.http.get<UserInterface[]>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
-      tap((friends: UserInterface[]) => {
-        this.friends = friends;
+    return this.http.get<{friends: UserInterface[]}>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
+      tap(( dto: { friends: UserInterface[] } ) => {
+        this.friends = dto.friends;
         this.friends$.next(this.friends);
       }),
       catchError(this.httpService.handleError),
