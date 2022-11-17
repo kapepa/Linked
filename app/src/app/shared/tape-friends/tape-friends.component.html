@@ -1,5 +1,6 @@
 <ion-content class="tape-friends">
-  <ion-list class="tape-friends__list" >
+
+  <ion-list *ngIf="friends.length; else noFriends" class="tape-friends__list" >
     <ng-container *ngFor="let friend of friends; index as i">
       <div class="tape-friends__item" [ngClass]="{'tape-friends__item--active': true}" (click)="onFriends(friend.id)">
         <div class="tape-friends__avatar">
@@ -15,6 +16,12 @@
       </div>
     </ng-container>
   </ion-list>
+
+  <ng-template #noFriends>
+    <ion-text class="tape-friends__text">
+      <span class="tape-friends__span">You don't have friends</span>
+    </ion-text>
+  </ng-template>
 
   <ion-infinite-scroll [disabled]="false" (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>

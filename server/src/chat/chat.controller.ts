@@ -28,12 +28,4 @@ export class ChatController {
   getAllConversation(@Req() req, @Query() query): Observable<any> {
     return this.chatService.conversation(req.user);
   }
-
-  @Post('/create/:friendID')
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'create new conversation', type: ChatInterface})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
-  createNewChat(@Req() req, @Param() param) {
-    console.log(param)
-  }
 }

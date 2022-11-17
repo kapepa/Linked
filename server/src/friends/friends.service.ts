@@ -8,6 +8,7 @@ import { filter } from 'rxjs/operators';
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { FriendsInterface } from "./friends.interface";
+import { ChatService } from "../chat/chat.service";
 
 @Injectable()
 export class FriendsService {
@@ -15,6 +16,7 @@ export class FriendsService {
     @InjectRepository(FriendsEntity)
     private friendsRepository: Repository<FriendsEntity>,
     private usersService: UsersService,
+    private chatService: ChatService,
   ) {};
 
   findOne(options: { where?: {[key: string]: string | { [key: string]: string } }, relations?: string[], }): Observable<FriendsInterface> {
@@ -37,6 +39,10 @@ export class FriendsService {
             return from(this.friendsRepository.save({ user: myUser, friends: friend }));
           })
         )
+      }),
+      tap(() => {
+        console.log(friendsID)
+        console.log(user)
       })
     );
   }

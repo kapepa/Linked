@@ -33,7 +33,7 @@
           </div>
         </div>
         <ng-template #chatEmpty>
-          You not have conversation!
+          <ion-text>You not have conversation!</ion-text>
         </ng-template>
         <div class="chat__interaction">
           <form [formGroup]="textarea" (ngSubmit)="onSubmit()" class="chat__form">
