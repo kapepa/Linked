@@ -17,6 +17,7 @@ import { Chat } from "./chat.entity";
       signOptions: { expiresIn: '30d' },
     }),
   ],
+  exports: [ChatService],
   providers: [ChatGateway, ChatService],
   controllers: [ChatController],
 })
