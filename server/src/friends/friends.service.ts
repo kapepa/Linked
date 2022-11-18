@@ -3,7 +3,7 @@ import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
 import { DeleteResult, Repository } from "typeorm";
-import { from, Observable, of, switchMap, tap, toArray } from "rxjs";
+import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
 import { filter } from 'rxjs/operators';
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
@@ -41,8 +41,9 @@ export class FriendsService {
         )
       }),
       tap(() => {
-        console.log(friendsID)
-        console.log(user)
+        this.usersService.findOne('id', friendsID).subscribe((friend: UsersInterface) => {
+          this.chatService.createChat(user, friend).subscribe(() => {})
+        })
       })
     );
   }
@@ -102,6 +103,9 @@ export class FriendsService {
       switchMap((friend: FriendsInterface) => {
         if(!(user.id === friend.user.id || user.id === friend.friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
         return this.deleteRequest(requestID);
+      }),
+      tap(() => {
+        //this need make delete chat!
       })
     )
   }
@@ -113,7 +117,7 @@ export class FriendsService {
           filter((friend: UsersInterface) => friend.id !== user.id),
           toArray(),
           switchMap(( personFriend: UsersInterface[]) => {
-            return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
+            return this.usersService.findOne('id', user.id, { relations: ['friends', 'chat'] }).pipe(
               switchMap((profile: UsersInterface) => {
                 if(!profile.friends || !profile.friends.length) return of([] as UsersInterface[]);
                 return from(profile.friends).pipe(
@@ -125,6 +129,9 @@ export class FriendsService {
                         return this.usersService.saveUser({ ...user, friends: friendList }).pipe(
                           switchMap(() => of(friendList)),
                         );
+                      }),
+                      tap(() => {
+                        this.chatService.deleteChat(profile.chat, friendID)
                       })
                     )
                   }),
