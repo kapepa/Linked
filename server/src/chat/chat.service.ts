@@ -54,20 +54,20 @@ export class ChatService {
     return this.usersService.findOneUser( {
       where: { id: user.id},
       relations: ['friends', 'chat'],
-      order: { chat: { updated_at: "ASC" } },
+      order: { chat: { updated_at: "DESC" } },
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
         let chat = users.chat[0];
         return this.findMessage({
           where: { chat: { id: chat.id } },
-          order: { created_at: "ASC" },
+          order: { created_at: "DESC" },
           relations: ['owner'],
           skip: 0,
           take: 5
         }).pipe(
           switchMap((messages: MessageInterface[]) => {
-            return of({ friends: users.friends, chat: { ...chat,  chat: messages} });
+            return of({ friends: users.friends, chat: { ...chat,  chat: messages.reverse()} });
           })
         );
       })
