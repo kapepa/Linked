@@ -31,7 +31,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   handleMessage(client: any, payload: {id: string, dto: MessageInterface}): any {
     return this.chatService.addNewMessage(payload).pipe(
       take(1),
-      tap((message: MessageInterface) => client.broadcast.to(payload.id).emit('new-message', message)),
+      tap((message: MessageInterface) => {
+        client.broadcast.to(payload.id).emit('new-message', message)
+      }),
     );
   }
 

@@ -9,10 +9,10 @@
         <app-tape-friends></app-tape-friends>
       </div>
       <div class="chat__area">
-        <div class="chat__conversation" *ngIf="!!chat?.length; else chatEmpty">
+        <div class="chat__conversation" *ngIf="!!messages?.length; else chatEmpty">
           <div
             class="chat__cell"
-            *ngFor="let message of chat; index as i"
+            *ngFor="let message of messages; index as i"
             [ngClass]="{'chat__cell--owner': message?.owner?.id === user?.id}"
           >
             <div class="chat__author">
