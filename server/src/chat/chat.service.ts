@@ -1,27 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ChatInterface } from "./chat.interface";
-import {from, Observable, of, switchMap, take, tap} from "rxjs";
+import { from, Observable, of, switchMap, take, tap } from "rxjs";
 import { MessageInterface } from "./message.interface";
 import { UsersDto } from "../users/users.dto";
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Chat} from "./chat.entity";
-import {Repository} from "typeorm";
-import {MessageEntity} from "./message.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Chat } from "./chat.entity";
+import { Repository } from "typeorm";
+import { MessageEntity } from "./message.entity";
 
 @Injectable()
 export class ChatService {
-  chat = {
-    id: 'first',
-    chat: [
-      {
-        id: 'chatID',
-        message: "Test message",
-        owner: {avatar: "0e7df187-6072-4b8b-b465-cb23ec24ae25png.png",email: "test@mail.com", firstName: "FirstName", id: "ca249d3f-9cfe-49ff-aafd-b2e2ab7323b7",lastName:"LastName", role: "user", suggest: []}
-      }
-    ],
-  } as ChatInterface;
 
   constructor(
     private usersService: UsersService,
@@ -31,27 +21,55 @@ export class ChatService {
     private messageRepository: Repository<MessageEntity>,
   ) {}
 
-  findOne(id: string, query?: { take?: number, skip: number }): Observable<ChatInterface> {
-    return of(this.chat)
+  findOneChat(options?:{
+    where?: {[key: string]: string | { [key: string]: string } },
+    relations?: string[],
+    order?: {[key: string]: "ASC" | "DESC" },
+    skip?: number,
+    take?: number,
+  }): Observable<ChatInterface> {
+    return from(this.chatRepository.findOne({ ...options }));
   }
 
-  addNewMessage(payload: {id: string, dto: MessageInterface}): Observable<any> {
-    // if(!payload.id) this.createChat(payload.dto)
-    let createMessage = Object.assign({id: Date.now()}, payload.dto);
-    this.chat.chat.push(createMessage);
-    return from([createMessage]);
+  findMessage(options?: {
+    where?: { [key: string]: string | { [key: string]: string } },
+    relations?: string[],
+    order?: {[key: string]: "ASC" | "DESC"},
+    skip?: number,
+    take?: number,
+  }): Observable<MessageInterface[]>{
+    return from(this.messageRepository.find({ ...options, }))
+  }
+
+  addNewMessage(payload: {id: string, dto: MessageInterface}): Observable<MessageInterface> {
+    return this.createMessage(payload.id, payload.dto);
   }
 
   deleteMessage(id: string): Observable<string> {
-    this.chat.chat = this.chat.chat.filter(message => message.id !== id);
+    // this.chat.chat = this.chat.chat.filter(message => message.id !== id);
     return from([id]);
   }
 
-  conversation(user: UsersDto): Observable<any> {
-    return this.usersService.findOne('id', user.id, {relations: ['friends']}).pipe(
+  conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
+    return this.usersService.findOneUser( {
+      where: { id: user.id},
+      relations: ['friends', 'chat'],
+      order: { chat: { updated_at: "ASC" } },
+    }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
-        return of({ friends: users.friends });
+        let chat = users.chat[0];
+        return this.findMessage({
+          where: { chat: { id: chat.id } },
+          order: { created_at: "ASC" },
+          relations: ['owner'],
+          skip: 0,
+          take: 5
+        }).pipe(
+          switchMap((messages: MessageInterface[]) => {
+            return of({ friends: users.friends, chat: { ...chat,  chat: messages} });
+          })
+        );
       })
     )
   }
@@ -60,11 +78,29 @@ export class ChatService {
     return from(this.chatRepository.save({ conversation: [user, friend] }));
   }
 
-  deleteChat(chatList: ChatInterface[], friendID: string) {
-    console.log(chatList)
+  deleteChat(userID: string, friendID: string) {
+    return from(this.chatRepository.findOne({where: { conversation: [ {id: userID}, {id: friendID} ] }})).pipe(
+      switchMap((chat: ChatInterface) => {
+        return this.chatRepository.delete({ id: chat.id });
+      })
+    )
   }
 
-  createMessage(dto: MessageInterface){
-
+  async removeChat(chat: ChatInterface[]){
+    await this.chatRepository.remove(chat as Chat[])
   }
+
+  createMessage( chatID: string, dto: MessageInterface ): Observable<MessageInterface>{
+    return from(this.findOneChat({ where: { id: chatID }, relations: ['chat'] })).pipe(
+      switchMap((chat: ChatInterface) => {
+        return from(this.messageRepository.save(dto)).pipe(
+          switchMap( (message: MessageInterface) => {
+            return from([message]);
+          }),
+          tap(() => this.chatRepository.save({ ...chat, chat: chat.chat.concat(dto) }))
+        );
+      })
+    )
+  }
+
 }

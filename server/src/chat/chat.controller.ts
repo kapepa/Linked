@@ -2,7 +2,7 @@ import {Controller, Get, Param, Post, Query, Req, UseGuards} from '@nestjs/commo
 import {ChatService} from "./chat.service";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {Observable} from "rxjs";
+import {from, Observable, of} from "rxjs";
 import {ChatInterface} from "./chat.interface";
 
 @ApiTags('chat')
@@ -18,7 +18,8 @@ export class ChatController {
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   getOne(@Param('id') id, @Query() query): Observable<ChatInterface> {
     let defaultQuery = { take: 5, skip: 0 }
-    return this.chatService.findOne(id, !!Object.keys(query).length ? query : defaultQuery);
+    // return this.chatService.findOne(id, !!Object.keys(query).length ? query : defaultQuery);
+    return from([])
   }
 
   @Get('/conversation')

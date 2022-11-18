@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
 import { io, Socket } from "socket.io-client";
-import { ChatInterface, MessageInterface } from "../interface/chat.interface";
-import { BehaviorSubject, from, Observable } from "rxjs";
+import { ChatInterface } from "../interface/chat.interface";
+import {BehaviorSubject, from, Observable, of} from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { HttpService } from "./http.service";
-import { catchError, take, tap } from "rxjs/operators";
+import {catchError, switchMap, take, tap} from "rxjs/operators";
 import { StorageService } from "./storage.service";
 import { UserInterface } from "../interface/user.interface";
+import { MessageInterface } from "../interface/message.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -61,11 +62,11 @@ export class SocketService {
     return true;
   }
 
-  message(chatID: string | undefined, message: MessageInterface) {
+  messageReceive(chatID: string | undefined, message: MessageInterface) {
     return from([
       this.socket.emit('message', {id: chatID, dto: message}, (message) => {
-        // this.chat.chat.push(message);
-        // this.chat$.next(this.chat);
+        this.chat.chat.push(message);
+        this.chat$.next(this.chat);
       })
     ]).pipe(
       take(1),
@@ -101,12 +102,14 @@ export class SocketService {
     )
   }
 
-  receiveAllConversation(query?: {skip: number, take: number}): Observable<{friends: UserInterface[]}> {
+  receiveAllConversation(query?: {skip: number, take: number}): Observable<{friends: UserInterface[], chat: ChatInterface}> {
     let params = query && !!Object.keys(query).length ? query : undefined;
-    return this.http.get<{friends: UserInterface[]}>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
-      tap(( dto: { friends: UserInterface[] } ) => {
+    return this.http.get<{friends: UserInterface[], messages: MessageInterface[], chat: ChatInterface}>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
+      tap(( dto: { friends: UserInterface[], chat: ChatInterface } ) => {
         this.friends = dto.friends;
         this.friends$.next(this.friends);
+        this.chat = dto.chat;
+        this.chat$.next(this.chat);
       }),
       catchError(this.httpService.handleError),
     )
@@ -124,5 +127,13 @@ export class SocketService {
 
   get getFriends(): Observable<UserInterface[]> {
     return this.friends$.asObservable();
+  }
+
+  get getMessages(): Observable<MessageInterface[]> {
+    return this.chat$.asObservable().pipe(
+      switchMap(( chat: ChatInterface) => {
+        return of(chat.chat);
+      })
+    );
   }
 }

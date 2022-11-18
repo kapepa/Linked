@@ -42,7 +42,7 @@ export class FriendsService {
       }),
       tap(() => {
         this.usersService.findOne('id', friendsID).subscribe((friend: UsersInterface) => {
-          this.chatService.createChat(user, friend).subscribe(() => {})
+          this.chatService.createChat(user, friend).subscribe(() => {});
         })
       })
     );
@@ -102,11 +102,12 @@ export class FriendsService {
     return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
       switchMap((friend: FriendsInterface) => {
         if(!(user.id === friend.user.id || user.id === friend.friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
-        return this.deleteRequest(requestID);
+        return this.deleteRequest(requestID).pipe(
+          tap(() => {
+            this.chatService.deleteChat(user.id, friend.id).subscribe();
+          })
+        );
       }),
-      tap(() => {
-        //this need make delete chat!
-      })
     )
   }
 
@@ -131,7 +132,7 @@ export class FriendsService {
                         );
                       }),
                       tap(() => {
-                        this.chatService.deleteChat(profile.chat, friendID)
+                        this.chatService.deleteChat(user.id, friendID).subscribe();
                       })
                     )
                   }),
