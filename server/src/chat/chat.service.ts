@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ChatInterface } from "./chat.interface";
-import { from, Observable, of, switchMap, take } from "rxjs";
+import {from, Observable, of, switchMap, take, tap} from "rxjs";
 import { MessageInterface } from "./message.interface";
 import { UsersDto } from "../users/users.dto";
 import { UsersService } from "../users/users.service";
@@ -36,7 +36,7 @@ export class ChatService {
   }
 
   addNewMessage(payload: {id: string, dto: MessageInterface}): Observable<any> {
-    if(!payload.id) this.createChat(payload.dto)
+    // if(!payload.id) this.createChat(payload.dto)
     let createMessage = Object.assign({id: Date.now()}, payload.dto);
     this.chat.chat.push(createMessage);
     return from([createMessage]);
@@ -56,9 +56,12 @@ export class ChatService {
     )
   }
 
-  createChat(dto: MessageInterface){
-    return from(this.chatRepository.save({}))
-    console.log(dto)
+  createChat(user: UsersInterface | UsersDto, friend: UsersInterface){
+    return from(this.chatRepository.save({ conversation: [user, friend] }));
+  }
+
+  deleteChat(chatList: ChatInterface[], friendID: string) {
+    console.log(chatList)
   }
 
   createMessage(dto: MessageInterface){
