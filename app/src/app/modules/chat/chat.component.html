@@ -2,36 +2,38 @@
 
 <app-header></app-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" >
   <div class="container chat__container">
     <div class="chat">
       <div class="chat__friends" >
         <app-tape-friends></app-tape-friends>
       </div>
       <div class="chat__area">
-        <div class="chat__conversation" *ngIf="!!messages?.length; else chatEmpty">
-          <div
-            class="chat__cell"
-            *ngFor="let message of messages; index as i"
-            [ngClass]="{'chat__cell--owner': message?.owner?.id === user?.id}"
-          >
-            <div class="chat__author">
-              <div *ngIf="message.owner?.avatar; else avatarIco" class="chat-author__avatar">
-                <img alt="avatar" src="{{ message.owner?.avatar | url }}" />
+        <ion-content class="chat__content" #ionContent>
+          <ion-infinite-scroll threshold="0px" position="top" (ionInfinite)="loadData($event)" >
+            <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="lines"  [scrollTop]="11"></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+          <ion-list class="chat__conversation" lines="none" *ngIf="!!messages?.length; else chatEmpty">
+            <ion-item class="chat__item" *ngFor="let message of messages; index as i">
+              <div
+                class="chat__cell"
+                [ngClass]="{'chat__cell--owner': message?.owner?.id === user?.id}"
+              >
+                <div class="chat__author">
+                  <div *ngIf="message.owner?.avatar; else avatarIco" class="chat-author__avatar">
+                    <img alt="avatar" src="{{ message.owner?.avatar | url }}" />
+                  </div>
+                  <ng-template #avatarIco>
+                    <ion-icon  class="chat__author" name="person-outline"></ion-icon>
+                  </ng-template>
+                  <div class="chat-author__name">{{message.owner?.firstName}} {{message.owner?.lastName}}</div>
+                </div>
+                <div class="chat__message">{{message.message}}</div>
+                <div *ngIf="message?.owner?.id === user?.id" class="chat_message__del" (click)="onDel(i)"></div>
               </div>
-              <ng-template #avatarIco>
-                <ion-icon  class="chat__author" name="person-outline"></ion-icon>
-              </ng-template>
-              <div class="chat-author__name">
-                {{message.owner?.firstName}} {{message.owner?.lastName}}
-              </div>
-            </div>
-            <div class="chat__message">
-              {{message.message}}
-            </div>
-            <div *ngIf="message?.owner?.id === user?.id" class="chat_message__del" (click)="onDel(i)"></div>
-          </div>
-        </div>
+            </ion-item>
+          </ion-list>
+        </ion-content>
         <ng-template #chatEmpty>
           <ion-text>You not have conversation!</ion-text>
         </ng-template>

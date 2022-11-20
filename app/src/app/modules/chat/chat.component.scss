@@ -5,6 +5,9 @@
   width: 100%;
   padding: 10px 23px 0 23px;
   height: 100%;
+  &__content{
+
+  }
   &__container{
     height: 100%;
   }
@@ -56,11 +59,17 @@
     max-width: 600px;
     flex-grow: 1;
     padding-top: 8px;
+    display: flex;flex-direction: column;
+    justify-content: space-between;
   }
   &__conversation{
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    padding-right: 10px;
+  }
+  &__interaction{
+    padding-bottom: 100px;
   }
   &__cell{
     padding: 8px 12px;

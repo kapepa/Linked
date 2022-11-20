@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import { ChatInterface } from "../../core/interface/chat.interface";
 import { Subscription } from "rxjs";
 import { UserInterface } from "../../core/interface/user.interface";
@@ -13,6 +13,7 @@ import {MessageInterface} from "../../core/interface/message.interface";
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  @ViewChild('ionContent') ionContent: any;
   textarea = this.fb.group({
     message: ['', Validators.required],
   });
@@ -66,4 +67,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.textarea.reset();
     });
   };
+
+  loadData(event) {
+    this.socketService.loadMessage().subscribe({
+      next: () => event.target.complete(),
+      error: () => event.target.complete(),
+    });
+  }
 }
