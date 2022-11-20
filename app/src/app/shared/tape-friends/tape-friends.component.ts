@@ -45,7 +45,7 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   }
 
   onFriends(id: string) {
-    this.socketService.changeActiveConversation(id);
+    this.socketService.changeActiveConversation(id).subscribe(() => {});
   }
 
 }
