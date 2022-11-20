@@ -2,7 +2,7 @@
 
   <ion-list *ngIf="friends.length; else noFriends" class="tape-friends__list" >
     <ng-container *ngFor="let friend of friends; index as i">
-      <div class="tape-friends__item" [ngClass]="{'tape-friends__item--active': true}" (click)="onFriends(friend.id)">
+      <div class="tape-friends__item" [ngClass]="{'tape-friends__item--active': friend.id === activeConversation}" (click)="onFriends(friend.id)">
         <div class="tape-friends__avatar">
           <img *ngIf="friend.avatar; else avatarIco" class="tape-friends__avatar" alt="avatar" src="{{friend.avatar | url}}" />
           <ng-template #avatarIco>

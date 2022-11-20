@@ -12,6 +12,9 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   friends: UserInterface[];
   friendsSub: Subscription;
 
+  activeConversation: string;
+  activeConversationSub: Subscription
+
   constructor(
     private socketService: SocketService,
   ) { }
@@ -20,10 +23,14 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
     this.friendsSub = this.socketService.getFriends.subscribe(( friends: UserInterface[] ) => {
       this.friends = friends;
     })
+    this.activeConversationSub = this.socketService.getActiveConversation.subscribe(( active: string ) => {
+      this.activeConversation = active;
+    })
   }
 
   ngOnDestroy() {
     this.friendsSub.unsubscribe();
+    this.activeConversationSub.unsubscribe();
   }
 
   loadData(event) {
@@ -38,7 +45,7 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   }
 
   onFriends(id: string) {
-    console.log(id)
+    this.socketService.changeActiveConversation(id);
   }
 
 }
