@@ -7,7 +7,7 @@ import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chat } from "./chat.entity";
-import {DeleteResult, Repository} from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { MessageEntity } from "./message.entity";
 
 @Injectable()
@@ -22,7 +22,7 @@ export class ChatService {
   ) {}
 
   findOneChat(options?:{
-    where?: {[key: string]: string | { [key: string]: string } },
+    where?: {[key: string]: string | string[] | { [key: string]: string } },
     relations?: string[],
     order?: {[key: string]: "ASC" | "DESC" },
     skip?: number,
@@ -73,8 +73,33 @@ export class ChatService {
     )
   }
 
+  getChat( friendID: string, userID: string ){
+    return this.findOneChat({
+      where: { conversation: [userID, friendID] },
+      relations: ['conversation']
+    }).pipe(
+      switchMap((chat: ChatInterface) => {
+        // '66f4faed-8c42-48f5-943d-85b9366c12d8'
+        console.log(chat.id)
+        return of('test chat')
+        // return this.findMessage({
+        //   where: { chat: { id: chat.id } },
+        //   order: { created_at: "DESC" },
+        //   relations: ['chat', 'owner'],
+        //   skip: 0,
+        //   take: 20,
+        // }).pipe(
+        //   switchMap((messages: MessageInterface[]) => {
+        //     // console.log(messages)
+        //     return of({...chat, chat: messages.reverse()})
+        //   })
+        // )
+      })
+    )
+  }
+
   createChat(user: UsersInterface | UsersDto, friend: UsersInterface){
-    return from(this.chatRepository.save({ conversation: [user, friend] }));
+    return from(this.chatRepository.save({ conversation: [friend, user] }));
   }
 
   deleteChat(userID: string, friendID: string) {
@@ -83,10 +108,6 @@ export class ChatService {
         return this.chatRepository.delete({ id: chat.id });
       })
     )
-  }
-
-  async removeChat(chat: ChatInterface[]){
-    await this.chatRepository.remove(chat as Chat[])
   }
 
   createMessage( chatID: string, dto: MessageInterface ): Observable<MessageInterface>{
@@ -100,6 +121,10 @@ export class ChatService {
         );
       })
     )
+  }
+
+  async removeChat(chat: ChatInterface[]){
+    await this.chatRepository.remove(chat as Chat[])
   }
 
 }

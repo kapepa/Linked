@@ -49,4 +49,13 @@ export class ChatController {
       })
     )
   }
+
+  @Get('/change/:friendID')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'find chat, and return chat and message', type: ChatInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  changeChat(@Param() param, @Req() req): Observable<any>{
+    return this.chatService.getChat(param.friendID, req.user.id);
+  }
+
 }

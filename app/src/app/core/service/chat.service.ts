@@ -132,10 +132,16 @@ export class SocketService {
     )
   }
 
-  changeActiveConversation(id: string) {
-    this.activeConversation = id;
-    this.activeConversation$.next(this.activeConversation);
+  changeActiveConversation(id: string): Observable<any> {
+    return this.http.get<any>(`${this.configUrl}/api/chat/change/${id}`).pipe(
+      take(1),
+      tap((chat: ChatInterface) => {
+        this.activeConversation = id;
+        this.activeConversation$.next(this.activeConversation);
+        // console.log(chat)
 
+      })
+    )
     //need make load chat
   }
 
