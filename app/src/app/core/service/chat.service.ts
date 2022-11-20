@@ -24,6 +24,9 @@ export class SocketService {
   chat: ChatInterface;
   chat$: BehaviorSubject<ChatInterface> = new BehaviorSubject<ChatInterface>(null);
 
+  activeConversation: string;
+  activeConversation$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
@@ -110,6 +113,8 @@ export class SocketService {
         this.friends$.next(this.friends);
         this.chat = dto.chat;
         this.chat$.next(this.chat);
+        this.activeConversation = this.friends[0].id;
+        this.activeConversation$.next(this.activeConversation);
       }),
       catchError(this.httpService.handleError),
     )
@@ -125,6 +130,13 @@ export class SocketService {
       }),
       catchError(this.httpService.handleError),
     )
+  }
+
+  changeActiveConversation(id: string) {
+    this.activeConversation = id;
+    this.activeConversation$.next(this.activeConversation);
+
+    //need make load chat
   }
 
   async updateToken() {
@@ -147,5 +159,9 @@ export class SocketService {
         return of(chat.chat);
       })
     );
+  }
+
+  get getActiveConversation(): Observable<string>{
+    return this.activeConversation$.asObservable();
   }
 }

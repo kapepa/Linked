@@ -51,7 +51,7 @@ export class ChatService {
 
   conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
-      where: { id: user.id},
+      where: { id: user.id },
       relations: ['friends', 'chat'],
       order: { chat: { updated_at: "DESC" } },
     }).pipe(

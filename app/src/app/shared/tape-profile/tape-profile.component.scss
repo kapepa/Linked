@@ -38,11 +38,12 @@
     }
   }
   &__avatar{
-    width: 72px;
-    height: 72px;
+    width: 64px;
+    height: 64px;
     background-color: gray;
     border-radius: 50%;
     cursor: pointer;
+    object-fit: fill;
   }
   &__avatar-wrapper{
     position: absolute;
