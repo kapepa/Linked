@@ -2,8 +2,9 @@ import {Controller, Get, Param, Post, Query, Req, UseGuards} from '@nestjs/commo
 import {ChatService} from "./chat.service";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {from, Observable, of} from "rxjs";
+import {from, Observable, of, switchMap, take} from "rxjs";
 import {ChatInterface} from "./chat.interface";
+import {MessageInterface} from "./message.interface";
 
 @ApiTags('chat')
 @Controller('chat')
@@ -28,5 +29,24 @@ export class ChatController {
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   getAllConversation(@Req() req, @Query() query): Observable<any> {
     return this.chatService.conversation(req.user);
+  }
+
+  @Get('/messages')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'receive message on query params', type: ChatInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  getMessages(@Req() req, @Query() query: {id: string, take: string, skip: string}) {
+    return this.chatService.findMessage({
+      where: { chat: { id: query.id } },
+      order: { created_at: "DESC" },
+      relations: ['owner', 'chat'],
+      skip: Number(query.skip),
+      take: Number(query.take),
+    }).pipe(
+      take(1),
+      switchMap((messages: MessageInterface[]) => {
+        return from([messages.reverse()]);
+      })
+    )
   }
 }

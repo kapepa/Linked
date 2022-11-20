@@ -7,7 +7,7 @@ import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chat } from "./chat.entity";
-import { Repository } from "typeorm";
+import {DeleteResult, Repository} from "typeorm";
 import { MessageEntity } from "./message.entity";
 
 @Injectable()
@@ -45,9 +45,8 @@ export class ChatService {
     return this.createMessage(payload.id, payload.dto);
   }
 
-  deleteMessage(id: string): Observable<string> {
-    // this.chat.chat = this.chat.chat.filter(message => message.id !== id);
-    return from([id]);
+  deleteMessage(id: string): Observable<DeleteResult> {
+    return from(this.messageRepository.delete({id}));
   }
 
   conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
@@ -64,7 +63,7 @@ export class ChatService {
           order: { created_at: "DESC" },
           relations: ['owner'],
           skip: 0,
-          take: 5
+          take: 20
         }).pipe(
           switchMap((messages: MessageInterface[]) => {
             return of({ friends: users.friends, chat: { ...chat,  chat: messages.reverse()} });

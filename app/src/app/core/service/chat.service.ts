@@ -3,7 +3,7 @@ import { environment } from "../../../environments/environment";
 import { io, Socket } from "socket.io-client";
 import { ChatInterface } from "../interface/chat.interface";
 import {BehaviorSubject, from, Observable, of} from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import { HttpService } from "./http.service";
 import {catchError, switchMap, take, tap} from "rxjs/operators";
 import { StorageService } from "./storage.service";
@@ -62,7 +62,7 @@ export class SocketService {
     return true;
   }
 
-  messageReceive(chatID: string | undefined, message: MessageInterface) {
+  messageReceive(chatID: string, message: MessageInterface) {
     return from([
       this.socket.emit('message', {id: chatID, dto: message}, (message) => {
         this.chat.chat.push(message);
@@ -109,6 +109,18 @@ export class SocketService {
         this.friends = dto.friends;
         this.friends$.next(this.friends);
         this.chat = dto.chat;
+        this.chat$.next(this.chat);
+      }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
+  loadMessage(): Observable<MessageInterface[]> {
+    return this.http.get<MessageInterface[]>(
+      `${this.configUrl}/api/chat/messages`, {params: {id: this.chat.id, take: 20, skip: this.chat.chat.length}}).pipe(
+      take(1),
+      tap((messages: MessageInterface[]) => {
+        this.chat.chat.unshift(...messages);
         this.chat$.next(this.chat);
       }),
       catchError(this.httpService.handleError),

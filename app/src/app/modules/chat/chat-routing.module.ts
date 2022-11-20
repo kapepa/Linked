@@ -4,7 +4,6 @@ import { RouterModule, Routes } from "@angular/router";
 import { ChatComponent } from "./chat.component";
 import { AuthGuard } from "../../core/guard/auth.guard";
 import { UserResolver } from "../../core/resolver/user.resolver";
-import { ChatResolver } from "../../core/resolver/chat.resolver";
 import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module";
 import { ConversationResolver } from "../../core/resolver/conversation.resolver";
 
@@ -16,7 +15,6 @@ const routes: Routes = [
     resolve: {
       user: UserResolver,
       conversation: ConversationResolver,
-      // chat: ChatResolver,
     }
   },
 ];
