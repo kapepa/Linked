@@ -27,6 +27,9 @@ export class SocketService {
   activeConversation: string;
   activeConversation$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
+  activeFriend: number;
+  activeFriend$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
+
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
@@ -66,10 +69,14 @@ export class SocketService {
   }
 
   messageReceive(chatID: string, message: MessageInterface) {
+    let friend = Object.assign(this.friends[this.activeFriend], {});
     return from([
       this.socket.emit('message', {id: chatID, dto: message}, (message) => {
         this.chat.chat.push(message);
         this.chat$.next(this.chat);
+        this.friends.splice(this.activeFriend, 1);
+        this.friends.unshift(friend);
+        this.friends$.next(this.friends);
       })
     ]).pipe(
       take(1),
@@ -132,17 +139,18 @@ export class SocketService {
     )
   }
 
-  changeActiveConversation(id: string): Observable<any> {
+  changeActiveConversation(id: string, index: number): Observable<any> {
     return this.http.get<any>(`${this.configUrl}/api/chat/change/${id}`).pipe(
       take(1),
       tap((chat: ChatInterface) => {
+        this.activeFriend = index;
+        this.activeFriend$.next(this.activeFriend);
         this.activeConversation = id;
         this.activeConversation$.next(this.activeConversation);
-        // console.log(chat)
-
+        this.chat = chat;
+        this.chat$.next(this.chat);
       })
     )
-    //need make load chat
   }
 
   async updateToken() {

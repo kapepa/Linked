@@ -30,7 +30,7 @@ export class UsersService {
   findOneUser(options?: {
     where?: { [key: string]: string | { [key: string]: string } },
     relations?: string[],
-    order?: { [key: string]: "ASC" | "DESC" | { [key: string]: "ASC" | "DESC"}}
+    order?: { [key: string]: "ASC" | "DESC" | { [key: string]: "ASC" | "DESC" | { [key: string]: "ASC" | "DESC"}} }
     select?: [],
   }): Observable<UsersInterface> {
     return from(this.usersRepository.findOne({...options}));
