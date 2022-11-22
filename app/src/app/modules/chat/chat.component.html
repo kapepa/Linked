@@ -9,12 +9,12 @@
         <app-tape-friends></app-tape-friends>
       </div>
       <div class="chat__area">
-        <ion-content class="chat__content"  [scrollEvents]="true">
-          <div class="chat__wrapper">
-            <ion-infinite-scroll threshold="5%" position="top" (ionInfinite)="loadData($event)" >
+        <ion-content class="chat__content" [scrollEvents]="true"  *ngIf="!!messages?.length; else chatEmpty">
+          <div class="chat__wrapper" *ngIf="!!friends.length; else messagesLoad">
+            <ion-infinite-scroll *ngIf="(messages?.length >= 20 && !limited)" threshold="5%" position="top" (ionInfinite)="loadData($event)" >
               <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="lines"  [scrollTop]="11"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
-            <ion-list class="chat__conversation" lines="none" *ngIf="!!messages?.length; else chatEmpty">
+            <ion-list class="chat__conversation" lines="none">
               <ion-item class="chat__item" *ngFor="let message of messages; index as i">
                 <div
                   class="chat__cell"
@@ -35,6 +35,11 @@
               </ion-item>
             </ion-list>
           </div>
+          <ng-template #messagesLoad>
+            <div class="chat__load">
+              <ion-spinner color="secondary" class="chat__spinner"></ion-spinner>
+            </div>
+          </ng-template>
         </ion-content>
         <ng-template #chatEmpty>
           <ion-text>You not have conversation!</ion-text>

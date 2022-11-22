@@ -11,6 +11,8 @@ import { MessageInterface } from "./message.interface";
 import { take, tap } from "rxjs";
 import { UseGuards } from "@nestjs/common";
 import { SocketGuard } from "../auth/socket.guard";
+import { JwtService } from "@nestjs/jwt";
+import { UsersDto } from "../users/users.dto";
 
 @WebSocketGateway({
   cors: {
@@ -23,7 +25,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   server: Server;
 
   constructor(
-    private chatService: ChatService
+    private chatService: ChatService,
+    private jwtService: JwtService,
   ) {}
 
   @SubscribeMessage('message')
@@ -59,13 +62,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @UseGuards(SocketGuard)
   handleConnection(client: Socket, ...args: any[]){
-    // console.log('connection')
+    this.runToken(client, 'connection');
   }
 
   @UseGuards(SocketGuard)
   handleDisconnect(client: Socket){
-    // console.log('disconnection')
+    this.runToken(client, 'disconnect');
   }
 
-
+  runToken(client: Socket, action: 'connection' | 'disconnect') {
+    let bearer = client.handshake.headers.authorization.split(' ').pop();
+    if( !!bearer?.length ) {
+      let decode = this.jwtService.decode(bearer) as UsersDto;
+      if( action === 'connection') client.join(decode.id);
+      if( action === 'disconnect') client.leave(decode.id);
+    }
+  }
 }

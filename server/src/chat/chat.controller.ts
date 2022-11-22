@@ -45,7 +45,8 @@ export class ChatController {
     }).pipe(
       take(1),
       switchMap((messages: MessageInterface[]) => {
-        return from([messages.reverse()]);
+        let reqMessage = messages.reverse();
+        return from([{messages: reqMessage, limited: reqMessage.length !== Number(query.take)}]);
       })
     )
   }

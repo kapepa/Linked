@@ -3,7 +3,7 @@ import { environment } from "../../../environments/environment";
 import { io, Socket } from "socket.io-client";
 import { ChatInterface } from "../interface/chat.interface";
 import { BehaviorSubject, from, Observable, of } from "rxjs";
-import { HttpClient, HttpParams} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { HttpService } from "./http.service";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { StorageService } from "./storage.service";
@@ -29,6 +29,9 @@ export class SocketService {
 
   activeFriend: number;
   activeFriend$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
+
+  messageLimited: boolean;
+  messageLimited$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
   constructor(
     private http: HttpClient,
@@ -128,19 +131,24 @@ export class SocketService {
     )
   }
 
-  loadMessage(): Observable<MessageInterface[]> {
-    return this.http.get<MessageInterface[]>(
+  loadMessage(): Observable<{ messages: MessageInterface[]; limited: boolean }> {
+    return this.http.get<{ messages: MessageInterface[]; limited: boolean }>(
       `${this.configUrl}/api/chat/messages`, {params: {id: this.chat.id, take: 20, skip: this.chat.chat.length}}).pipe(
       take(1),
-      tap((messages: MessageInterface[]) => {
-        this.chat.chat.unshift(...messages);
+      tap((dto: { messages: MessageInterface[]; limited: boolean }) => {
+        this.chat.chat.unshift(...dto.messages);
         this.chat$.next(this.chat);
+        this.messageLimited = dto.limited;
+        this.messageLimited$.next(this.messageLimited);
       }),
       catchError(this.httpService.handleError),
     )
   }
 
   changeActiveConversation(id: string, index: number): Observable<any> {
+    this.chat.chat = [];
+    this.chat$.next(this.chat);
+
     return this.http.get<any>(`${this.configUrl}/api/chat/change/${id}`).pipe(
       take(1),
       tap((chat: ChatInterface) => {
@@ -176,7 +184,11 @@ export class SocketService {
     );
   }
 
-  get getActiveConversation(): Observable<string>{
+  get getActiveConversation(): Observable<string> {
     return this.activeConversation$.asObservable();
+  }
+
+  get getMessageLimited(): Observable<boolean> {
+    return this.messageLimited$.asObservable();
   }
 }
