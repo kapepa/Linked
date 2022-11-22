@@ -13,7 +13,7 @@ import {MessageInterface} from "../../core/interface/message.interface";
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  @ViewChild('ionContent') ionContent: any;
+  @ViewChild('ionScroll') ionScroll: any;
   textarea = this.fb.group({
     message: ['', Validators.required],
   });
@@ -36,7 +36,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
-    this.messagesSub = this.socketService.getMessages.subscribe((messages: MessageInterface[]) => this.messages = messages);
+    this.messagesSub = this.socketService.getMessages.subscribe((messages: MessageInterface[]) => {
+      this.messages = messages;
+      if(this.ionScroll){
+        this.ionScroll.el.scrollTop = this.ionScroll.el.scrollHeight - this.ionScroll.el.clientHeight;
+      }
+    });
     this.chatSub = this.socketService.getChat.subscribe((chat: ChatInterface) => {
       if(!!chat?.id || !!chat?.chat){
         this.chatID = chat.id;
