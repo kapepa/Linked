@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef} from '@angular/core';
 import { ChatInterface } from "../../core/interface/chat.interface";
 import { Subscription } from "rxjs";
 import { UserInterface } from "../../core/interface/user.interface";
@@ -13,7 +13,6 @@ import {MessageInterface} from "../../core/interface/message.interface";
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  @ViewChild('ionScroll') ionScroll: any;
   textarea = this.fb.group({
     message: ['', Validators.required],
   });
@@ -31,16 +30,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private socketService: SocketService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
-    this.messagesSub = this.socketService.getMessages.subscribe((messages: MessageInterface[]) => {
+    this.messagesSub = this.socketService.getMessages.subscribe(async (messages: MessageInterface[]) => {
       this.messages = messages;
-      if(this.ionScroll){
-        this.ionScroll.el.scrollTop = this.ionScroll.el.scrollHeight - this.ionScroll.el.clientHeight;
-      }
     });
     this.chatSub = this.socketService.getChat.subscribe((chat: ChatInterface) => {
       if(!!chat?.id || !!chat?.chat){

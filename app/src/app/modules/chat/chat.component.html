@@ -9,9 +9,9 @@
         <app-tape-friends></app-tape-friends>
       </div>
       <div class="chat__area">
-        <ion-content class="chat__content"  [scrollEvents]="true" #ionScroll>
-          <div class="chat__wrapper" style="height: 100%; display: flex;flex-direction: column">
-            <ion-infinite-scroll threshold="5%" position="top"  (ionInfinite)="loadData($event)" >
+        <ion-content class="chat__content"  [scrollEvents]="true">
+          <div class="chat__wrapper">
+            <ion-infinite-scroll threshold="5%" position="top" (ionInfinite)="loadData($event)" >
               <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="lines"  [scrollTop]="11"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
             <ion-list class="chat__conversation" lines="none" *ngIf="!!messages?.length; else chatEmpty">
