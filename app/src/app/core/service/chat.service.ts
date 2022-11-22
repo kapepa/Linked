@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
 import { io, Socket } from "socket.io-client";
 import { ChatInterface } from "../interface/chat.interface";
-import {BehaviorSubject, from, Observable, of} from "rxjs";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import { BehaviorSubject, from, Observable, of } from "rxjs";
+import { HttpClient, HttpParams} from "@angular/common/http";
 import { HttpService } from "./http.service";
-import {catchError, switchMap, take, tap} from "rxjs/operators";
+import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { StorageService } from "./storage.service";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
@@ -47,6 +47,7 @@ export class SocketService {
       this.chat.chat.push(message);
       this.chat$.next(this.chat);
     })
+
     this.socket.on('deleteMessage', (id: string) => {
       let chat = this.chat.chat.filter(message => message.id !== id);
 
