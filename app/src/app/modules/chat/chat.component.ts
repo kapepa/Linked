@@ -27,6 +27,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   messages: MessageInterface[];
   messagesSub: Subscription;
 
+  friends: UserInterface[];
+  friendsSub: Subscription;
+
+  limited: boolean;
+  limitedSub: Subscription;
+
   constructor(
     private userService: UserService,
     private socketService: SocketService,
@@ -35,6 +41,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
+    this.limitedSub = this.socketService.getMessageLimited.subscribe(( limited: boolean ) => this.limited = limited);
+    this.friendsSub = this.socketService.getFriends.subscribe((friends: UserInterface[]) => this.friends = friends);
     this.messagesSub = this.socketService.getMessages.subscribe(async (messages: MessageInterface[]) => {
       this.messages = messages;
     });
@@ -51,6 +59,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userSub.unsubscribe();
     this.chatSub.unsubscribe();
     this.messagesSub.unsubscribe();
+    this.friendsSub.unsubscribe();
   };
 
   onSubmit() {

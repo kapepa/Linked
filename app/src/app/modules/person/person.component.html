@@ -22,9 +22,12 @@
               <span class="person__span">Full stack developer</span>
             </ion-text>
           </div>
+          <div class="person__information" style="padding-top: 10px">
+            <ion-text>Interaction with user</ion-text>
+          </div>
           <div class="person__cooperation">
             <ng-template [ngIf]="(!person?.suggest.length && !person?.request.length && !person?.friends.length)">
-              <ion-button id="connect" (click)="onFriends()" class="person__btn" shape="round">Connect</ion-button>
+              <ion-button id="connect" (click)="onFriends()" class="person__btn" shape="round">Add</ion-button>
             </ng-template>
             <ng-template [ngIf]="!!person?.request.length">
               <ion-button id="confirm" (click)="onConfirm()" class="person__btn" shape="round">Confirm</ion-button>
