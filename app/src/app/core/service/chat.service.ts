@@ -100,7 +100,7 @@ export class ChatService {
         this.activeConversation = this.friends[0].id;
         this.activeConversation$.next(this.activeConversation);
         this.activeFriend = 0;
-        this.activeFriend$.next(this.activeFriend)
+        this.activeFriend$.next(this.activeFriend);
       }),
       catchError(this.httpService.handleError),
     )
