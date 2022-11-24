@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { ChatInterface } from "../interface/chat.interface";
 import { BehaviorSubject, from, Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
@@ -9,12 +9,13 @@ import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { StorageService } from "./storage.service";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
+import { SocketService } from "./socket.service";
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class SocketService {
+export class ChatService {
   configUrl = environment.configUrl;
   socket: Socket;
 
@@ -36,55 +37,31 @@ export class SocketService {
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {}
 
-  async connect() {
+  newMessageSocket(message: MessageInterface) {
+    this.chat.chat.push(message);
+    this.chat$.next(this.chat);
+  }
 
-    if(!this.socket?.connected){
-      let token = await this.createSocket();
-      if(!token) return;
-    }
+  deleteMessageSocket(id: string) {
+    let chat = this.chat.chat.filter(message => message.id !== id);
 
-    this.socket.on('new-message', (message: MessageInterface) => {
-      this.chat.chat.push(message);
+    if(chat.length !== this.chat.chat.length) {
+      this.chat.chat = chat;
       this.chat$.next(this.chat);
-    })
-
-    this.socket.on('deleteMessage', (id: string) => {
-      let chat = this.chat.chat.filter(message => message.id !== id);
-
-      if(chat.length !== this.chat.chat.length) {
-        this.chat.chat = chat;
-        this.chat$.next(this.chat);
-      }
-    })
+    }
   }
 
-  async createSocket() {
-    let token = await this.storageService.get('token');
-    if( !token ) return false;
-
-    this.socket = io(environment.configUrl,{
-      extraHeaders: {Authorization: `Bearer ${ token }`},
-    });
-
-    return true;
-  }
-
-  messageReceive(chatID: string, message: MessageInterface) {
+  messageReceive(message: MessageInterface) {
     let friend = Object.assign(this.friends[this.activeFriend], {});
-    return from([
-      this.socket.emit('message', {id: chatID, dto: message}, (message) => {
-        this.chat.chat.push(message);
-        this.chat$.next(this.chat);
-        this.friends.splice(this.activeFriend, 1);
-        this.friends.unshift(friend);
-        this.friends$.next(this.friends);
-      })
-    ]).pipe(
-      take(1),
-    );
+
+    this.chat.chat.push(message);
+    this.chat$.next(this.chat);
+    this.friends.splice(this.activeFriend, 1);
+    this.friends.unshift(friend);
+    this.friends$.next(this.friends);
   }
 
   deleteMessage(index: number, message: MessageInterface): Observable<any> {
@@ -96,10 +73,6 @@ export class SocketService {
     ]).pipe(
       take(1),
     );
-  }
-
-  appendToRoom(roomID: string) {
-    this.socket.emit('append-to-room', {roomID})
   }
 
   requestChat(id: string, params?: { take?: number, skip?: number }): Observable<ChatInterface> {
@@ -126,6 +99,8 @@ export class SocketService {
         this.chat$.next(this.chat);
         this.activeConversation = this.friends[0].id;
         this.activeConversation$.next(this.activeConversation);
+        this.activeFriend = 0;
+        this.activeFriend$.next(this.activeFriend)
       }),
       catchError(this.httpService.handleError),
     )

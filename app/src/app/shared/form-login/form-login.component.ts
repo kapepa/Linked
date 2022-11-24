@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "../../core/service/auth.service";
 import { Router } from "@angular/router";
-import { SocketService } from "../../core/service/chat.service";
+import { ChatService } from "../../core/service/chat.service";
+import { SocketService } from "../../core/service/socket.service";
 
 @Component({
   selector: 'app-form-login',
@@ -19,7 +20,8 @@ export class FormLoginComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
-    private socketService: SocketService
+    private chatService: ChatService,
+    private socketService: SocketService,
   ) { }
 
   ngOnInit() {}

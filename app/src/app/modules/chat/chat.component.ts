@@ -1,11 +1,12 @@
-import {Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatInterface } from "../../core/interface/chat.interface";
 import { Subscription } from "rxjs";
 import { UserInterface } from "../../core/interface/user.interface";
 import { UserService } from "../../core/service/user.service";
 import { FormBuilder, Validators } from "@angular/forms";
-import { SocketService } from "../../core/service/chat.service";
-import {MessageInterface} from "../../core/interface/message.interface";
+import { ChatService } from "../../core/service/chat.service";
+import { MessageInterface } from "../../core/interface/message.interface";
+import {SocketService} from "../../core/service/socket.service";
 
 @Component({
   selector: 'app-chat',
@@ -34,19 +35,20 @@ export class ChatComponent implements OnInit, OnDestroy {
   limitedSub: Subscription;
 
   constructor(
-    private userService: UserService,
-    private socketService: SocketService,
     private fb: FormBuilder,
+    private userService: UserService,
+    private chatService: ChatService,
+    private socketService: SocketService,
   ) { }
 
   ngOnInit() {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
-    this.limitedSub = this.socketService.getMessageLimited.subscribe(( limited: boolean ) => this.limited = limited);
-    this.friendsSub = this.socketService.getFriends.subscribe((friends: UserInterface[]) => this.friends = friends);
-    this.messagesSub = this.socketService.getMessages.subscribe(async (messages: MessageInterface[]) => {
+    this.limitedSub = this.chatService.getMessageLimited.subscribe(( limited: boolean ) => this.limited = limited);
+    this.friendsSub = this.chatService.getFriends.subscribe((friends: UserInterface[]) => this.friends = friends);
+    this.messagesSub = this.chatService.getMessages.subscribe((messages: MessageInterface[]) => {
       this.messages = messages;
     });
-    this.chatSub = this.socketService.getChat.subscribe((chat: ChatInterface) => {
+    this.chatSub = this.chatService.getChat.subscribe((chat: ChatInterface) => {
       if(!!chat?.id || !!chat?.chat){
         this.chatID = chat.id;
         this.chat = chat.chat;
@@ -66,20 +68,21 @@ export class ChatComponent implements OnInit, OnDestroy {
     if(!this.textarea.valid) return;
     let newMessage = { owner: this.user, message: this.textarea.value.message } as MessageInterface;
 
-    this.socketService.messageReceive(this.chatID, newMessage).subscribe(() => {
+    this.socketService.messageReceive(this.chatID, newMessage).subscribe((message: MessageInterface) => {
+      this.chatService.messageReceive(message);
       this.textarea.reset();
     });
   };
 
   onDel(index: number) {
     let message = Object.assign(this.chat[index],{});
-    this.socketService.deleteMessage(index, message).subscribe(() => {
+    this.chatService.deleteMessage(index, message).subscribe(() => {
       this.textarea.reset();
     });
   };
 
   loadData(event) {
-    this.socketService.loadMessage().subscribe({
+    this.chatService.loadMessage().subscribe({
       next: () => event.target.complete(),
       error: () => event.target.complete(),
     });
