@@ -3,7 +3,7 @@ import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
 import { DeleteResult, Repository } from "typeorm";
-import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
+import { from, Observable, of, switchMap, tap, toArray } from "rxjs";
 import { filter } from 'rxjs/operators';
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";

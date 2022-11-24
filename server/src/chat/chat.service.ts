@@ -54,21 +54,24 @@ export class ChatService {
   conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
       where: { id: user.id },
-      relations: ['friends', 'friends.chat', 'chat'],
-      order: { chat: { updated_at: "DESC" }, friends: { chat: { updated_at: "DESC" } }},
+      relations: ['friends', 'friends.chat', 'chat', 'chat.chat'],
+      order: {
+        friends: { chat: { updated_at: "ASC" } },
+        // chat: { chat: { created_at: "ASC" } },
+      },
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
         let chat = users.chat[0];
         return this.findMessage({
           where: { chat: { id: chat.id } },
-          order: { created_at: "DESC" },
+          order: { created_at: "ASC" },
           relations: ['owner'],
           skip: 0,
           take: 20
         }).pipe(
           switchMap((messages: MessageInterface[]) => {
-            return of({ friends: users.friends, chat: { ...chat,  chat: messages.reverse()} });
+            return of({ friends: users.friends, chat: { ...chat,  chat: messages} });
           })
         );
       })

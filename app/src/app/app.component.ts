@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { SocketService } from "./core/service/chat.service";
+import { SocketService } from "./core/service/socket.service";
 
 @Component({
   selector: 'app-root',

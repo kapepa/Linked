@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SocketService } from "../../core/service/chat.service";
+import { ChatService } from "../../core/service/chat.service";
 import { UserInterface } from "../../core/interface/user.interface";
 import { Subscription } from "rxjs";
 
@@ -16,14 +16,14 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   activeConversationSub: Subscription
 
   constructor(
-    private socketService: SocketService,
+    private chatService: ChatService,
   ) { }
 
   ngOnInit() {
-    this.friendsSub = this.socketService.getFriends.subscribe(( friends: UserInterface[] ) => {
+    this.friendsSub = this.chatService.getFriends.subscribe(( friends: UserInterface[] ) => {
       this.friends = friends;
     })
-    this.activeConversationSub = this.socketService.getActiveConversation.subscribe(( active: string ) => {
+    this.activeConversationSub = this.chatService.getActiveConversation.subscribe(( active: string ) => {
       this.activeConversation = active;
     })
   }
@@ -45,7 +45,7 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   }
 
   onFriends(id: string, index: number) {
-    this.socketService.changeActiveConversation(id, index).subscribe(() => {});
+    this.chatService.changeActiveConversation(id, index).subscribe(() => {});
   }
 
 }

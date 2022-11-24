@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import {environment} from "../../../environments/environment";
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
-import {Observable, BehaviorSubject, throwError, of, from} from "rxjs";
-import {catchError, switchMap, take, tap} from "rxjs/operators";
-import {StorageService} from "./storage.service";
+import { environment } from "../../../environments/environment";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, BehaviorSubject,  of, from } from "rxjs";
+import { catchError, switchMap, take, tap } from "rxjs/operators";
+import { StorageService } from "./storage.service";
 import jwt_decode from "jwt-decode";
-import {UserJwtDto} from "../dto/user-jwt.dto";
-import {Router} from "@angular/router";
-import {HttpService} from "./http.service";
-import {Role} from "../dto/user.dto";
-import {SocketService} from "./chat.service";
+import { UserJwtDto } from "../dto/user-jwt.dto";
+import { Router } from "@angular/router";
+import { HttpService } from "./http.service";
+import { Role } from "../dto/user.dto";
+import { ChatService } from "./chat.service";
+import { SocketService } from "./socket.service";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -30,6 +31,7 @@ export class AuthService {
     private router: Router,
     private http: HttpClient,
     private httpService: HttpService,
+    private chatService: ChatService,
     private socketService: SocketService,
     private storageService: StorageService,
   ) {}
@@ -70,7 +72,7 @@ export class AuthService {
         this.storageService.set('token', token)
         this.user = this.jwtDecode(token);
         this.user$.next(this.user);
-        await this.socketService.updateToken();
+        await this.chatService.updateToken();
       }),
       catchError(this.httpService.handleError)
     )

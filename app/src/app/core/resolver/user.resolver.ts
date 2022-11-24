@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
-  Router, Resolve,
+  Resolve,
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { UserService } from "../service/user.service";
-import {switchMap, tap} from "rxjs/operators";
-import {UserInterface} from "../interface/user.interface";
-import {SocketService} from "../service/chat.service";
+import { switchMap } from "rxjs/operators";
+import { UserInterface } from "../interface/user.interface";
 
 @Injectable({
   providedIn: 'root'

@@ -5,7 +5,7 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { SocketService } from "../service/chat.service";
+import { ChatService } from "../service/chat.service";
 import { switchMap, take } from "rxjs/operators";
 import { UserInterface } from "../interface/user.interface";
 
@@ -14,11 +14,11 @@ import { UserInterface } from "../interface/user.interface";
 })
 export class ConversationResolver implements Resolve<boolean> {
   constructor(
-    private socketService: SocketService,
+    private chatService: ChatService,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.socketService.receiveAllConversation().pipe(
+    return this.chatService.receiveAllConversation().pipe(
       take(1),
       switchMap(( dto: {friends: UserInterface[]}  ) => {
         return of(true);
