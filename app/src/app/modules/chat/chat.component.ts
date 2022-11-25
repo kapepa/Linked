@@ -6,7 +6,7 @@ import { UserService } from "../../core/service/user.service";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ChatService } from "../../core/service/chat.service";
 import { MessageInterface } from "../../core/interface/message.interface";
-import {SocketService} from "../../core/service/socket.service";
+import { SocketService } from "../../core/service/socket.service";
 
 @Component({
   selector: 'app-chat',

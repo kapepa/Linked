@@ -7,7 +7,7 @@ import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chat } from "./chat.entity";
-import {DeleteResult, In, Repository} from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { MessageEntity } from "./message.entity";
 
 @Injectable()
@@ -34,7 +34,7 @@ export class ChatService {
   }
 
   findMessage(options?: {
-    where?: { [key: string]: string | { [key: string]: string } },
+    where?: { [key: string]: string | { [key: string]: string | { [key: string]: string | { [key: string]: string } } } },
     relations?: string[],
     order?: {[key: string]: "ASC" | "DESC"},
     skip?: number,
@@ -54,32 +54,26 @@ export class ChatService {
   conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
       where: { id: user.id },
-      relations: ['friends', 'friends.chat', 'chat', 'chat.chat', 'friends.chat.conversation'],
+      relations: ['friends', 'friends.chat', 'chat', 'chat.chat'],
       order: {
-        friends: { chat: { updated_at: "ASC" } },
-        chat: { chat: { created_at: "ASC" } },
+        friends: { chat: { updated_at: "DESC" } },
       },
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
         let friend = users.friends[0];
-        return this.findOneChat({
-          where: { conversation:  [user, friend] }
+        return this.findMessage({
+          where: { chat: { conversation: {id: friend.id, friends: {id: user.id}} } },
+          order: { created_at: "DESC" },
+          relations: ['owner', 'chat', 'owner',],
+          skip: 0,
+          take: 20
         }).pipe(
-          switchMap((chat: ChatInterface) => {
-            return this.findMessage({
-              where: { chat: { id: chat.id } },
-              order: { created_at: "ASC" },
-              relations: ['owner', 'chat', 'chat.conversation'],
-              skip: 0,
-              take: 20
-            }).pipe(
-              switchMap((messages: MessageInterface[]) => {
-                return of({ friends: users.friends, chat: { ...chat,  chat: messages} });
-              })
-            )
+          switchMap((messages: MessageInterface[]) => {
+            let chat = messages[0].chat;
+            return of({ friends: users.friends, chat: { ...chat,  chat: messages.reverse()} });
           })
-        )
+        );
       })
     )
   }

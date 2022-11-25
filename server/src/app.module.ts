@@ -18,6 +18,7 @@ import { join } from 'path';
 import { ChatModule } from "./chat/chat.module";
 import { Chat } from "./chat/chat.entity";
 import { MessageEntity } from "./chat/message.entity";
+import {AppGateway} from "./app.gateway.spec";
 
 dotenv.config();
 
@@ -49,6 +50,6 @@ dotenv.config();
     ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppGateway, AppService],
 })
 export class AppModule {}

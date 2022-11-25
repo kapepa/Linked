@@ -9,8 +9,8 @@
         <app-tape-friends></app-tape-friends>
       </div>
       <div class="chat__area">
-        <ion-content class="chat__content" [scrollEvents]="true"  *ngIf="!!messages?.length; else chatEmpty">
-          <div class="chat__wrapper" *ngIf="!!friends.length; else messagesLoad">
+        <ion-content class="chat__content" [scrollEvents]="true"  *ngIf="!!messages?.length; else messagesLoad">
+          <div class="chat__wrapper" *ngIf="!!friends.length; else  chatEmpty">
             <ion-infinite-scroll *ngIf="(messages?.length >= 20 && !limited)" threshold="5%" position="top" (ionInfinite)="loadData($event)" >
               <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="lines"  [scrollTop]="11"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
@@ -18,9 +18,11 @@
               <ion-item class="chat__item" *ngFor="let message of messages; index as i">
                 <div
                   class="chat__cell"
-                  [ngClass]="{'chat__cell--owner': message?.owner?.id === user?.id}"
                 >
-                  <div class="chat__author">
+                  <div
+                    class="chat__author"
+                    [ngClass]="{'chat__author--owner': message?.owner?.id === user?.id}"
+                  >
                     <div *ngIf="message.owner?.avatar; else avatarIco" class="chat-author__avatar">
                       <img alt="avatar" src="{{ message.owner?.avatar | url }}" />
                     </div>
@@ -29,18 +31,18 @@
                     </ng-template>
                     <div class="chat-author__name">{{message.owner?.firstName}} {{message.owner?.lastName}}</div>
                   </div>
-                  <div class="chat__message">{{message.message}}</div>
+                  <span class="chat__message">{{message.message}}</span>
                   <div *ngIf="message?.owner?.id === user?.id" class="chat_message__del" (click)="onDel(i)"></div>
                 </div>
               </ion-item>
             </ion-list>
           </div>
-          <ng-template #messagesLoad>
-            <div class="chat__load">
-              <ion-spinner color="secondary" class="chat__spinner"></ion-spinner>
-            </div>
-          </ng-template>
         </ion-content>
+        <ng-template #messagesLoad>
+          <div class="chat__load">
+            <ion-spinner color="secondary" class="chat__spinner"></ion-spinner>
+          </div>
+        </ng-template>
         <ng-template #chatEmpty>
           <ion-text>You not have conversation!</ion-text>
         </ng-template>

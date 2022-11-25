@@ -9,6 +9,7 @@ import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { FriendsInterface } from "./friends.interface";
 import { ChatService } from "../chat/chat.service";
+import { FriendsGateway } from "./friends.gateway";
 
 @Injectable()
 export class FriendsService {
@@ -17,6 +18,7 @@ export class FriendsService {
     private friendsRepository: Repository<FriendsEntity>,
     private usersService: UsersService,
     private chatService: ChatService,
+    private friendsGateway: FriendsGateway,
   ) {};
 
   findOne(options: { where?: {[key: string]: string | { [key: string]: string } }, relations?: string[], }): Observable<FriendsInterface> {
@@ -42,7 +44,9 @@ export class FriendsService {
       }),
       tap(() => {
         this.usersService.findOne('id', friendsID).subscribe((friend: UsersInterface) => {
-          this.chatService.createChat(user, friend).subscribe(() => {});
+          this.chatService.createChat(user, friend).subscribe(() => {
+            this.friendsGateway.notificationAddFriend(friendsID);
+          });
         })
       })
     );
