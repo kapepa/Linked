@@ -5,14 +5,20 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { FriendsEntity} from "./friends.entity";
 import { UsersModule } from "../users/users.module";
 import { ChatModule } from "../chat/chat.module";
+import { FriendsGateway } from "./friends.gateway";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
     ChatModule,
     UsersModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '30d' },
+    }),
     TypeOrmModule.forFeature([ FriendsEntity ]),
   ],
   controllers: [FriendsController],
-  providers: [FriendsService]
+  providers: [FriendsGateway, FriendsService]
 })
 export class FriendsModule {}

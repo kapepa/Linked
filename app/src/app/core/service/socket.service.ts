@@ -4,8 +4,8 @@ import { environment } from "../../../environments/environment";
 import { StorageService } from "./storage.service";
 import { MessageInterface } from "../interface/message.interface";
 import { ChatService } from "./chat.service";
-import {from, fromEvent, of} from "rxjs";
-import {fromPromise} from "rxjs/internal-compatibility";
+import { fromPromise } from "rxjs/internal-compatibility";
+import {PersonService} from "./person.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class SocketService {
 
   constructor(
     private chatService: ChatService,
+    private personService: PersonService,
     private storageService: StorageService,
   ) { }
 
@@ -31,6 +32,10 @@ export class SocketService {
 
     this.socket.on('deleteMessage', (id: string) => {
       this.chatService.deleteMessageSocket(id);
+    })
+
+    this.socket.on('notificationAddFriend', () => {
+      console.log('notificationAddFriend')
     })
   }
 

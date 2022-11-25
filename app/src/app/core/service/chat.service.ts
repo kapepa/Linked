@@ -9,7 +9,6 @@ import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { StorageService } from "./storage.service";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
-import { SocketService } from "./socket.service";
 
 @Injectable({
   providedIn: 'root'

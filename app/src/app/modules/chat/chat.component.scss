@@ -20,8 +20,7 @@
       overflow: hidden;
     }
     &__name{
-      font-size: 10px;
-      max-width: 60px;
+      font-size: 14px;
     }
   }
   &_message__del{
@@ -77,23 +76,24 @@
   }
   &__cell{
     padding: 8px 12px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     border-radius: 10px;
     border: 1px solid gray;
     min-width: 300px;
     width: 100%;
     position: relative;
-    &--owner{
-      flex-direction: row-reverse;
-    }
   }
   &__author{
     display: flex;
     flex-direction: row;
     align-items: center;
     column-gap: 5px;
+    min-width: 95px;
+    padding-bottom: 6px;
+    padding-right: 25px;
+    &--owner{
+      justify-content: end;
+      flex-direction: row-reverse;
+    }
   }
   &__message{
     padding: 0 8px;
