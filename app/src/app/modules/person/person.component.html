@@ -26,9 +26,6 @@
             <ion-text>Interaction with user</ion-text>
           </div>
           <div class="person__cooperation">
-            <ng-container>
-
-            </ng-container>
             <ng-template [ngIf]="getBtn === 'ADD'">
               <ion-button id="connect" (click)="onFriends()" class="person__btn" shape="round">Add</ion-button>
             </ng-template>
@@ -42,7 +39,13 @@
               <ion-button id="del" (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
             </ng-template>
 
-            <ion-button class="person__btn" fill="outline"><ion-icon slot="start" name="lock-closed"></ion-icon>Message</ion-button>
+            <ion-button *ngIf="!accessMessage" class="person__btn" fill="outline">
+              <ion-icon slot="start" name="lock-closed"></ion-icon>Message
+            </ion-button>
+            <ion-button (click)="onOpenChatPerson()" *ngIf="accessMessage" class="person__btn">
+              <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>Message
+            </ion-button>
+
             <ion-button class="person__btn" shape="round">More</ion-button>
           </div>
         </div>

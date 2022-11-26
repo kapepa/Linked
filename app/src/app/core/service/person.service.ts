@@ -6,6 +6,7 @@ import { environment } from "../../../environments/environment";
 import { catchError, take, tap } from "rxjs/operators";
 import { FriendsInterface } from "../interface/friends.interface";
 import { UserInterface } from "../interface/user.interface";
+import {UserService} from "./user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class PersonService {
 
   constructor(
     private http: HttpClient,
+    private userService: UserService,
     private httpService: HttpService,
   ) { }
 
