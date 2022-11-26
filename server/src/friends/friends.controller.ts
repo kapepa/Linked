@@ -53,7 +53,7 @@ export class FriendsController {
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Cancel to friend'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
-  cancel(@Param('requestID') requestID, @Req() req): Observable<DeleteResult>{
+  cancel(@Param('requestID') requestID, @Req() req): Observable<FriendsInterface[]>{
     return this.friendsService.cancel(requestID, req.user);
   }
 
