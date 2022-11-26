@@ -59,6 +59,10 @@ export class PersonService {
   cancelFriend(friendID: string): Observable<any> {
     return this.http.delete(`${this.httpUrl}/api/friends/cancel/${friendID}`).pipe(
       take(1),
+      tap((friends: FriendsInterface[]) => {
+        this.person.request = friends;
+        this.person$.next(this.person);
+      }),
       catchError(this.httpService.handleError),
     )
   }

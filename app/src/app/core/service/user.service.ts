@@ -22,7 +22,6 @@ export class UserService {
   getOwnProfile(): Observable<UserInterface> {
     return this.http.get<UserInterface>(`${this.configUrl}/api/users`).pipe(
       tap((user: UserInterface) => {
-        console.log(user)
         this.user = user;
         this.user$.next(this.user);
       }),

@@ -40,4 +40,8 @@ export class FriendsGateway{
     this.server.to(personID).emit('deleteFriendSuggest', {id: userID});
   }
 
+  declineFriend(personID: string, userID: string){
+    this.server.to(personID).emit('declineFried', {id: userID});
+  }
+
 }

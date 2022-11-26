@@ -49,6 +49,10 @@ export class SocketService {
     this.socket.on('deleteFriendSuggest', (dto: { id: string }) => {
       this.getPerson(dto);
     })
+
+    this.socket.on('declineFried', (dto: { id: string }) => {
+      this.getPerson(dto);
+    })
   }
 
   getPerson(dto: { id: string }) {

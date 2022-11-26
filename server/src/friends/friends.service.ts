@@ -3,8 +3,7 @@ import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
 import { DeleteResult, Repository } from "typeorm";
-import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
-import { filter } from 'rxjs/operators';
+import { from, Observable, of, switchMap, tap, toArray } from "rxjs";
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
 import { FriendsInterface } from "./friends.interface";
@@ -105,14 +104,16 @@ export class FriendsService {
     )
   }
 
-  cancel(requestID: string, user: UsersDto): Observable<DeleteResult>{
+  cancel(requestID: string, user: UsersDto): Observable<FriendsInterface[]>{
     return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
       switchMap((friend: FriendsInterface) => {
         if(!(user.id === friend.user.id || user.id === friend.friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
-        return this.deleteRequest(requestID).pipe(
+        return from([[] as FriendsInterface[]]).pipe(
           tap(() => {
+            this.deleteRequest(requestID).subscribe();
             this.chatService.deleteChat(user.id, friend.id).subscribe();
-          })
+            this.friendsGateway.declineFriend(friend.user.id, friend.friends.id);
+          }),
         );
       }),
     )

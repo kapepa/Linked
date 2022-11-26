@@ -65,7 +65,7 @@
   &__conversation{
     display: flex;
     flex-direction: column;
-    justify-content: end;
+    justify-content: flex-end;
     align-self: stretch;
     row-gap: 8px;
     padding-right: 10px;
