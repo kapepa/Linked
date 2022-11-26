@@ -5,7 +5,9 @@ import { StorageService } from "./storage.service";
 import { MessageInterface } from "../interface/message.interface";
 import { ChatService } from "./chat.service";
 import { fromPromise } from "rxjs/internal-compatibility";
-import {PersonService} from "./person.service";
+import { PersonService } from "./person.service";
+import { UserService } from "./user.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,9 @@ export class SocketService {
   socket: Socket;
 
   constructor(
+    private router: Router,
     private chatService: ChatService,
+    private userService: UserService,
     private personService: PersonService,
     private storageService: StorageService,
   ) { }
@@ -34,9 +38,23 @@ export class SocketService {
       this.chatService.deleteMessageSocket(id);
     })
 
-    this.socket.on('notificationAddFriend', () => {
-      console.log('notificationAddFriend')
+    this.socket.on('notificationAddFriend', (dto: { id: string }) => {
+      this.userService.getOwnProfile().subscribe(() => {this.getPerson(dto)});
     })
+
+    this.socket.on('changeFriendSuggest', (dto: { id: string }) => {
+      this.getPerson(dto);
+    })
+
+    this.socket.on('deleteFriendSuggest', (dto: { id: string }) => {
+      this.getPerson(dto);
+    })
+  }
+
+  getPerson(dto: { id: string }) {
+    if(this.router.url === `/person/${dto.id}`){
+      this.personService.getPerson(dto.id).subscribe(() => {})
+    }
   }
 
   async createSocket() {
