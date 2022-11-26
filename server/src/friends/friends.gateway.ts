@@ -28,8 +28,16 @@ export class FriendsGateway{
 
   }
 
-  notificationAddFriend(friendID){
-    this.server.to(friendID).emit('notificationAddFriend');
+  notificationAddFriend(friendID: string, userID: string){
+    this.server.to(friendID).emit('notificationAddFriend',{id: userID});
+  }
+
+  changeFriendSuggest(personID: string, userID: string){
+    this.server.to(personID).emit('changeFriendSuggest', {id: userID});
+  }
+
+  deleteFriendSuggest(personID: string, userID: string){
+    this.server.to(personID).emit('deleteFriendSuggest', {id: userID});
   }
 
 }

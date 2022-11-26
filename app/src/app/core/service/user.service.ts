@@ -21,8 +21,8 @@ export class UserService {
 
   getOwnProfile(): Observable<UserInterface> {
     return this.http.get<UserInterface>(`${this.configUrl}/api/users`).pipe(
-      take(1),
       tap((user: UserInterface) => {
+        console.log(user)
         this.user = user;
         this.user$.next(this.user);
       }),
@@ -32,6 +32,7 @@ export class UserService {
 
   exceptRequest (index: number) {
     return this.getUser.pipe(
+      take(1),
       tap((user: UserInterface) => {
         this.user.suggest.splice(index,1);
         this.user$.next(this.user);

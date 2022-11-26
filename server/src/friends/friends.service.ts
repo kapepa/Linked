@@ -3,7 +3,7 @@ import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
 import { DeleteResult, Repository } from "typeorm";
-import { from, Observable, of, switchMap, tap, toArray } from "rxjs";
+import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
 import { filter } from 'rxjs/operators';
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
@@ -45,7 +45,7 @@ export class FriendsService {
       tap(() => {
         this.usersService.findOne('id', friendsID).subscribe((friend: UsersInterface) => {
           this.chatService.createChat(user, friend).subscribe(() => {
-            this.friendsGateway.notificationAddFriend(friendsID);
+            this.friendsGateway.notificationAddFriend(friendsID, user.id);
           });
         })
       })
@@ -84,6 +84,9 @@ export class FriendsService {
                     return this.usersService.saveUser(profile).pipe(
                       tap(this.deleteRequest(requestID))
                     )
+                  }),
+                  tap(() => {
+                    this.friendsGateway.changeFriendSuggest(profile.id, user.id)
                   })
                 )
               })
@@ -118,32 +121,20 @@ export class FriendsService {
   delFriend(friendID: string, user: UsersDto): Observable<UsersInterface[]> {
     return this.usersService.findOne('id', friendID, { relations: ['friends'] }).pipe(
       switchMap((person: UsersInterface) => {
-        return from(person.friends).pipe(
-          filter((friend: UsersInterface) => friend.id !== user.id),
-          toArray(),
-          switchMap(( personFriend: UsersInterface[]) => {
-            return this.usersService.findOne('id', user.id, { relations: ['friends', 'chat'] }).pipe(
-              switchMap((profile: UsersInterface) => {
-                if(!profile.friends || !profile.friends.length) return of([] as UsersInterface[]);
-                return from(profile.friends).pipe(
-                  filter((person: UsersInterface) => person.id !== friendID),
-                  toArray(),
-                  switchMap(( friendList: UsersInterface[] ) => {
-                    return this.usersService.saveUser({...person, friends: personFriend}).pipe(
-                      switchMap(() => {
-                        return this.usersService.saveUser({ ...user, friends: friendList }).pipe(
-                          switchMap(() => of(friendList)),
-                        );
-                      }),
-                      tap(() => {
-                        this.chatService.deleteChat(user.id, friendID).subscribe();
-                      })
-                    )
-                  }),
-                )
+        let newFriendsPerson = person.friends.filter(profile => user.id !== profile.id);
+        return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
+          switchMap((profile: UsersInterface) => {
+            let newFriendsProfile = person.friends.filter(profile => user.id !== profile.id);
+            return of([]).pipe(
+              tap(() => {
+                this.usersService.saveUser({...profile, friends: newFriendsProfile}).subscribe(),
+                this.usersService.saveUser({...person, friends: newFriendsPerson}).subscribe(() => {
+                  this.chatService.deleteChat(user.id, friendID);
+                  this.friendsGateway.deleteFriendSuggest(friendID,user.id)
+                })
               })
-            )
-          })
+            );
+          }),
         )
       })
     )

@@ -53,4 +53,14 @@ export class PersonComponent implements OnInit, OnDestroy {
     this.personService.deleteFriend(this.person.id).subscribe(() => {});
   }
 
+  getBtn() {
+    let sign: 'ADD' | 'CONFIRM' | 'PENDING' | 'DELETE';
+
+    switch (true) {
+      case (!this.person?.suggest.length && !this.person?.request.length && !this.person?.friends.length) : 'ADD'
+        break;
+      default: 'ADD'
+    }
+  }
+
 }

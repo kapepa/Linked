@@ -18,7 +18,6 @@ import {multerOption} from "../file/file.service";
 import {UsersService} from "./users.service";
 import {Observable} from "rxjs";
 import {UsersInterface} from "./users.interface";
-import * as Path from "path";
 import {DeleteResult, UpdateResult} from "typeorm";
 
 @ApiTags('users')
