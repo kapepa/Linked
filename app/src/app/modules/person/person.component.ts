@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {PersonService} from "../../core/service/person.service";
-import {UserInterface} from "../../core/interface/user.interface";
-import {from, Subscription} from "rxjs";
-import {AuthService} from "../../core/service/auth.service";
-import {UserJwtDto} from "../../core/dto/user-jwt.dto";
-import {filter, switchMap, tap} from "rxjs/operators";
-import {FriendsInterface} from "../../core/interface/friends.interface";
-import {UserService} from "../../core/service/user.service";
+import { PersonService } from "../../core/service/person.service";
+import { UserInterface } from "../../core/interface/user.interface";
+import { from, Subscription } from "rxjs";
+import { AuthService } from "../../core/service/auth.service";
+import { UserJwtDto } from "../../core/dto/user-jwt.dto";
+import { filter, switchMap } from "rxjs/operators";
+import { FriendsInterface } from "../../core/interface/friends.interface";
+import { UserService } from "../../core/service/user.service";
 
 @Component({
   selector: 'app-person',
