@@ -86,6 +86,10 @@
   &__cooperation{
     padding-top: 10px;
   }
+  &__btn{
+    min-width: 130px;
+    box-sizing: border-box!important;
+  }
 }
 
 @media screen and (max-width: 576px){

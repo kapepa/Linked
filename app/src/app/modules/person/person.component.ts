@@ -27,7 +27,7 @@ export class PersonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person; console.log(person)});
+    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person});
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
@@ -48,10 +48,7 @@ export class PersonComponent implements OnInit, OnDestroy {
       switchMap((request: FriendsInterface) => {
         return this.personService.confirmFriends(request.id);
       }),
-      tap(() => {
-        this.userService.getOwnProfile().subscribe();
-      })
-    ).subscribe(() => {})
+    ).subscribe();
   }
 
   onDelete() {
@@ -67,6 +64,14 @@ export class PersonComponent implements OnInit, OnDestroy {
       case (!!this.person?.friends.length): return sign = 'DELETE';
       default: return  sign = 'ADD';
     }
+  }
+
+  onOpenChatPerson(){
+    console.log('open')
+  }
+
+  get accessMessage() {
+    return this.person.friends.some((user: UserInterface) => user.id === this.user.id);
   }
 
 }

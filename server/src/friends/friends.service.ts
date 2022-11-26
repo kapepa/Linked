@@ -66,33 +66,27 @@ export class FriendsService {
     );
   }
 
-  confirm(requestID: string, user: UsersDto): Observable<UsersInterface> {
-    return this.usersService.findOne('id', user.id, { relations: ['friends'] }).pipe(
-      switchMap((person: UsersInterface) => {
-        return this.findOne({where: {id: requestID}, relations: ['user', 'friends']}).pipe(
-          switchMap((friend: FriendsInterface) => {
-            if(user.id !== friend.friends.id) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
-            return this.usersService.findOne('id', friend.user.id, { relations: ['friends'] } ).pipe(
-              switchMap((profile: UsersInterface ) => {
-                if(profile.friends.some( prof => prof.id === person.id )) throw new HttpException('Such a friend is already in friends', HttpStatus.BAD_REQUEST)
-                profile.friends.push({id: friend.friends.id} as UsersInterface);
-                person.friends.push(profile);
+  confirm(requestID: string, userDto: UsersDto): Observable<UsersInterface> {
+    return this.findOne({where: {id: requestID}, relations: ['user', 'friends', 'user.request', 'user.friends', 'user.suggest', 'friends.friends']}).pipe(
+      switchMap((friendsDto: FriendsInterface) => {
+        let { user, friends } = friendsDto;
 
-                return this.usersService.saveUser(person).pipe(
-                  switchMap(() => {
-                    return this.usersService.saveUser(profile).pipe(
-                      tap(this.deleteRequest(requestID))
-                    )
-                  }),
-                  tap(() => {
-                    this.friendsGateway.changeFriendSuggest(profile.id, user.id)
-                  })
-                )
-              })
-            )
-          }),
+        if (user.friends.some((profile: UsersInterface) => profile.id === friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
+        let userFriends = JSON.parse(JSON.stringify([...user.friends, friends]));
+        let friendFriends = JSON.parse(JSON.stringify([...friends.friends, user]));
+
+        user.friends = userFriends;
+        friends.friends = friendFriends
+
+        return from([{...friends, friends: []}]).pipe(
+          tap(() => {
+            this.deleteRequest(requestID).subscribe(() => {
+              this.usersService.saveUser(user).subscribe();
+              this.usersService.saveUser(friends).subscribe(() => this.friendsGateway.changeFriendSuggest(user.id, friends.id));
+            })
+          })
         );
-      })
+      }),
     )
   }
 
