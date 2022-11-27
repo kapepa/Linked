@@ -72,7 +72,7 @@ export class AuthService {
         this.storageService.set('token', token)
         this.user = this.jwtDecode(token);
         this.user$.next(this.user);
-        await this.chatService.updateToken();
+        await this.socketService.connect();
       }),
       catchError(this.httpService.handleError)
     )

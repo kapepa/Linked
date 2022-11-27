@@ -27,7 +27,7 @@ export class PersonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person});
+    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person, console.log(person)});
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 

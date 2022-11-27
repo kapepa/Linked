@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "../../core/service/auth.service";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { ChatService } from "../../core/service/chat.service";
 import { SocketService } from "../../core/service/socket.service";
 
@@ -22,7 +22,16 @@ export class FormLoginComponent implements OnInit {
     private authService: AuthService,
     private chatService: ChatService,
     private socketService: SocketService,
-  ) { }
+  ) {
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd){
+        if(event.url === '/auth/registration') this.loginForm.reset();
+        this.loginForm.markAsPristine();
+        this.loginForm.markAsUntouched();
+        this.loginForm.updateValueAndValidity();
+      }
+    });
+  }
 
   ngOnInit() {}
 

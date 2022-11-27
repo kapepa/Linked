@@ -29,26 +29,25 @@ export class FriendsService {
   }
 
   create(friendsID: string, user: UsersDto): Observable<FriendsInterface> {
-    const { iat, exp, ...myUser } = user
-    return this.usersService.findOne('id', friendsID).pipe(
-      switchMap((friend: UsersInterface) => {
-        if (!friend) throw new HttpException('Not found friends', HttpStatus.NOT_FOUND)
-        return this.findOne({where: { 'friends': {'id': friendsID} }, relations: ['friends'] }).pipe(
-          switchMap(( existFriends: FriendsInterface ) => {
-            if(!!existFriends) throw new HttpException('Your request already exists', HttpStatus.BAD_REQUEST);
+    const { iat, exp, ...myUser } = user;
 
-            return from(this.friendsRepository.save({ user: myUser, friends: friend }));
+    return this.usersService.findOneUser({ where: { id: friendsID }, relations: ['friends', 'suggest'] }).pipe(
+      switchMap((friend: UsersInterface) => {
+        let existFriend = friend.friends.some(( profile: UsersInterface ) => profile.id === myUser.id);
+
+        if(!!existFriend) throw new HttpException('Your request already exists', HttpStatus.BAD_REQUEST);
+
+        return from(this.usersService.findOneUser({ where: { id: user.id }, relations: ['request'] }).pipe(
+          switchMap((profile: UsersInterface) => {
+            return from(this.friendsRepository.save({ user: profile, friends: friend })).pipe(
+              tap(() => {
+                this.friendsGateway.notificationAddFriend(friendsID, user.id);
+              })
+            )
           })
-        )
-      }),
-      tap(() => {
-        this.usersService.findOne('id', friendsID).subscribe((friend: UsersInterface) => {
-          this.chatService.createChat(user, friend).subscribe(() => {
-            this.friendsGateway.notificationAddFriend(friendsID, user.id);
-          });
-        })
+        ))
       })
-    );
+    )
   }
 
   suggest(userID): Observable<FriendsInterface[]> {
@@ -72,17 +71,23 @@ export class FriendsService {
         let { user, friends } = friendsDto;
 
         if (user.friends.some((profile: UsersInterface) => profile.id === friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
-        let userFriends = JSON.parse(JSON.stringify([...user.friends, friends]));
+        // let userFriends = JSON.parse(JSON.stringify([...user.friends, friends]));
         let friendFriends = JSON.parse(JSON.stringify([...friends.friends, user]));
 
-        user.friends = userFriends;
+        // user.friends = userFriends;
         friends.friends = friendFriends
+
 
         return from([{...friends, friends: []}]).pipe(
           tap(() => {
             this.deleteRequest(requestID).subscribe(() => {
-              this.usersService.saveUser(user).subscribe();
-              this.usersService.saveUser(friends).subscribe(() => this.friendsGateway.changeFriendSuggest(user.id, friends.id));
+              // this.usersService.saveUser(user).subscribe();
+              this.usersService.saveUser(friends).subscribe(() => {
+                this.chatService.createChat(user, friends).subscribe(() => {
+                  this.friendsGateway.changeFriendSuggest(user.id, friends.id);
+                });
+              });
+
             })
           })
         );
@@ -124,8 +129,9 @@ export class FriendsService {
               tap(() => {
                 this.usersService.saveUser({...profile, friends: newFriendsProfile}).subscribe(),
                 this.usersService.saveUser({...person, friends: newFriendsPerson}).subscribe(() => {
-                  this.chatService.deleteChat(user.id, friendID);
-                  this.friendsGateway.deleteFriendSuggest(friendID,user.id)
+                  this.chatService.deleteChat(user.id, friendID).subscribe(() => {
+                    this.friendsGateway.deleteFriendSuggest(friendID,user.id);
+                  });
                 })
               })
             );
