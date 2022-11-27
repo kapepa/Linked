@@ -66,8 +66,6 @@ export class ChatService {
         }, [] as UsersInterface[]);
         let chat = chatSort[0];
 
-        this.chatRepository.delete({ id: '57a68c56-8eb2-4536-9439-b8a0f0aeee23' });
-
         return of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } });
       })
     )
@@ -97,9 +95,11 @@ export class ChatService {
   }
 
   deleteChat(userID: string, friendID: string) {
-    return from(this.chatRepository.findOne({where: { conversation: [ {id: userID}, {id: friendID} ] }})).pipe(
+    return from(this.chatRepository.findOne({where: { conversation: [ {id: userID}, {id: friendID} ] }, relations: ['chat'] })).pipe(
       switchMap((chat: ChatInterface) => {
-        return this.chatRepository.delete({ id: chat.id });
+        return from(this.messageRepository.remove(chat.chat as any)).pipe(
+          tap(() => this.chatRepository.delete({ id: chat.id }))
+        )
       })
     )
   }
