@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../core/service/auth.service";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-form-registration',
@@ -20,7 +20,13 @@ export class FormRegistrationComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
-  ) { }
+  ) {
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd){
+        if(event.url === '/auth/login') this.regForm.clearValidators();
+      }
+    });
+  }
 
   ngOnInit() {}
 

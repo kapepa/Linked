@@ -30,6 +30,10 @@ export class SocketService {
       if(!token) return;
     }
 
+    if(this.socket?.connected){
+      await this.reconnectSocket();
+    }
+
     this.socket.on('new-message', (message: MessageInterface) => {
       this.chatService.newMessageSocket(message);
     })
@@ -70,6 +74,14 @@ export class SocketService {
     });
 
     return true;
+  }
+
+  async reconnectSocket() {
+    let token = await this.storageService.get('token');
+    if( !token ) return false;
+
+    this.socket.io.opts.extraHeaders = {Authorization: `Bearer ${token}`};
+    this.socket.disconnect().connect();
   }
 
   appendToRoom(roomID: string) {

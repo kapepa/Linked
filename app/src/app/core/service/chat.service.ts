@@ -6,9 +6,9 @@ import { BehaviorSubject, from, Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { HttpService } from "./http.service";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
-import { StorageService } from "./storage.service";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
+import { SocketService } from "./socket.service";
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,6 @@ export class ChatService {
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
-    private storageService: StorageService,
   ) {}
 
   newMessageSocket(message: MessageInterface) {
@@ -134,12 +133,6 @@ export class ChatService {
         this.chat$.next(this.chat);
       })
     )
-  }
-
-  async updateToken() {
-    let token = await this.storageService.get('token');
-    this.socket.io.opts.extraHeaders = {Authorization: `Bearer ${token}`};
-    this.socket.disconnect().connect();
   }
 
   get getChat(): Observable<ChatInterface> {

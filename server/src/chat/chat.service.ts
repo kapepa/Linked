@@ -54,42 +54,38 @@ export class ChatService {
   conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
       where: { id: user.id },
-      relations: ['friends', 'friends.chat', 'chat', 'chat.chat'],
-      order: {
-        friends: { chat: { updated_at: "DESC" } },
-      },
+      relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner'],
+      order: { chat: { updated_at: "DESC" } },
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
-        let friend = users.friends[0];
-        return this.findMessage({
-          where: { chat: { conversation: {id: friend.id, friends: {id: user.id}} } },
-          order: { created_at: "DESC" },
-          relations: ['owner', 'chat', 'owner',],
-          skip: 0,
-          take: 20
-        }).pipe(
-          switchMap((messages: MessageInterface[]) => {
-            let chat = messages[0].chat;
-            return of({ friends: users.friends, chat: { ...chat,  chat: messages.reverse()} });
-          })
-        );
+        let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1)
+        let sortFried = chatSort.reduce(( accum: UsersInterface[], chat: ChatInterface ) => {
+          accum.push(...chat.conversation.filter((person: UsersInterface) => person.id !== user.id));
+          return accum;
+        }, [] as UsersInterface[]);
+        let chat = chatSort[0];
+
+        this.chatRepository.delete({ id: '57a68c56-8eb2-4536-9439-b8a0f0aeee23' });
+
+        return of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } });
       })
     )
   }
 
-  getChat( friendID: string, user: UsersDto ){
+  getChat( friendID: string, user: UsersDto ): Observable<ChatInterface>{
     return from(this.findOneChat({
       where: { conversation: { id: friendID }, chat: { owner: user } },
+      relations: ['conversation', 'chat', 'chat.owner']
     })).pipe(
       switchMap(( chat: ChatInterface ) => {
         return this.findMessage({
-          where: { chat: { id: chat.id } },
+          where: { chat: { id: chat?.id } },
           order: { created_at: "DESC" },
           relations: [ 'owner' ],
           take: 20,
-          skip: 0
-,        }).pipe(switchMap((message: MessageInterface[]) => {
+          skip: 0,
+        }).pipe(switchMap((message: MessageInterface[]) => {
           return from([{...chat, chat: message.reverse()}])
         }))
       })

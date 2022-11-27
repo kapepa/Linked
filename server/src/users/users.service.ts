@@ -54,7 +54,7 @@ export class UsersService {
     return from(this.usersRepository.save(data));
   }
 
-  person(personID: string, user: UsersDto): Observable<UsersInterface> {
+  person(personID: string, user: UsersDto): Observable<any> {
     return this.findOne('id', personID, { relations: ['request', 'friends', 'suggest', 'suggest.user', 'suggest.friends', 'request.user', 'request.friends'] }).pipe(
       switchMap((person: UsersInterface) => {
         return from(person.friends).pipe(
