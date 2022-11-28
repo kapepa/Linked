@@ -33,6 +33,18 @@ export class ChatService {
     return from(this.chatRepository.findOne({ ...options }));
   }
 
+  findChat(options?:{
+    where?: {
+      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
+    },
+    relations?: string[],
+    order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } },
+    skip?: number,
+    take?: number,
+  }): Observable<ChatInterface[]> {
+    return from(this.chatRepository.find({ ...options }));
+  }
+
   findMessage(options?: {
     where?: { [key: string]: string | { [key: string]: string | { [key: string]: string | { [key: string]: string } } } },
     relations?: string[],
@@ -74,15 +86,15 @@ export class ChatService {
   }
 
   getChat( friendID: string, user: UsersDto ): Observable<ChatInterface>{
-    return from(this.findOneChat({
-      where: { conversation: { id: friendID } },
-      relations: ['conversation', 'chat', 'chat.owner',]
+    return from(this.usersService.findOneUser({
+      where: { id: friendID  },
+      relations: ['chat', 'chat.conversation',]
     })).pipe(
-      switchMap(( chat: ChatInterface ) => {
-        console.log(chat)
+      switchMap(( profile: UsersInterface ) => {
+        let chat = profile.chat.find(( chat: ChatInterface ) => chat.conversation.some((person: UsersInterface) => person.id === user.id))
 
         return this.findMessage({
-          where: { chat: { id: chat?.id } },
+          where: { chat: { id: chat.id } },
           order: { created_at: "DESC" },
           relations: [ 'owner', 'chat' ],
           take: 20,
