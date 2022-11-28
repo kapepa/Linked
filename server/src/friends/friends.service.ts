@@ -29,18 +29,15 @@ export class FriendsService {
   }
 
   create(friendsID: string, user: UsersDto): Observable<FriendsInterface> {
-    const { iat, exp, ...myUser } = user;
-
-    return this.usersService.findOneUser({ where: { id: friendsID }, relations: ['friends', 'suggest'] }).pipe(
+    return this.usersService.findOneUser({ where: { id: friendsID }, relations: ['friends', 'suggest', 'request'] }).pipe(
       switchMap((friend: UsersInterface) => {
-        let existFriend = friend.friends.some(( profile: UsersInterface ) => profile.id === myUser.id);
-
+        let existFriend = friend.friends.some(( profile: UsersInterface ) => profile.id === user.id);
         if(!!existFriend) throw new HttpException('Your request already exists', HttpStatus.BAD_REQUEST);
 
-        return from(this.usersService.findOneUser({ where: { id: user.id }, relations: ['request'] }).pipe(
+        return from(this.usersService.findOneUser({ where: { id: user.id }, relations: ['friends', 'suggest', 'request'] }).pipe(
           switchMap((profile: UsersInterface) => {
             return from(this.friendsRepository.save({ user: profile, friends: friend })).pipe(
-              tap(() => {
+              tap((data) => {
                 this.friendsGateway.notificationAddFriend(friendsID, user.id);
               })
             )
@@ -66,27 +63,30 @@ export class FriendsService {
   }
 
   confirm(requestID: string, userDto: UsersDto): Observable<UsersInterface> {
-    return this.findOne({where: {id: requestID}, relations: ['user', 'friends', 'user.request', 'user.friends', 'user.suggest', 'friends.friends']}).pipe(
+    return this.findOne({
+      where: {id: requestID},
+      relations: ['user', 'friends', 'friends.chat', 'friends.suggest', 'friends.request', 'user.chat', 'user.request', 'user.friends', 'user.suggest', 'friends.friends']
+    }).pipe(
       switchMap((friendsDto: FriendsInterface) => {
         let { user, friends } = friendsDto;
 
-        if (user.friends.some((profile: UsersInterface) => profile.id === friends.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
-        user.friends = JSON.parse(JSON.stringify([...user.friends, friends]));
-        friends.friends = JSON.parse(JSON.stringify([...friends.friends, user]));
-
+        if (friends.friends.some((profile: UsersInterface) => profile.id === userDto.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
         return from([{...friends, friends: [user], request: []}]).pipe(
           tap(() => {
-            this.deleteRequest(requestID).subscribe(() => {
-              this.usersService.saveUser(user).subscribe(() => {
-                this.usersService.saveUser(friends).subscribe();
-                this.chatService.createChat(user, friends).subscribe(() => {
+            this.chatService.createChat(user, friends).subscribe((chat) => {
+              user.friends.push(friends);
+              user.chat.push(chat);
+              this.deleteRequest(requestID).subscribe(() => {
+                this.usersService.saveUser(user).subscribe((profile: UsersInterface) => {
+                  friends.friends.push(profile);
+                  friends.chat.push(chat);
+                  this.usersService.saveUser(friends).subscribe();
                   this.friendsGateway.changeFriendSuggest(user.id, friends.id);
-                });
-              });
+                })
+              })
             })
           })
         );
-
       }),
     )
   }

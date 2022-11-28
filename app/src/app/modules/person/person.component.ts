@@ -4,7 +4,7 @@ import { UserInterface } from "../../core/interface/user.interface";
 import { from, Subscription } from "rxjs";
 import { AuthService } from "../../core/service/auth.service";
 import { UserJwtDto } from "../../core/dto/user-jwt.dto";
-import { filter, switchMap } from "rxjs/operators";
+import {filter, switchMap, tap} from "rxjs/operators";
 import { FriendsInterface } from "../../core/interface/friends.interface";
 import { UserService } from "../../core/service/user.service";
 
@@ -27,7 +27,7 @@ export class PersonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person, console.log(person)});
+    this.personSub = this.personService.personProfile.subscribe((person: UserInterface) => {this.person = person});
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
@@ -46,7 +46,11 @@ export class PersonComponent implements OnInit, OnDestroy {
         return request.friends.id === this.user.id || request.user.id === this.user.id;
       }),
       switchMap((request: FriendsInterface) => {
-        return this.personService.confirmFriends(request.id);
+        return this.personService.confirmFriends(request.id).pipe(
+          tap(() => this.userService.findSuggest(request.id).subscribe((index: number) => {
+            this.userService.exceptRequest(index).subscribe();
+          })),
+        );
       }),
     ).subscribe();
   }

@@ -23,7 +23,7 @@ export class ChatService {
 
   findOneChat(options?:{
     where?: {
-      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto }
+      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
     },
     relations?: string[],
     order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } },
@@ -54,7 +54,7 @@ export class ChatService {
   conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
       where: { id: user.id },
-      relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner'],
+      relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'],
       order: { chat: { updated_at: "DESC" } },
     }).pipe(
       take(1),
@@ -66,21 +66,25 @@ export class ChatService {
         }, [] as UsersInterface[]);
         let chat = chatSort[0];
 
-        return of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } });
+        return !!chat ?
+          of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } }):
+          of({ friends: sortFried, chat: {} as ChatInterface });
       })
     )
   }
 
   getChat( friendID: string, user: UsersDto ): Observable<ChatInterface>{
     return from(this.findOneChat({
-      where: { conversation: { id: friendID }, chat: { owner: user } },
-      relations: ['conversation', 'chat', 'chat.owner']
+      where: { conversation: { id: friendID } },
+      relations: ['conversation', 'chat', 'chat.owner',]
     })).pipe(
       switchMap(( chat: ChatInterface ) => {
+        console.log(chat)
+
         return this.findMessage({
           where: { chat: { id: chat?.id } },
           order: { created_at: "DESC" },
-          relations: [ 'owner' ],
+          relations: [ 'owner', 'chat' ],
           take: 20,
           skip: 0,
         }).pipe(switchMap((message: MessageInterface[]) => {
@@ -97,9 +101,7 @@ export class ChatService {
   deleteChat(userID: string, friendID: string) {
     return from(this.chatRepository.findOne({where: { conversation: [ {id: userID}, {id: friendID} ] }, relations: ['chat'] })).pipe(
       switchMap((chat: ChatInterface) => {
-        return from(this.messageRepository.remove(chat.chat as any)).pipe(
-          tap(() => this.chatRepository.delete({ id: chat.id }))
-        )
+        return from(this.messageRepository.remove(chat.chat as any))
       })
     )
   }

@@ -76,7 +76,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onDel(index: number) {
     let message = Object.assign(this.chat[index],{});
-    this.chatService.deleteMessage(index, message).subscribe(() => {
+    this.chatService.deleteMessage(index, message).subscribe((dto: { chatID: string , message: MessageInterface }) => {
+      this.socketService.messageDel(dto);
       this.textarea.reset();
     });
   };
