@@ -8,6 +8,7 @@ import { fromPromise } from "rxjs/internal-compatibility";
 import { PersonService } from "./person.service";
 import { UserService } from "./user.service";
 import { Router } from "@angular/router";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ import { Router } from "@angular/router";
 export class SocketService {
   configUrl = environment.configUrl;
   socket: Socket;
+  socket$: BehaviorSubject<Socket> = new BehaviorSubject<Socket>(null)
 
   constructor(
     private router: Router,
@@ -69,9 +71,8 @@ export class SocketService {
     let token = await this.storageService.get('token');
     if( !token ) return false;
 
-    this.socket = io(environment.configUrl,{
-      extraHeaders: {Authorization: `Bearer ${ token }`},
-    });
+    this.socket = io(environment.configUrl,{extraHeaders: {Authorization: `Bearer ${ token }`},});
+    this.socket$.next(this.socket);
 
     return true;
   }
@@ -82,6 +83,7 @@ export class SocketService {
 
     this.socket.io.opts.extraHeaders = {Authorization: `Bearer ${token}`};
     this.socket.disconnect().connect();
+    this.socket$.next(this.socket);
   }
 
   appendToRoom(roomID: string) {
@@ -92,6 +94,14 @@ export class SocketService {
     return fromPromise(new Promise((resolve) => {
       this.socket.emit('message', {id: chatID, dto: message}, (message) => resolve(message));
     }))
+  }
+
+  messageDel(dto: { chatID: string , message: MessageInterface }) {
+    this.socket.emit('delete', { chatID: dto.chatID , message: dto.message });
+  }
+
+  get getSocket(): Observable<Socket> {
+    return this.socket$.asObservable();
   }
 
 }

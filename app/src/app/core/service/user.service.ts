@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { BehaviorSubject, Observable } from "rxjs";
+import {BehaviorSubject, from, Observable} from "rxjs";
 import { UserInterface } from "../interface/user.interface";
 import { catchError, take, tap } from "rxjs/operators";
 import { HttpService } from "./http.service";
+import {FriendsInterface} from "../interface/friends.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,10 @@ export class UserService {
         this.user$.next(this.user);
       })
     )
+  }
+
+  findSuggest(suggestID: string) {
+    return from([this.user.suggest.findIndex(( friend: FriendsInterface ) => friend.id === suggestID)]);
   }
 
   get getUser(): Observable<UserInterface> {

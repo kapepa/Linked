@@ -22,7 +22,6 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.friendsSub = this.chatService.getFriends.subscribe(( friends: UserInterface[] ) => {
       this.friends = friends;
-      console.log(friends)
     })
     this.activeConversationSub = this.chatService.getActiveConversation.subscribe(( active: string ) => {
       this.activeConversation = active;

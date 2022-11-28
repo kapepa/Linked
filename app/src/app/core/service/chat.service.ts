@@ -8,7 +8,6 @@ import { HttpService } from "./http.service";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
-import { SocketService } from "./socket.service";
 
 @Injectable({
   providedIn: 'root'
@@ -62,15 +61,10 @@ export class ChatService {
     this.friends$.next(this.friends);
   }
 
-  deleteMessage(index: number, message: MessageInterface): Observable<any> {
-    return from([
-      this.socket.emit('delete', { chatID: this.chat.id , message }, () => {
-        this.chat.chat.splice(index, 1);
-        this.chat$.next(this.chat);
-      }),
-    ]).pipe(
-      take(1),
-    );
+  deleteMessage(index: number, message: MessageInterface) {
+    this.chat.chat.splice(index, 1);
+    this.chat$.next(this.chat);
+    return from([{ chatID: this.chat.id , message }]);
   }
 
   requestChat(id: string, params?: { take?: number, skip?: number }): Observable<ChatInterface> {
