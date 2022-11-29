@@ -90,6 +90,9 @@
     min-width: 130px;
     box-sizing: border-box!important;
   }
+  &__link{
+    --color: #fff;
+  }
 }
 
 @media screen and (max-width: 576px){

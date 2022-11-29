@@ -4,9 +4,11 @@ import { UserInterface } from "../../core/interface/user.interface";
 import { from, Subscription } from "rxjs";
 import { AuthService } from "../../core/service/auth.service";
 import { UserJwtDto } from "../../core/dto/user-jwt.dto";
-import {filter, switchMap, tap} from "rxjs/operators";
+import { filter, switchMap, tap } from "rxjs/operators";
 import { FriendsInterface } from "../../core/interface/friends.interface";
 import { UserService } from "../../core/service/user.service";
+import { Router } from "@angular/router";
+import {ChatService} from "../../core/service/chat.service";
 
 @Component({
   selector: 'app-person',
@@ -21,6 +23,8 @@ export class PersonComponent implements OnInit, OnDestroy {
   userSub: Subscription
 
   constructor(
+    private router: Router,
+    private chatService: ChatService,
     private authService: AuthService,
     private userService: UserService,
     private personService: PersonService,
@@ -70,8 +74,11 @@ export class PersonComponent implements OnInit, OnDestroy {
     }
   }
 
-  onOpenChatPerson(){
-    console.log('open')
+  onOpenChatPerson(e: Event){
+    e.preventDefault();
+    this.chatService.setFirstUser(this.person.id).subscribe(() => {
+      this.router.navigate(['/chat']);
+    })
   }
 
   get accessMessage() {

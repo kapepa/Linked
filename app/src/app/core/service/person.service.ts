@@ -28,7 +28,6 @@ export class PersonService {
       tap((person: UserInterface) => {
         this.person = person;
         this.person$.next(this.person);
-        console.log(person)
       }),
       catchError(this.httpService.handleError),
     )

@@ -63,7 +63,7 @@ export class ChatService {
     return from(this.messageRepository.delete({id}));
   }
 
-  conversation(user: UsersDto): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
+  conversation(user: UsersDto, query?: {skip?: number, take?: number, first?: string}): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
       where: { id: user.id },
       relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'],
@@ -71,7 +71,8 @@ export class ChatService {
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
-        let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1)
+        let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1);
+        if( !!query.first ) users.chat.sort((chat: ChatInterface) => (chat.conversation[0].id === query.first || chat.conversation[1].id === query.first ) ? -1 : 1);
         let sortFried = chatSort.reduce(( accum: UsersInterface[], chat: ChatInterface ) => {
           accum.push(...chat.conversation.filter((person: UsersInterface) => person.id !== user.id));
           return accum;
