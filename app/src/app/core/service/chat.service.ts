@@ -144,13 +144,13 @@ export class ChatService {
       this.first = id;
       this.first$.next(this.first)
     };
-    return from([])
+    return from([]);
   }
 
   clearFirstUser() {
     this.first = null;
     this.first$.next(null);
-    return from([])
+    return from([]);
   }
 
   get getChat(): Observable<ChatInterface> {
