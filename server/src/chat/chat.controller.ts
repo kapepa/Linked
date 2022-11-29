@@ -28,7 +28,7 @@ export class ChatController {
   @ApiResponse({ status: 201, description: 'receive all conversation', type: ChatInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   getAllConversation(@Req() req, @Query() query): Observable<any> {
-    return this.chatService.conversation(req.user);
+    return this.chatService.conversation(req.user, query);
   }
 
   @Get('/messages')

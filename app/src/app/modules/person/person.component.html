@@ -42,10 +42,12 @@
             <ion-button *ngIf="!accessMessage" class="person__btn" fill="outline">
               <ion-icon slot="start" name="lock-closed"></ion-icon>Message
             </ion-button>
-            <ion-button (click)="onOpenChatPerson()" *ngIf="accessMessage" class="person__btn">
-              <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>Message
-            </ion-button>
-
+            <ion-router-link (click)="onOpenChatPerson($event)" class="person__link"  [routerLink]="['/chat']"  url="/home" *ngIf="accessMessage">
+              <ion-button class="person__btn" >
+                <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+                Message
+              </ion-button>
+            </ion-router-link>
             <ion-button class="person__btn" shape="round">More</ion-button>
           </div>
         </div>

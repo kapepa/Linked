@@ -17,6 +17,9 @@ export class ChatService {
   configUrl = environment.configUrl;
   socket: Socket;
 
+  first: string | null;
+  first$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+
   friends: UserInterface[];
   friends$: BehaviorSubject<UserInterface[]> = new BehaviorSubject<UserInterface[]>(null);
 
@@ -81,9 +84,15 @@ export class ChatService {
     )
   }
 
-  receiveAllConversation(query?: {skip: number, take: number}): Observable<{friends: UserInterface[], chat: ChatInterface}> {
+  receiveAllConversation(query?: {skip: number, take: number, first: string}): Observable<{friends: UserInterface[], chat: ChatInterface}> {
+    if(!!this.first) query = {...query, first: this.first};
     let params = query && !!Object.keys(query).length ? query : undefined;
-    return this.http.get<{friends: UserInterface[], messages: MessageInterface[], chat: ChatInterface}>(`${this.configUrl}/api/chat/conversation`, {params}).pipe(
+    return this.http.get<{
+      friends: UserInterface[],
+      messages: MessageInterface[],
+      chat: ChatInterface}>(`${this.configUrl}/api/chat/conversation`,
+      {params}
+    ).pipe(
       tap(( dto: { friends: UserInterface[], chat: ChatInterface } ) => {
         this.friends = dto.friends;
         this.friends$.next(this.friends);
@@ -93,6 +102,7 @@ export class ChatService {
         this.activeConversation$.next(this.activeConversation);
         this.activeFriend = 0;
         this.activeFriend$.next(this.activeFriend);
+        if(!!this.first) this.clearFirstUser().subscribe();
       }),
       catchError(this.httpService.handleError),
     )
@@ -127,6 +137,20 @@ export class ChatService {
         this.chat$.next(this.chat);
       })
     )
+  }
+
+  setFirstUser(id: string) {
+    if(!!id) {
+      this.first = id;
+      this.first$.next(this.first)
+    };
+    return from([])
+  }
+
+  clearFirstUser() {
+    this.first = null;
+    this.first$.next(null);
+    return from([])
   }
 
   get getChat(): Observable<ChatInterface> {
