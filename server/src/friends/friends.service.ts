@@ -9,6 +9,7 @@ import { UsersInterface } from "../users/users.interface";
 import { FriendsInterface } from "./friends.interface";
 import { ChatService } from "../chat/chat.service";
 import { FriendsGateway } from "./friends.gateway";
+import {ChatInterface} from "../chat/chat.interface";
 
 @Injectable()
 export class FriendsService {
@@ -65,23 +66,30 @@ export class FriendsService {
   confirm(requestID: string, userDto: UsersDto): Observable<UsersInterface> {
     return this.findOne({
       where: {id: requestID},
-      relations: ['user', 'friends', 'friends.chat', 'friends.suggest', 'friends.request', 'user.chat', 'user.request', 'user.friends', 'user.suggest', 'friends.friends']
+      relations: ['friends', 'friends.chat', 'friends.suggest', 'friends.request', 'friends.friends', 'user', 'user.chat', 'user.suggest', 'user.request', 'user.friends',]
     }).pipe(
       switchMap((friendsDto: FriendsInterface) => {
         let { user, friends } = friendsDto;
 
-        if (friends.friends.some((profile: UsersInterface) => profile.id === userDto.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
+        if (friends.friends.some((profile: UsersInterface) => profile.id === user.id)) throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
         return from([{...friends, friends: [user], request: []}]).pipe(
           tap(() => {
             this.chatService.createChat(user, friends).subscribe((chat) => {
+              let { conversation, ...otherChat } = chat
+              // console.log(friends.chat)
+              // console.log(user.chat)
+
               user.friends.push(friends);
-              user.chat.push(chat);
-              this.deleteRequest(requestID).subscribe(() => {
-                this.usersService.saveUser(user).subscribe((profile: UsersInterface) => {
-                  friends.friends.push(profile);
-                  friends.chat.push(chat);
-                  this.usersService.saveUser(friends).subscribe();
-                  this.friendsGateway.changeFriendSuggest(user.id, friends.id);
+              user.chat.push(otherChat);
+              this.usersService.saveUser(user).subscribe((profile: UsersInterface) => {
+                friends.friends.push(user);
+                friends.chat.push(otherChat);
+
+                console.log(friends.chat)
+                this.usersService.saveUser(friends).subscribe((fr: UsersInterface) => {
+
+                  console.log(fr.chat)
+                  this.deleteRequest(requestID).subscribe(() => this.friendsGateway.changeFriendSuggest(user.id, friends.id))
                 })
               })
             })
@@ -115,22 +123,30 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, user: UsersDto): Observable<UsersInterface[]> {
-
     return this.usersService.findOneUser({ where: { id: friendID }, relations: ['friends'] }).pipe(
       switchMap((friend: UsersInterface) => {
         return this.usersService.findOneUser({ where: {id: user.id}, relations: ['friends'] }).pipe(
           switchMap((profile: UsersInterface) => {
-            let clearFriend = JSON.parse(JSON.stringify(friend.friends.filter(( fr: UsersInterface ) => fr.id !== profile.id)));
-            let clearProfile = JSON.parse(JSON.stringify( profile.friends.filter(( fr: UsersInterface ) => fr.id !== friend.id)));
+            // let clearFriend = JSON.parse(JSON.stringify(friend.friends.filter(( fr: UsersInterface ) => fr.id !== profile.id)));
+            // let clearProfile = JSON.parse(JSON.stringify( profile.friends.filter(( fr: UsersInterface ) => fr.id !== friend.id)));
+            profile.friends = profile.friends.filter(( fr: UsersInterface ) => fr.id !== friend.id);
 
             return of([]).pipe(
               tap(() => {
-                this.chatService.deleteChat(profile.id, friend.id).subscribe(() => {
-                  this.usersService.saveUser({...profile, friends: clearProfile }).subscribe();
-                  this.usersService.saveUser({...friend, friends: clearFriend }).subscribe(() => {
-                    this.friendsGateway.deleteFriendSuggest(friend.id, profile.id);
+                this.usersService.saveUser(profile).subscribe((profileSave: UsersInterface) => {
+                  friend.friends = friend.friends.filter(( fr: UsersInterface ) => fr.id !== profile.id);
+                  this.usersService.saveUser(friend).subscribe(() => {
+                    this.chatService.deleteChat(profile.id, friend.id).subscribe(() => {
+                      this.friendsGateway.deleteFriendSuggest(friend.id, profile.id);
+                    })
                   })
                 })
+                // this.chatService.deleteChat(profile.id, friend.id).subscribe(() => {
+                //   this.usersService.saveUser({...profile, friends: clearProfile }).subscribe();
+                //   this.usersService.saveUser({...friend, friends: clearFriend }).subscribe(() => {
+                //     this.friendsGateway.deleteFriendSuggest(friend.id, profile.id);
+                //   })
+                // })
               })
             )
           })

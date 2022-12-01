@@ -4,8 +4,7 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Observable } from "rxjs";
 import { FriendsService } from "./friends.service";
 import { FriendsInterface } from "./friends.interface";
-import { DeleteResult } from "typeorm";
-import {UsersInterface} from "../users/users.interface";
+import { UsersInterface } from "../users/users.interface";
 
 @ApiTags('friends')
 @Controller('friends')
