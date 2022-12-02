@@ -48,7 +48,7 @@ export class PersonService {
     return this.http.put<UserInterface>(`${this.httpUrl}/api/friends/confirm/${friendID}`,{}).pipe(
       take(1),
       tap((person: UserInterface) => {
-        if(!!this.person && this.person.request.some((request: FriendsInterface) => request.id === friendID)) {
+        if(!!this.person) {
           this.person.request = [];
           this.person.friends.push(person);
           this.person$.next(this.person);
