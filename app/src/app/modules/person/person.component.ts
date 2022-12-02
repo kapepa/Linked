@@ -50,7 +50,7 @@ export class PersonComponent implements OnInit, OnDestroy {
         return request.friends.id === this.user.id || request.user.id === this.user.id;
       }),
       switchMap((request: FriendsInterface) => {
-        return this.personService.confirmFriends(request.id).pipe(
+        return this.personService.confirmFriends(this.person.id).pipe(
           tap(() => this.userService.findSuggest(request.id).subscribe((index: number) => {
             this.userService.exceptRequest(index).subscribe();
           })),
@@ -63,6 +63,13 @@ export class PersonComponent implements OnInit, OnDestroy {
     this.personService.deleteFriend(this.person.id).subscribe(() => {});
   }
 
+  onOpenChatPerson(e: Event){
+    e.preventDefault();
+    this.chatService.setFirstUser(this.person.id).subscribe(() => {
+      this.router.navigate(['/chat']);
+    })
+  }
+
   get getBtn() {
     let sign: 'ADD' | 'CONFIRM' | 'PENDING' | 'DELETE';
     switch (true) {
@@ -72,13 +79,6 @@ export class PersonComponent implements OnInit, OnDestroy {
       case (!!this.person?.friends.length): return sign = 'DELETE';
       default: return  sign = 'ADD';
     }
-  }
-
-  onOpenChatPerson(e: Event){
-    e.preventDefault();
-    this.chatService.setFirstUser(this.person.id).subscribe(() => {
-      this.router.navigate(['/chat']);
-    })
   }
 
   get accessMessage() {

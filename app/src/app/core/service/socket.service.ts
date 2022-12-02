@@ -71,7 +71,7 @@ export class SocketService {
     let token = await this.storageService.get('token');
     if( !token ) return false;
 
-    this.socket = io(environment.configUrl,{extraHeaders: {Authorization: `Bearer ${ token }`},});
+    this.socket = io(environment.configUrl,{extraHeaders: {Authorization: `Bearer ${ token }`}});
     this.socket$.next(this.socket);
 
     return true;
