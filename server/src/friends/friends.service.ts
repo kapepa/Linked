@@ -98,13 +98,10 @@ export class FriendsService {
                     chat.conversation.push(takeUser(user), takeUser(friend));
 
                     return this.chatService.saveChat(chat).pipe(
-                      switchMap(() => {
-                        return this.deleteRequest(friendsDto.id).pipe(
-                          tap(() => {
-                            this.friendsGateway.changeFriendSuggest(user.id, friend.id);
-                          })
+                      switchMap(() => this.deleteRequest(friendsDto.id).pipe(
+                          tap(() => this.friendsGateway.changeFriendSuggest(user.id, friend.id))
                         )
-                      })
+                      )
                     )
                   })
                 )
