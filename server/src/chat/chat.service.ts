@@ -79,6 +79,9 @@ export class ChatService {
         }, [] as UsersInterface[]);
         let chat = chatSort[0];
 
+        // console.log(chatSort)
+        // this.chatRepository.delete({id: 'cc804c50-e248-49bb-9a37-2b427217b081'})
+
         return !!chat ?
           of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } }):
           of({ friends: sortFried, chat: {} as ChatInterface });
@@ -107,12 +110,16 @@ export class ChatService {
     )
   }
 
-  createChat(user: UsersInterface | UsersDto, friend: UsersInterface){
-    let users = [user, friend].map((user: UsersInterface) => {
-      let { chat, request, friends, ...other } = user;
-      return other
-    })
-    return from(this.chatRepository.save({ conversation: users }));
+  createChat(){
+    return from(this.chatRepository.save( {} )).pipe(
+      switchMap((chat: ChatInterface) => {
+        return from(this.chatRepository.findOne({ where: { id: chat.id}, relations: ['conversation'] }))
+      })
+    );
+  }
+
+  saveChat(chat: ChatInterface){
+    return from(this.chatRepository.save(chat));
   }
 
   deleteChat(userID: string, friendID: string) {
