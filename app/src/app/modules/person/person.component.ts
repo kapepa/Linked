@@ -8,7 +8,7 @@ import { filter, switchMap, tap } from "rxjs/operators";
 import { FriendsInterface } from "../../core/interface/friends.interface";
 import { UserService } from "../../core/service/user.service";
 import { Router } from "@angular/router";
-import {ChatService} from "../../core/service/chat.service";
+import { ChatService } from "../../core/service/chat.service";
 
 @Component({
   selector: 'app-person',
