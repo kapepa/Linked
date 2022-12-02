@@ -19,8 +19,8 @@ export class PersonComponent implements OnInit, OnDestroy {
   person: UserInterface;
   personSub: Subscription;
 
-  user: UserJwtDto
-  userSub: Subscription
+  user: UserJwtDto;
+  userSub: Subscription;
 
   constructor(
     private router: Router,
