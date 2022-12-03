@@ -5,6 +5,7 @@ import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {from, Observable, of, switchMap, take} from "rxjs";
 import {ChatInterface} from "./chat.interface";
 import {MessageInterface} from "./message.interface";
+import {UsersInterface} from "../users/users.interface";
 
 @ApiTags('chat')
 @Controller('chat')
@@ -59,4 +60,11 @@ export class ChatController {
     return this.chatService.getChat(param.friendID, req.user);
   }
 
+  @Get('/companion')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'find friends, which have in chat', type: UsersInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  companion(@Query() query, @Req() req) {
+    console.log('companion')
+  }
 }

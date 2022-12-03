@@ -9,6 +9,7 @@ import { PersonService } from "./person.service";
 import { UserService } from "./user.service";
 import { Router } from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
+import {UserInterface} from "../interface/user.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +65,11 @@ export class SocketService {
   getPerson(dto: { id: string }) {
     if(this.router.url === `/person/${dto.id}`){
       this.personService.getPerson(dto.id).subscribe(() => {})
+    }
+    if(this.router.url === `/chat`){
+      this.chatService.getFriends.subscribe(( users : UserInterface[]) => {
+        this.chatService.getCompanion({ take: users.length + 1, skip: 0 }).subscribe(() => {})
+      })
     }
   }
 

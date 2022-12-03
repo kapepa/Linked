@@ -63,6 +63,13 @@ export class ChatService {
     return from(this.messageRepository.delete({id}));
   }
 
+  deleteChatAndMessage(chat: ChatInterface) : Observable<DeleteResult> {
+    return from(this.messageRepository.delete({ chat: {id: chat.id }}))
+      .pipe(switchMap(() => this.chatRepository.delete({id: chat.id})));
+  }
+
+
+
   conversation(user: UsersDto, query?: {skip?: number, take?: number, first?: string}): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
     return this.usersService.findOneUser( {
       where: { id: user.id },
@@ -78,9 +85,6 @@ export class ChatService {
           return accum;
         }, [] as UsersInterface[]);
         let chat = chatSort[0];
-
-        // this.chatRepository.delete({id: 'ef3b5f70-7db4-415c-8055-e4f43aba34ec'})
-        // this.chatRepository.delete({id: 'e0607a40-6d52-4153-9f11-1a67c1a10a36'})
 
         return !!chat ?
           of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } }):
@@ -130,15 +134,6 @@ export class ChatService {
         )
       })
     )
-    // return from(this.chatRepository.findOne({where: { conversation: [ {id: userID}, {id: friendID} ] }, relations: ['chat'] }))
-    //   .pipe(
-    //     tap((chat: ChatInterface) => {
-    //       from(this.messageRepository.remove(chat.chat as any))
-    //         .pipe(
-    //           tap(() => this.chatRepository.delete({id: chat.id}))
-    //         )
-    //     })
-    //   )
   }
 
   createMessage( chatID: string, dto: MessageInterface ): Observable<MessageInterface>{
