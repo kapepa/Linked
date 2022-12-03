@@ -50,7 +50,7 @@ export class UsersService {
     );
   }
 
-  saveUser(data: UsersDto ): Observable<UsersInterface>{
+  saveUser(data: UsersDto | UsersInterface ): Observable<UsersInterface>{
     return from(this.usersRepository.save(data));
   }
 

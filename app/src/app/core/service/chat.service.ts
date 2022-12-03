@@ -108,6 +108,18 @@ export class ChatService {
     )
   }
 
+  getCompanion(query?: { take?: number, skip?: number }) {
+    return this.http.get(`${this.configUrl}/api/chat/companion`,{
+      params: query,
+    }).pipe(
+      take(1),
+      tap(() => {
+
+      }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
   loadMessage(): Observable<{ messages: MessageInterface[]; limited: boolean }> {
     return this.http.get<{ messages: MessageInterface[]; limited: boolean }>(
       `${this.configUrl}/api/chat/messages`, {params: {id: this.chat.id, take: 20, skip: this.chat.chat.length}}).pipe(
