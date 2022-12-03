@@ -140,7 +140,6 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, userDto: UsersDto): Observable<UsersInterface[]> {
-    this.usersService.saveUser({...userDto, friends: [], chat: []}).subscribe();
 
     return of([]).pipe(
       tap(() => {
