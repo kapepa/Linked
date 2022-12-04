@@ -7,6 +7,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { ChatService } from "../../core/service/chat.service";
 import { MessageInterface } from "../../core/interface/message.interface";
 import { SocketService } from "../../core/service/socket.service";
+import {MessageDto} from "../../core/dto/message.dto";
 
 @Component({
   selector: 'app-chat',
@@ -66,12 +67,11 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if(!this.textarea.valid) return;
-    let newMessage = { owner: this.user, message: this.textarea.value.message } as MessageInterface;
 
-    this.socketService.messageReceive(this.chatID, newMessage).subscribe((message: MessageInterface) => {
+    this.chatService.sendNewMessage(this.textarea.value.message).subscribe((message: MessageInterface) => {
       this.chatService.messageReceive(message);
       this.textarea.reset();
-    });
+    })
   };
 
   onDel(index: number) {

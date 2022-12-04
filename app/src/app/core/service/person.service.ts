@@ -7,6 +7,7 @@ import { catchError, take, tap } from "rxjs/operators";
 import { FriendsInterface } from "../interface/friends.interface";
 import { UserInterface } from "../interface/user.interface";
 import { UserService } from "./user.service";
+import {ChatService} from "./chat.service";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class PersonService {
   constructor(
     private http: HttpClient,
     private userService: UserService,
+    private chatService: ChatService,
     private httpService: HttpService,
   ) { }
 
@@ -44,15 +46,17 @@ export class PersonService {
     )
   }
 
-  confirmFriends(friendID: string): Observable<UserInterface>{
-    return this.http.put<UserInterface>(`${this.httpUrl}/api/friends/confirm/${friendID}`,{}).pipe(
+  confirmFriends(friendID: string): Observable<{user: UserInterface, friend: UserInterface}>{
+    return this.http.put<{user: UserInterface, friend: UserInterface}>(`${this.httpUrl}/api/friends/confirm/${friendID}`,{}).pipe(
       take(1),
-      tap((person: UserInterface) => {
+      tap((dto: {user: UserInterface, friend: UserInterface}) => {
         if(!!this.person) {
           this.person.request = [];
-          this.person.friends.push(person);
+          this.person.friends.push(dto.user);
           this.person$.next(this.person);
+
         }
+        this.chatService.appendFriend(dto.friend);
       }),
       catchError(this.httpService.handleError)
     )
@@ -70,7 +74,7 @@ export class PersonService {
   }
 
   deleteFriend(friendID: string): Observable<UserInterface[]>{
-    return this.http.delete<UserInterface[]>(`${this.httpUrl}/api/friends/delete/${friendID}`).pipe(
+    return this.http.delete<UserInterface[]>(`${this.httpUrl}/api/friends/delete/${this.person.id}`).pipe(
       take(1),
       tap((friends: UserInterface[]) => {
         this.person.friends = friends;

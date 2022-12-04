@@ -5,7 +5,7 @@ import {BehaviorSubject, from, Observable} from "rxjs";
 import { UserInterface } from "../interface/user.interface";
 import { catchError, take, tap } from "rxjs/operators";
 import { HttpService } from "./http.service";
-import {FriendsInterface} from "../interface/friends.interface";
+import { FriendsInterface } from "../interface/friends.interface";
 
 @Injectable({
   providedIn: 'root'

@@ -30,7 +30,7 @@ export class PopupFriendsComponent implements OnInit, OnDestroy {
   }
 
   onAccept(request: FriendsInterface, index: number) {
-    this.personService.confirmFriends(request.user.id).subscribe((user: UserInterface) => {
+    this.personService.confirmFriends(request.user.id).subscribe(() => {
       this.userService.exceptRequest(index).subscribe(() => {
         this.closePopupFriends();
       });

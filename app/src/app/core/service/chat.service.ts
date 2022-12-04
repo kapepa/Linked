@@ -8,6 +8,7 @@ import { HttpService } from "./http.service";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
+import {MessageDto} from "../dto/message.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -35,14 +36,27 @@ export class ChatService {
   messageLimited: boolean;
   messageLimited$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
+  noReadMessage: boolean;
+  noReadMessage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+
+  noReadFriend: string[] = [];
+  noReadFriend$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
   ) {}
 
-  newMessageSocket(message: MessageInterface) {
-    this.chat.chat.push(message);
-    this.chat$.next(this.chat);
+  newMessageSocket(dto: { friend: {id: string}, chat: {id: string}, message: MessageInterface}) {
+    let { friend, chat, message } = dto
+    if (this.chat.id === chat.id) {
+      this.chat.chat.push(message);
+      this.chat$.next(this.chat);
+    } else {
+      this.noReadMessage = true;
+      this.noReadMessage$.next(this.noReadMessage);
+      this.noReadFriend.push(friend.id);
+    }
   }
 
   deleteMessageSocket(id: string) {
@@ -98,17 +112,19 @@ export class ChatService {
         this.friends$.next(this.friends);
         this.chat = dto.chat;
         this.chat$.next(this.chat);
-        this.activeConversation = this.friends[0].id;
-        this.activeConversation$.next(this.activeConversation);
-        this.activeFriend = 0;
-        this.activeFriend$.next(this.activeFriend);
+        if(!!this.friends.length){
+          this.activeConversation = this.friends[0].id;
+          this.activeConversation$.next(this.activeConversation);
+          this.activeFriend = 0;
+          this.activeFriend$.next(this.activeFriend);
+        }
         if(!!this.first) this.clearFirstUser().subscribe();
       }),
       catchError(this.httpService.handleError),
     )
   }
 
-  getCompanion(query?: { take?: number, skip?: number }) {
+  getCompanion(query?: { id?: string }) {
     return this.http.get(`${this.configUrl}/api/chat/companion`,{
       params: query,
     }).pipe(
@@ -147,8 +163,34 @@ export class ChatService {
         this.activeConversation$.next(this.activeConversation);
         this.chat = chat;
         this.chat$.next(this.chat);
+        this.checkNoRead(id);
       })
     )
+  }
+
+  companion(id: string): Observable<UserInterface>{
+    return this.http.get<UserInterface>(`${this.configUrl}/api/chat/companion/${id}`).pipe(
+      take(1),
+      tap((companion: UserInterface) => {
+        this.friends.push(companion);
+        this.friends$.next(this.friends);
+      }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
+  sendNewMessage(message: string): Observable<MessageInterface> {
+    return this.http.put<MessageInterface>(`${this.configUrl}/api/chat/send/${this.chat.id}`,{message}).pipe(
+      take(1),
+      catchError(this.httpService.handleError)
+    )
+  }
+
+  appendFriend(friend: UserInterface) {
+    if( this.friends.some( fr => fr.id !== friend.id) ){
+      this.friends.push(friend);
+      this.friends$.next(this.friends);
+    }
   }
 
   setFirstUser(id: string) {
@@ -165,6 +207,17 @@ export class ChatService {
     return from([]);
   }
 
+  checkNoRead(id: string) {
+    let findIndex = this.noReadFriend.findIndex((id: string) => id === id);
+    if(findIndex !== -1){
+      this.noReadFriend.splice(findIndex, 1);
+      this.noReadFriend$.next(this.noReadFriend);
+
+      this.noReadMessage = !!this.noReadFriend.length;
+      this.noReadMessage$.next(this.noReadMessage);
+    }
+  }
+
   get getChat(): Observable<ChatInterface> {
     return this.chat$.asObservable();
   }
@@ -176,7 +229,7 @@ export class ChatService {
   get getMessages(): Observable<MessageInterface[]> {
     return this.chat$.asObservable().pipe(
       switchMap(( chat: ChatInterface) => {
-        return of(chat.chat);
+        return of(chat?.chat);
       })
     );
   }
@@ -187,5 +240,9 @@ export class ChatService {
 
   get getMessageLimited(): Observable<boolean> {
     return this.messageLimited$.asObservable();
+  }
+
+  get getNoRead(): Observable<boolean> {
+    return this.noReadMessage$.asObservable();
   }
 }

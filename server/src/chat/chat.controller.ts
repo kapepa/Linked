@@ -1,8 +1,8 @@
-import {Controller, Get, Param, Post, Query, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards} from '@nestjs/common';
 import {ChatService} from "./chat.service";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {from, Observable, of, switchMap, take} from "rxjs";
+import {from, Observable, of, switchMap, take, tap} from "rxjs";
 import {ChatInterface} from "./chat.interface";
 import {MessageInterface} from "./message.interface";
 import {UsersInterface} from "../users/users.interface";
@@ -52,6 +52,14 @@ export class ChatController {
     )
   }
 
+  @Get('/companion/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'find friends, which have in chat', type: UsersInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  companion(@Param('id') param, @Req() req): Observable<UsersInterface> {
+    return this.chatService.companion(param);
+  }
+
   @Get('/change/:friendID')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'find chat, and return chat and message', type: ChatInterface})
@@ -60,11 +68,11 @@ export class ChatController {
     return this.chatService.getChat(param.friendID, req.user);
   }
 
-  @Get('/companion')
+  @Put('/send/:chatID')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'find friends, which have in chat', type: UsersInterface})
+  @ApiResponse({ status: 201, description: 'sned and set new message in chat', type: MessageInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  companion(@Query() query, @Req() req) {
-    console.log('companion')
+  sendNewMessage(@Param('chatID') chatID, @Body() body, @Req() req) {
+    return this.chatService.createMessage(chatID, body, req.user);
   }
 }

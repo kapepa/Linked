@@ -6,6 +6,9 @@ import { Subscription } from "rxjs";
 import {PopupFriendsComponent} from "../popup-friends/popup-friends.component";
 import {UserService} from "../../core/service/user.service";
 import {UserInterface} from "../../core/interface/user.interface";
+import {ChatService} from "../../core/service/chat.service";
+import {ChatInterface} from "../../core/interface/chat.interface";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-nav-main',
@@ -19,18 +22,24 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
   userAvatar: string;
   userAvatarSub: Subscription;
 
+  noRead: boolean = false;
+  noReadSub: Subscription;
+
   @ViewChild('popupAnchor') popup: ElementRef;
   @ViewChild('popupFriends') friends: ElementRef;
 
   constructor(
     public popoverController: PopoverController,
+    private router: Router,
     private authService: AuthService,
     private userService: UserService,
+    private chatService: ChatService,
   ) { }
 
   ngOnInit() {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
     this.userAvatarSub = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
+    this.noReadSub = this.chatService.getNoRead.subscribe((bool) => this.noRead = bool);
   }
 
   ngAfterViewInit() {
@@ -41,6 +50,7 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.userAvatarSub.unsubscribe();
     this.userSub.unsubscribe();
+    this.noReadSub.unsubscribe();
   }
 
   async presentPopover(e: Event) {

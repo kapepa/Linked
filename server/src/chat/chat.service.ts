@@ -9,6 +9,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Chat } from "./chat.entity";
 import { DeleteResult, Repository } from "typeorm";
 import { MessageEntity } from "./message.entity";
+import { ChatGateway } from "./chat.gateway";
+import {MessageDto} from "./message.dto";
 
 @Injectable()
 export class ChatService {
@@ -19,6 +21,7 @@ export class ChatService {
     private chatRepository: Repository<Chat>,
     @InjectRepository(MessageEntity)
     private messageRepository: Repository<MessageEntity>,
+    private chatGateway: ChatGateway
   ) {}
 
   findOneChat(options?:{
@@ -55,9 +58,9 @@ export class ChatService {
     return from(this.messageRepository.find({ ...options, }))
   }
 
-  addNewMessage(payload: {id: string, dto: MessageInterface}): Observable<MessageInterface> {
-    return this.createMessage(payload.id, payload.dto);
-  }
+  // addNewMessage(payload: {id: string, dto: MessageInterface}): Observable<MessageInterface> {
+  //   return this.createMessage(payload.id, payload.dto);
+  // }
 
   deleteMessage(id: string): Observable<DeleteResult> {
     return from(this.messageRepository.delete({id}));
@@ -68,9 +71,8 @@ export class ChatService {
       .pipe(switchMap(() => this.chatRepository.delete({id: chat.id})));
   }
 
-
-
   conversation(user: UsersDto, query?: {skip?: number, take?: number, first?: string}): Observable<{ friends: UsersInterface[], chat: ChatInterface }> {
+
     return this.usersService.findOneUser( {
       where: { id: user.id },
       relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'],
@@ -78,6 +80,7 @@ export class ChatService {
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
+        if( !users.friends.length) return of({ friends: [] as UsersInterface[], chat: {} as ChatInterface })
         let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1);
         if( !!query.first ) users.chat.sort((chat: ChatInterface) => (chat.conversation[0].id === query.first || chat.conversation[1].id === query.first ) ? -1 : 1);
         let sortFried = chatSort.reduce(( accum: UsersInterface[], chat: ChatInterface ) => {
@@ -89,7 +92,7 @@ export class ChatService {
         return !!chat ?
           of({ friends: sortFried, chat: { ...chat, chat: chat.chat.splice(-20) } }):
           of({ friends: sortFried, chat: {} as ChatInterface });
-      })
+      }),
     )
   }
 
@@ -114,6 +117,10 @@ export class ChatService {
     )
   }
 
+  companion(id: string): Observable<UsersInterface> {
+    return this.usersService.findOneUser({ where: { id } });
+  }
+
   createChat(){
     return from(this.chatRepository.save( {} )).pipe(
       switchMap((chat: ChatInterface) => {
@@ -136,14 +143,25 @@ export class ChatService {
     )
   }
 
-  createMessage( chatID: string, dto: MessageInterface ): Observable<MessageInterface>{
-    return from(this.findOneChat({ where: { id: chatID }, relations: ['chat'] })).pipe(
+  createMessage( chatID: string, message: MessageDto, user: UsersDto ): Observable<MessageInterface>{
+    return from(this.findOneChat({ where: { id: chatID }, relations: ['chat', 'conversation'] })).pipe(
       switchMap((chat: ChatInterface) => {
-        return from(this.messageRepository.save(dto)).pipe(
+        return from(this.messageRepository.save({...message, owner: user})).pipe(
           switchMap( (message: MessageInterface) => {
-            return from([message]);
+            return from([message]).pipe(
+              tap(() => {
+                from(this.chatRepository.save({ ...chat, chat: chat.chat.concat(message), updated_at: new Date() }))
+                  .pipe(
+                    tap(() => {
+                      let [ profile, companion ] = chat.conversation;
+                      let sendToUser = profile.id === user.id ? companion : profile;
+                      this.chatGateway.newMessage(sendToUser.id, chat.id, message);
+                    })
+                  )
+                  .subscribe()
+              })
+            );
           }),
-          tap(() => this.chatRepository.save({ ...chat, chat: chat.chat.concat(dto), updated_at: new Date() }))
         );
       })
     )

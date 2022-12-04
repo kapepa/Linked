@@ -8,8 +8,7 @@ import { fromPromise } from "rxjs/internal-compatibility";
 import { PersonService } from "./person.service";
 import { UserService } from "./user.service";
 import { Router } from "@angular/router";
-import {BehaviorSubject, Observable} from "rxjs";
-import {UserInterface} from "../interface/user.interface";
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +36,10 @@ export class SocketService {
       await this.reconnectSocket();
     }
 
-    this.socket.on('new-message', (message: MessageInterface) => {
-      this.chatService.newMessageSocket(message);
+    this.socket.on('new-message', (
+      dto: { friend: { id: string }, chat: {id: string}, message: MessageInterface}
+    ) => {
+      this.chatService.newMessageSocket(dto);
     })
 
     this.socket.on('deleteMessage', (id: string) => {
@@ -46,11 +47,14 @@ export class SocketService {
     })
 
     this.socket.on('notificationAddFriend', (dto: { id: string }) => {
-      this.userService.getOwnProfile().subscribe(() => {this.getPerson(dto)});
-    })
+      this.userService.getOwnProfile().subscribe(() => {
+        this.getPerson(dto);
+      });
+    });
 
     this.socket.on('changeFriendSuggest', (dto: { id: string }) => {
       this.getPerson(dto);
+      if(this.router.url === `/chat`) this.chatService.companion(dto.id).subscribe();
     })
 
     this.socket.on('deleteFriendSuggest', (dto: { id: string }) => {
@@ -66,12 +70,9 @@ export class SocketService {
     if(this.router.url === `/person/${dto.id}`){
       this.personService.getPerson(dto.id).subscribe(() => {})
     }
-    if(this.router.url === `/chat`){
-      this.chatService.getFriends.subscribe(( users : UserInterface[]) => {
-        this.chatService.getCompanion({ take: users.length + 1, skip: 0 }).subscribe(() => {})
-      })
-    }
   }
+
+
 
   async createSocket() {
     let token = await this.storageService.get('token');
