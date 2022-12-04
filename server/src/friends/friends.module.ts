@@ -18,7 +18,8 @@ import { JwtModule } from "@nestjs/jwt";
     }),
     TypeOrmModule.forFeature([ FriendsEntity ]),
   ],
+  exports: [FriendsService],
+  providers: [FriendsGateway, FriendsService],
   controllers: [FriendsController],
-  providers: [FriendsGateway, FriendsService]
 })
 export class FriendsModule {}

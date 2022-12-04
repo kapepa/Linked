@@ -1,5 +1,6 @@
-import {FriendDto} from "./friend.dto";
-import {PostDto} from "./post.dto";
+import { FriendDto } from "./friend.dto";
+import { PostDto } from "./post.dto";
+import { ChatDto } from "./chat.dto";
 
 export type Role = 'admin' | 'ghost' | 'user';
 
@@ -13,6 +14,7 @@ export class UserDto {
   friends?: UserDto[]
   role: Role
   feet: PostDto[]
+  chat: ChatDto[]
   exp: number
   iat: number
 }

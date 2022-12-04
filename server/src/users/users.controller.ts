@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Post,
+  Post, Query,
   Req,
   UploadedFile,
   UseGuards,

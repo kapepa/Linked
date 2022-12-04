@@ -30,6 +30,7 @@
         <ion-router-link routerLink="/chat" color="medium" class="nav-main__link">
           <div class="nav-main__link-col">
             <ion-icon name="chatbox-ellipses" class="nav-main__ico"></ion-icon>
+            <div *ngIf="noRead" class="nav-main__attention" slot="start"></div>
             <div class="nav-main__text">Chat</div>
           </div>
         </ion-router-link>

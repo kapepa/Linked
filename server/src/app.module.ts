@@ -18,7 +18,7 @@ import { join } from 'path';
 import { ChatModule } from "./chat/chat.module";
 import { Chat } from "./chat/chat.entity";
 import { MessageEntity } from "./chat/message.entity";
-import {AppGateway} from "./app.gateway.spec";
+import { AppGateway } from "./app.gateway.spec";
 
 dotenv.config();
 

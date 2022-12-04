@@ -44,7 +44,7 @@ export class FriendsController {
   @ApiResponse({ status: 200, description: 'Confirm successfully add to friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Such a friend is already in friends'})
-  confirm(@Param('requestID') requestID, @Req() req): Observable<UsersInterface>{
+  confirm(@Param('requestID') requestID, @Req() req): Observable<{ user: UsersInterface, friend: UsersInterface }>{
     return this.friendsService.confirm(requestID, req.user);
   }
 

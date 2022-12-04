@@ -7,7 +7,7 @@ export class Chat {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToMany(() => User, (user) => user.chat)
+  @ManyToMany(() => User, (user) => user.chat, {cascade: true})
   @JoinTable({ name: 'chat_user' })
   conversation: User[];
 
