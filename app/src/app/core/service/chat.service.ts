@@ -48,7 +48,7 @@ export class ChatService {
   ) {}
 
   newMessageSocket(dto: { friend: {id: string}, chat: {id: string}, message: MessageInterface}) {
-    let { friend, chat, message } = dto
+    let { friend, chat, message } = dto;
     if (this.chat.id === chat.id) {
       this.chat.chat.push(message);
       this.chat$.next(this.chat);
