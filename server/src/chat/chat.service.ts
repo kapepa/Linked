@@ -112,7 +112,7 @@ export class ChatService {
   getChat( friendID: string, user: UsersDto ): Observable<ChatInterface>{
     return from(this.usersService.findOneUser({
       where: { id: friendID  },
-      relations: ['chat', 'chat.conversation',]
+      relations: ['chat', 'chat.conversation',],
     })).pipe(
       switchMap(( profile: UsersInterface ) => {
         let chat = profile.chat.find(( chat: ChatInterface ) => chat.conversation.some((person: UsersInterface) => person.id === user.id));
