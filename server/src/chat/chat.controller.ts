@@ -28,7 +28,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'receive all conversation', type: ChatInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  getAllConversation(@Req() req, @Query() query): Observable<any> {
+  getAllConversation(@Req() req, @Query() query): Observable<{ friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }> {
     return this.chatService.conversation(req.user, query);
   }
 
