@@ -11,6 +11,7 @@ import { DeleteResult, Repository } from "typeorm";
 import { MessageEntity } from "./message.entity";
 import { ChatGateway } from "./chat.gateway";
 import { MessageDto } from "./message.dto";
+import {MessageStatus} from "./status.enum";
 
 @Injectable()
 export class ChatService {
@@ -72,7 +73,7 @@ export class ChatService {
     return this.usersService.findOneUser( {
       where: { id: user.id },
       relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'],
-      order: { chat: { updated_at: "DESC" } },
+      order: { chat: { updated_at: "ASC" } },
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
@@ -83,7 +84,7 @@ export class ChatService {
           accum.push(...chat.conversation.filter((person: UsersInterface) => person.id !== user.id));
           return accum;
         }, [] as UsersInterface[]);
-        let chat = chatSort[0];
+        let chat = chatSort.splice(0,1)[0];
 
         return !chat ? of({ friends: sortFried, chat: {} as ChatInterface, no: { read: [] } }):
           from(this.findChat({
@@ -91,7 +92,9 @@ export class ChatService {
             relations: ['conversation'],
           })).pipe(
             switchMap((noReadChat: ChatInterface[]) => {
-              let noRead = noReadChat.map((chat: ChatInterface) => chat.conversation[0].id === user.id ? chat.conversation[1].id : chat.conversation[0].id );
+              let noRead = noReadChat.map((chat: ChatInterface) =>
+                (chat.conversation[0].id === user.id) ? chat.conversation[1].id : chat.conversation[0].id
+              );
               return from(this.findMessage({
                 where: { chat: { id: chat.id} },
                 order: { created_at: "DESC" },
@@ -100,7 +103,11 @@ export class ChatService {
                 skip: 0,
               })).pipe(
                 switchMap((message: MessageInterface[]) => {
-                  return from([{ friends: sortFried, chat: { ...chat, chat: message.reverse() }, no: { read: noRead } }])
+                  return from([{ friends: sortFried, chat: { ...chat, chat: message.reverse() }, no: { read: noRead } }]).pipe(
+                    tap(() => {
+                      this.statusMessage(chat.id).subscribe();
+                    })
+                  )
                 })
               )
             })
@@ -163,7 +170,7 @@ export class ChatService {
           switchMap( (message: MessageInterface) => {
             return from([message]).pipe(
               tap(() => {
-                from(this.chatRepository.save({ ...chat, chat: chat.chat.concat(message), updated_at: new Date() }))
+                from(this.chatRepository.save({ ...chat, chat: chat.chat.concat(message),  updated_at: new Date()}))
                   .pipe(
                     tap(() => {
                       let [ profile, companion ] = chat.conversation;
@@ -181,8 +188,13 @@ export class ChatService {
     )
   }
 
-  statusMessage(){
-
+  statusMessage(chatID: string){
+    return from(this.findOneChat({ where: { id: chatID, chat: { status: MessageStatus.WAITING } }, relations: ['chat']})).pipe(
+      switchMap(( chat: ChatInterface ) => {
+        console.log(chat)
+        return of({});
+      })
+    )
   }
 
   async removeChat(chat: ChatInterface[]){
