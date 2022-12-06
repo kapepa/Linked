@@ -54,7 +54,7 @@ export class ChatGateway implements OnGatewayInit{
   @UseGuards(SocketGuard)
   afterInit(server: Server) {}
 
-  newMessage(toFriend: string, chatID: string, message: MessageInterface) {
-    this.server.to(toFriend).emit('new-message', { friend: {id: toFriend}, chat: {id: chatID}, message });
+  newMessage(toFriend: string, userID: string, chatID: string, message: MessageInterface) {
+    this.server.to(toFriend).emit('new-message', { friend: {id: userID}, chat: {id: chatID}, message });
   }
 }

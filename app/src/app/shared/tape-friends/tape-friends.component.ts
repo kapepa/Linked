@@ -15,6 +15,9 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   activeConversation: string;
   activeConversationSub: Subscription
 
+  noRead: string[];
+  noReadSub: Subscription;
+
   constructor(
     private chatService: ChatService,
   ) { }
@@ -26,9 +29,13 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
     this.activeConversationSub = this.chatService.getActiveConversation.subscribe(( active: string ) => {
       this.activeConversation = active;
     })
+    this.noReadSub = this.chatService.getNoReadFriend.subscribe((noRead: string[]) => {
+      this.noRead = noRead;
+    });
   }
 
   ngOnDestroy() {
+    this.noReadSub.unsubscribe();
     this.friendsSub.unsubscribe();
     this.activeConversationSub.unsubscribe();
   }

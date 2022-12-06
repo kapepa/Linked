@@ -13,6 +13,7 @@
           <div class="tape-friends__name">{{friend.firstName}}</div>
           <div class="tape-friends__name">{{friend.lastName}}</div>
         </div>
+        <div *ngIf="noRead.includes(friend.id)" class="tape-friends__no-read"></div>
       </div>
     </ng-container>
   </ion-list>

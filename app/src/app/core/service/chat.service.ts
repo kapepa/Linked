@@ -8,7 +8,6 @@ import { HttpService } from "./http.service";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { UserInterface } from "../interface/user.interface";
 import { MessageInterface } from "../interface/message.interface";
-import {MessageDto} from "../dto/message.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +55,7 @@ export class ChatService {
       this.noReadMessage = true;
       this.noReadMessage$.next(this.noReadMessage);
       this.noReadFriend.push(friend.id);
+      this.noReadFriend$.next(this.noReadFriend);
     }
   }
 
@@ -98,25 +98,27 @@ export class ChatService {
     )
   }
 
-  receiveAllConversation(query?: {skip: number, take: number, first: string}): Observable<{friends: UserInterface[], chat: ChatInterface}> {
+  receiveAllConversation(query?: {skip: number, take: number, first: string}):
+    Observable<{friends: UserInterface[], chat: ChatInterface, no: { read: string[] }}>
+  {
     if(!!this.first) query = {...query, first: this.first};
     let params = query && !!Object.keys(query).length ? query : undefined;
     return this.http.get<{
       friends: UserInterface[],
       messages: MessageInterface[],
-      chat: ChatInterface}>(`${this.configUrl}/api/chat/conversation`,
+      chat: ChatInterface,
+      no: { read: string[] }
+    }>(`${this.configUrl}/api/chat/conversation`,
       {params}
     ).pipe(
-      tap(( dto: { friends: UserInterface[], chat: ChatInterface } ) => {
-        this.friends = dto.friends;
-        this.friends$.next(this.friends);
-        this.chat = dto.chat;
-        this.chat$.next(this.chat);
+      tap(( dto: { friends: UserInterface[], chat: ChatInterface, no: { read: string[] } } ) => {
+        this.setFriends = dto.friends;
+        this.setChat = dto.chat;
         if(!!this.friends.length){
-          this.activeConversation = this.friends[0].id;
-          this.activeConversation$.next(this.activeConversation);
-          this.activeFriend = 0;
-          this.activeFriend$.next(this.activeFriend);
+          this.setActiveConversation = this.friends[0].id;
+          this.setActiveFriend = 0;
+          this.setNoReadMessage = !!dto.no.read.length;
+          this.setNoReadFriend = dto.no.read;
         }
         if(!!this.first) this.clearFirstUser().subscribe();
       }),
@@ -218,6 +220,36 @@ export class ChatService {
     }
   }
 
+  set setFriends(friends: UserInterface[]) {
+    this.friends = friends;
+    this.friends$.next(this.friends);
+  }
+
+  set setChat(chat: ChatInterface) {
+    this.chat = chat;
+    this.chat$.next(this.chat);
+  }
+
+  set setActiveConversation(id: string) {
+    this.activeConversation = id;
+    this.activeConversation$.next(this.activeConversation);
+  }
+
+  set setActiveFriend(index: number) {
+    this.activeFriend = index;
+    this.activeFriend$.next(this.activeFriend);
+  }
+
+  set setNoReadMessage(bool: boolean) {
+    this.noReadMessage = bool;
+    this.noReadMessage$.next(this.noReadMessage);
+  }
+
+  set setNoReadFriend(noRead: string[]) {
+    this.noReadFriend = noRead;
+    this.noReadFriend$.next(this.noReadFriend);
+  }
+
   get getChat(): Observable<ChatInterface> {
     return this.chat$.asObservable();
   }
@@ -244,5 +276,9 @@ export class ChatService {
 
   get getNoRead(): Observable<boolean> {
     return this.noReadMessage$.asObservable();
+  }
+
+  get getNoReadFriend(): Observable<string[]> {
+    return this.noReadFriend$.asObservable();
   }
 }
