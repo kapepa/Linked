@@ -159,12 +159,9 @@ export class ChatService {
     return this.http.get<any>(`${this.configUrl}/api/chat/change/${id}`).pipe(
       take(1),
       tap((chat: ChatInterface) => {
-        this.activeFriend = index;
-        this.activeFriend$.next(this.activeFriend);
-        this.activeConversation = id;
-        this.activeConversation$.next(this.activeConversation);
-        this.chat = chat;
-        this.chat$.next(this.chat);
+        this.setActiveFriend = index;
+        this.setActiveConversation = id;
+        this.setChat = chat
         this.checkNoRead(id);
       })
     )
