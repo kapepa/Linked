@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { ChatInterface } from "./chat.interface";
-import { from, Observable, of, switchMap, take, tap } from "rxjs";
-import { MessageInterface } from "./message.interface";
-import { UsersDto } from "../users/users.dto";
-import { UsersService } from "../users/users.service";
-import { UsersInterface } from "../users/users.interface";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Chat } from "./chat.entity";
-import { DeleteResult, Repository } from "typeorm";
-import { MessageEntity } from "./message.entity";
-import { ChatGateway } from "./chat.gateway";
-import { MessageDto } from "./message.dto";
+import {Injectable} from '@nestjs/common';
+import {ChatInterface} from "./chat.interface";
+import {from, Observable, of, switchMap, take, tap} from "rxjs";
+import {MessageInterface} from "./message.interface";
+import {UsersDto} from "../users/users.dto";
+import {UsersService} from "../users/users.service";
+import {UsersInterface} from "../users/users.interface";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Chat} from "./chat.entity";
+import {DeleteResult, Repository} from "typeorm";
+import {MessageEntity} from "./message.entity";
+import {ChatGateway} from "./chat.gateway";
+import {MessageDto} from "./message.dto";
 import {MessageStatus} from "./status.enum";
 
 @Injectable()
@@ -131,7 +131,11 @@ export class ChatService {
           take: 20,
           skip: 0,
         }).pipe(switchMap((message: MessageInterface[]) => {
-          return from([{...chat, chat: message.reverse()}])
+          return from([{...chat, chat: message.reverse()}]).pipe(
+            tap(() => {
+              this.statusMessage(chat.id).subscribe();
+            })
+          )
         }))
       })
     )
@@ -189,12 +193,7 @@ export class ChatService {
   }
 
   statusMessage(chatID: string){
-    return from(this.findOneChat({ where: { id: chatID, chat: { status: MessageStatus.WAITING } }, relations: ['chat']})).pipe(
-      switchMap(( chat: ChatInterface ) => {
-        console.log(chat)
-        return of({});
-      })
-    )
+    return from([this.messageRepository.update({ chat: { id: chatID }, status: MessageStatus.WAITING }, {status: MessageStatus.READING})]);
   }
 
   async removeChat(chat: ChatInterface[]){
