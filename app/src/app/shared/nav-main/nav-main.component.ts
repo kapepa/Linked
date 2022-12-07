@@ -3,12 +3,11 @@ import { PopoverController } from "@ionic/angular";
 import { PopoverComponent } from "../popover/popover.component";
 import { AuthService } from "../../core/service/auth.service";
 import { Subscription } from "rxjs";
-import {PopupFriendsComponent} from "../popup-friends/popup-friends.component";
-import {UserService} from "../../core/service/user.service";
-import {UserInterface} from "../../core/interface/user.interface";
-import {ChatService} from "../../core/service/chat.service";
-import {ChatInterface} from "../../core/interface/chat.interface";
-import {Router} from "@angular/router";
+import { PopupFriendsComponent } from "../popup-friends/popup-friends.component";
+import { UserService } from "../../core/service/user.service";
+import { UserInterface } from "../../core/interface/user.interface";
+import { ChatService } from "../../core/service/chat.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-nav-main',

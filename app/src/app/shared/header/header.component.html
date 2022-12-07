@@ -8,7 +8,12 @@
           </ion-router-link>
         </div>
         <div class="header__search-col">
-          <ion-searchbar class="header__search"></ion-searchbar>
+          <ion-searchbar
+            class="header__search"
+            type="text"
+            (ionInput)="onSearch($event)"
+            (ionClear)="cleanSearch($event)"
+          ></ion-searchbar>
         </div>
       </div>
       <div class="header__nav-main">

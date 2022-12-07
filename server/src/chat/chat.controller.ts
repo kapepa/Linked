@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards} from '@nestjs/common';
 import {ChatService} from "./chat.service";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -6,6 +6,7 @@ import {from, Observable, of, switchMap, take, tap} from "rxjs";
 import {ChatInterface} from "./chat.interface";
 import {MessageInterface} from "./message.interface";
 import {UsersInterface} from "../users/users.interface";
+import {DeleteResult} from "typeorm";
 
 @ApiTags('chat')
 @Controller('chat')
@@ -52,6 +53,15 @@ export class ChatController {
     )
   }
 
+  @Delete('/messages')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'delete own messages, on id', type: MessageInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  deleteMessage(@Query() query, @Req() req): Observable<any> {
+    let { chat, message } = query
+    return this.chatService.deleteMessageOnID(chat, message, req.user);
+  }
+
   @Get('/companion/:id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'find friends, which have in chat', type: UsersInterface})
@@ -70,9 +80,10 @@ export class ChatController {
 
   @Put('/send/:chatID')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'sned and set new message in chat', type: MessageInterface})
+  @ApiResponse({ status: 201, description: 'send and set new message in chat', type: MessageInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   sendNewMessage(@Param('chatID') chatID, @Body() body, @Req() req) {
     return this.chatService.createMessage(chatID, body, req.user);
   }
+
 }

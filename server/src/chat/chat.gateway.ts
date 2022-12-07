@@ -34,17 +34,6 @@ export class ChatGateway implements OnGatewayInit{
   handleMessage(client: any, payload: {id: string, dto: MessageInterface}): any {
   }
 
-  @SubscribeMessage('delete')
-  @UseGuards(SocketGuard)
-  deleteMessage(client: any, mock: {chatID: string, message: MessageInterface}): any  {
-    return this.chatService.deleteMessage(mock.message.id).pipe(
-      take(1),
-      tap(() => {
-        client.broadcast.to(mock.chatID).emit('deleteMessage', mock.message.id)
-      })
-    );
-  }
-
   @SubscribeMessage('append-to-room')
   @UseGuards(SocketGuard)
   appendToRoom(client: any, payload: {roomID}) {
@@ -56,5 +45,9 @@ export class ChatGateway implements OnGatewayInit{
 
   newMessage(toFriend: string, userID: string, chatID: string, message: MessageInterface) {
     this.server.to(toFriend).emit('new-message', { friend: {id: userID}, chat: {id: chatID}, message });
+  }
+
+  deleteMessage(chatID: string, messageID: string, userID: string) {
+    this.server.to(chatID).except(userID).emit('deleteMessage', messageID);
   }
 }

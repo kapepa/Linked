@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PostService } from "../../core/service/post.service";
 import { PostQueryDto } from "../../core/dto/post-query.dto";
 import { AuthService } from "../../core/service/auth.service";
-import { Subscription } from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
+import {PostInterface} from "../../core/interface/post.interface";
 
 @Component({
   selector: 'app-tape-post',
@@ -19,6 +20,9 @@ export class TapePostComponent implements OnInit, OnDestroy {
   postLength: number;
   postLengthSubscription: Subscription;
 
+  posts: PostInterface[];
+  postsSub: Subscription;
+
   constructor(
     private postService: PostService,
     private authService: AuthService,
@@ -31,12 +35,14 @@ export class TapePostComponent implements OnInit, OnDestroy {
 
     this.userIDSubscription = this.authService.userID.subscribe((userID: string) => this.userID = userID);
     this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
+    this.postsSub = this.postService.getPostsAll.subscribe((posts: PostInterface[]) => this.posts = posts);
   }
 
   ngOnDestroy() {
     this.userIDSubscription.unsubscribe();
     this.postLengthSubscription.unsubscribe();
     this.userAvatarSubscription.unsubscribe();
+    this.postsSub.unsubscribe();
   }
 
   getPost(query: PostQueryDto, cd: () => void){
@@ -48,9 +54,5 @@ export class TapePostComponent implements OnInit, OnDestroy {
 
   loadData(event) {
     this.getPost({take: 6, skip: this.postLength}, () => event.target.complete());
-  }
-
-  get posts() {
-    return this.postService.posts$
   }
 }

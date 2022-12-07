@@ -1,4 +1,5 @@
 export class PostQueryDto {
-  take: number
-  skip: number
+  word?: string
+  take?: number
+  skip?: number
 }
