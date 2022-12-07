@@ -7,7 +7,6 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { ChatService } from "../../core/service/chat.service";
 import { MessageInterface } from "../../core/interface/message.interface";
 import { SocketService } from "../../core/service/socket.service";
-import {MessageDto} from "../../core/dto/message.dto";
 
 @Component({
   selector: 'app-chat',
@@ -35,6 +34,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   limited: boolean;
   limitedSub: Subscription;
 
+  chatLoad: boolean;
+  chatLoadSub: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -46,14 +48,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
     this.limitedSub = this.chatService.getMessageLimited.subscribe(( limited: boolean ) => this.limited = limited);
     this.friendsSub = this.chatService.getFriends.subscribe((friends: UserInterface[]) => this.friends = friends);
-    this.messagesSub = this.chatService.getMessages.subscribe((messages: MessageInterface[]) => {
-      this.messages = messages;
-    });
+    this.messagesSub = this.chatService.getMessages.subscribe((messages: MessageInterface[]) => this.messages = messages);
+    this.chatLoadSub = this.chatService.getChatLoad.subscribe((load: boolean) => this.chatLoad = load);
     this.chatSub = this.chatService.getChat.subscribe((chat: ChatInterface) => {
       if(!!chat?.id || !!chat?.chat){
         this.chatID = chat.id;
         this.chat = chat.chat;
-        this.socketService.appendToRoom(this.chatID)
+        this.socketService.appendToRoom(this.chatID);
       };
     });
   };
@@ -63,6 +64,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatSub.unsubscribe();
     this.messagesSub.unsubscribe();
     this.friendsSub.unsubscribe();
+    this.chatLoadSub.unsubscribe();
   };
 
   onSubmit() {
@@ -76,10 +78,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onDel(index: number) {
     let message = Object.assign(this.chat[index],{});
-    this.chatService.deleteMessage(index, message).subscribe((dto: { chatID: string , message: MessageInterface }) => {
-      this.socketService.messageDel(dto);
-      this.textarea.reset();
-    });
+    this.chatService.deleteMessage(index, message).subscribe(() => this.textarea.reset());
   };
 
   loadData(event) {

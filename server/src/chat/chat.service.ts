@@ -63,7 +63,16 @@ export class ChatService {
     return from(this.messageRepository.delete({id}));
   }
 
-  deleteChatAndMessage(chat: ChatInterface) : Observable<DeleteResult> {
+  deleteMessageOnID(chatID: string, messageID: string, user: UsersDto): Observable<any> {
+    // return this.deleteMessage(messageID).pipe(
+    //   tap(() => this.chatGateway.deleteMessage(chatID, messageID))
+    // );
+    return of({}).pipe(
+      tap(() => this.chatGateway.deleteMessage(chatID, messageID, user.id)),
+    );
+  }
+
+  deleteChatAndMessage(chat: ChatInterface): Observable<DeleteResult> {
     return from(this.messageRepository.delete({ chat: {id: chat.id }}))
       .pipe(switchMap(() => this.chatRepository.delete({id: chat.id})));
   }

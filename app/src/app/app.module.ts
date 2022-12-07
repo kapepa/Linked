@@ -18,6 +18,7 @@ import { CreatePublicationModule } from "./shared/create-publication/create-publ
 import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module";
 import { PopupNotificationModule } from "./shared/popup-notification/popup-notification.module";
 import { HttpService } from "./core/service/http.service";
+import { BasementModule } from "./shared/basement/basement.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import { HttpService } from "./core/service/http.service";
     CommonModule,
     BrowserModule,
     PopoverModule,
+    BasementModule,
     DirectiveModule,
     AppRoutingModule,
     HttpClientModule,

@@ -9,21 +9,23 @@ import { TapeProfileModule } from "../../shared/tape-profile/tape-profile.module
 import { RecommendedModule } from "../../shared/recommended/recommended.module";
 import { NewPublicationsModule } from "../../shared/new-publications/new-publications.module";
 import { TapePostModule } from "../../shared/tape-post/tape-post.module";
+import { BasementModule } from "../../shared/basement/basement.module";
 
 @NgModule({
   declarations: [
     HomeComponent,
   ],
   imports: [
-    HeaderModule,
-    HomeRoutingModule,
-    CommonModule,
     IonicModule,
     FormsModule,
+    HeaderModule,
+    CommonModule,
+    TapePostModule,
+    BasementModule,
+    HomeRoutingModule,
     TapeProfileModule,
     RecommendedModule,
     NewPublicationsModule,
-    TapePostModule,
   ]
 })
 export class HomeModule { }

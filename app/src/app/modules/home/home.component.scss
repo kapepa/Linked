@@ -23,17 +23,6 @@
   &__tape-post{
     flex-grow: 1;
   }
-  &__tabs{
-    display: none;
-    position: absolute;
-    height: 57px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  &__tab-btn{
-    font-size: 11px;
-  }
 }
 
 ion-tabs{
@@ -59,10 +48,10 @@ ion-tabs{
   }
 }
 
-@media screen and (max-width: 576px){
+@media screen and (max-width: 576px) {
   .home{
-    &__tabs{
-      display: block;
+    &__add{
+      display: none;
     }
   }
 }

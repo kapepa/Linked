@@ -72,8 +72,6 @@ export class SocketService {
     }
   }
 
-
-
   async createSocket() {
     let token = await this.storageService.get('token');
     if( !token ) return false;
@@ -110,5 +108,4 @@ export class SocketService {
   get getSocket(): Observable<Socket> {
     return this.socket$.asObservable();
   }
-
 }

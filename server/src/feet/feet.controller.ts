@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {FeetService} from "./feet.service";
-import {Observable, of, throwError} from "rxjs";
+import {Observable, of, tap, throwError} from "rxjs";
 import {FeetInterface} from "./feet.interface";
-import {DeleteResult, UpdateResult} from "typeorm";
+import {DeleteResult, Like} from "typeorm";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {Roles} from "../auth/roles.decorator";
 import {Role} from "../auth/role.enum";
@@ -49,8 +49,10 @@ export class FeetController {
   @Get()
   @ApiResponse({ status: 200, description: 'The received has been successfully feet on params.', type: FeetDto})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
-  allFeet(@Query('take') take: number, @Query('skip') skip: number): Observable<FeetInterface[]> {
-    return this.feetService.allFeet({take: Number(take), skip: Number(skip)});
+  allFeet(@Query() query): Observable<FeetInterface[]> {
+    let { take, skip, word } = query;
+    let where = !!word.length ? {  where: { body: Like(`%${word}%`) }  } : {};
+    return this.feetService.allFeet({ ...where, take: Number(take), skip: Number(skip)});
   }
 
   @Patch('/update/:id')

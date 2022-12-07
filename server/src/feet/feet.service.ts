@@ -1,7 +1,7 @@
 import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {InjectRepository} from "@nestjs/typeorm";
-import {DeleteResult, Repository, UpdateResult} from "typeorm";
+import {DeleteResult, FindOperator, Repository, UpdateResult} from "typeorm";
 import {Feet} from "./feet.entity";
 import {catchError, from, Observable, switchMap} from "rxjs";
 import {FeetInterface} from "./feet.interface";
@@ -25,13 +25,12 @@ export class FeetService {
     )
   }
 
-  allFeet(options: { where?: {[key: string]: string | {[key: string]: string }}, take?: number, skip?: number, relations?: string[] }): Observable<FeetInterface[]> {
+  allFeet(options: { where?: {[key: string]: string | FindOperator<string> | {[key: string]: string }}, take?: number, skip?: number, relations?: string[] }): Observable<FeetInterface[]> {
     return from(this.feetRepository.find({...options, order: { createdAt: 'DESC' }, relations: ['author']})).pipe(
       catchError(err => { throw new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND)})
     )
   }
 
-  // updateFeet(id: string, feet: FeetDto): Observable<UpdateResult> {
   updateFeet(id: string, feet: FeetDto): Observable<FeetInterface> {
     return from(this.feetRepository.update({ id }, feet )).pipe(
       switchMap(() => this.getFeet(id)),

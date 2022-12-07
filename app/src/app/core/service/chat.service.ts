@@ -41,6 +41,9 @@ export class ChatService {
   noReadFriend: string[] = [];
   noReadFriend$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
+  chatLoad: boolean;
+  chatLoad$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
@@ -52,8 +55,7 @@ export class ChatService {
       this.chat.chat.push(message);
       this.chat$.next(this.chat);
     } else {
-      this.noReadMessage = true;
-      this.noReadMessage$.next(this.noReadMessage);
+      this.setNoReadMessage = true
       this.noReadFriend.push(friend.id);
       this.noReadFriend$.next(this.noReadFriend);
     }
@@ -78,10 +80,19 @@ export class ChatService {
     this.friends$.next(this.friends);
   }
 
-  deleteMessage(index: number, message: MessageInterface) {
-    this.chat.chat.splice(index, 1);
-    this.chat$.next(this.chat);
-    return from([{ chatID: this.chat.id , message }]);
+  deleteMessage(index: number, message: MessageInterface): Observable<any> {
+    return this.http.delete<any>(
+      `${this.configUrl}/api/chat/messages`,
+      { params: { chat: this.chat.id, message: message.id } },
+    )
+      .pipe(
+        take(1),
+        tap(() => {
+          this.chat.chat.splice(index, 1);
+          this.chat$.next(this.chat);
+        }),
+        catchError(this.httpService.handleError),
+      )
   }
 
   requestChat(id: string, params?: { take?: number, skip?: number }): Observable<ChatInterface> {
@@ -91,8 +102,7 @@ export class ChatService {
     ).pipe(
       take(1),
       tap((chat: ChatInterface) => {
-        this.chat = chat;
-        this.chat$.next(this.chat);
+        this.setChat = chat;
       }),
       catchError(this.httpService.handleError),
     )
@@ -153,8 +163,8 @@ export class ChatService {
   }
 
   changeActiveConversation(id: string, index: number): Observable<any> {
-    this.chat.chat = [];
-    this.chat$.next(this.chat);
+    this.setChat = { ...this.chat, chat: [] };
+    this.setChatLoad = true;
 
     return this.http.get<any>(`${this.configUrl}/api/chat/change/${id}`).pipe(
       take(1),
@@ -163,6 +173,7 @@ export class ChatService {
         this.setActiveConversation = id;
         this.setChat = chat
         this.checkNoRead(id);
+        this.setChatLoad = false;
       })
     )
   }
@@ -247,6 +258,11 @@ export class ChatService {
     this.noReadFriend$.next(this.noReadFriend);
   }
 
+  set setChatLoad(bool: boolean) {
+    this.chatLoad = bool;
+    this.chatLoad$.next(this.chatLoad);
+  }
+
   get getChat(): Observable<ChatInterface> {
     return this.chat$.asObservable();
   }
@@ -277,5 +293,9 @@ export class ChatService {
 
   get getNoReadFriend(): Observable<string[]> {
     return this.noReadFriend$.asObservable();
+  }
+
+  get getChatLoad(): Observable<boolean> {
+    return this.chatLoad$.asObservable();
   }
 }
