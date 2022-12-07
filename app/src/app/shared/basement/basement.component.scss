@@ -1,5 +1,5 @@
 .basement{
-  &__tabs{
+  &__tab{
     display: none;
   }
   &__tab-btn{
@@ -7,10 +7,10 @@
   }
 }
 
-@media screen  and ( max-width: 576px){
+@media screen and ( max-width: 576px){
   .basement{
-    &__tabs{
-      display: block;
+    &__tab{
+      display: flex;
     }
   }
 }
