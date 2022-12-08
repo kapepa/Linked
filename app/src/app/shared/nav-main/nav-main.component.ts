@@ -28,11 +28,11 @@ export class NavMainComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('popupFriends') friends: ElementRef;
 
   constructor(
-    public popoverController: PopoverController,
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
     private chatService: ChatService,
+    private popoverController: PopoverController,
   ) { }
 
   ngOnInit() {

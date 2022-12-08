@@ -9,50 +9,10 @@
         <app-tape-friends></app-tape-friends>
       </div>
       <div class="chat__area">
-        <ion-content class="chat__content" [scrollEvents]="true"  *ngIf="!!messages?.length >= 0 && !chatLoad ; else messagesLoad">
-          <div class="chat__wrapper" *ngIf="!!friends.length; else  chatEmpty">
-            <ion-infinite-scroll *ngIf="(messages?.length >= 20 && !limited)" threshold="5%" position="top" (ionInfinite)="loadData($event)" >
-              <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="lines"  [scrollTop]="11"></ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-            <ion-list class="chat__conversation" lines="none">
-              <ion-item class="chat__item" *ngFor="let message of messages; index as i">
-                <div
-                  class="chat__cell"
-                >
-                  <div
-                    class="chat__author"
-                    [ngClass]="{'chat__author--owner': message?.owner?.id === user?.id}"
-                  >
-                    <div *ngIf="message.owner?.avatar; else avatarIco" class="chat-author__avatar">
-                      <img alt="avatar" src="{{ message.owner?.avatar | url }}" />
-                    </div>
-                    <ng-template #avatarIco>
-                      <ion-icon  class="chat__author" name="person-outline"></ion-icon>
-                    </ng-template>
-                    <div class="chat-author__name">{{message.owner?.firstName}} {{message.owner?.lastName}}</div>
-                  </div>
-                  <span class="chat__message">{{message.message}}</span>
-                  <div *ngIf="message?.owner?.id === user?.id" class="chat_message__del" (click)="onDel(i)"></div>
-                </div>
-              </ion-item>
-            </ion-list>
-          </div>
-        </ion-content>
-        <ng-template #messagesLoad>
-          <div class="chat__load">
-            <ion-spinner color="secondary" class="chat__spinner"></ion-spinner>
-          </div>
-        </ng-template>
-        <ng-template #chatEmpty>
-          <ion-text>You not have conversation!</ion-text>
-        </ng-template>
-        <div class="chat__interaction">
-          <form [formGroup]="textarea" (ngSubmit)="onSubmit()" class="chat__form">
-            <ion-textarea formControlName="message" class="chat__textarea" placeholder="Entering a new message"></ion-textarea>
-            <ion-button [disabled]="!textarea.valid" type="submit">Send</ion-button>
-          </form>
-        </div>
+        <app-conversation></app-conversation>
       </div>
     </div>
   </div>
 </ion-content>
+
+<app-basement></app-basement>

@@ -85,6 +85,7 @@
   }
   &__cooperation{
     padding-top: 10px;
+    align-items: stretch;
   }
   &__btn{
     min-width: 130px;
@@ -110,6 +111,9 @@
       top: 105%;
       left: 0;
       right: 0;
+    }
+    &__btn{
+      min-width: 100%;
     }
   }
 }
