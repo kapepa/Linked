@@ -4,9 +4,10 @@ import { ChatComponent } from "./chat.component";
 import { ChatRoutingModule } from "./chat-routing.module";
 import { IonicModule } from "@ionic/angular";
 import { HeaderModule } from "../../shared/header/header.module";
-import { ReactiveFormsModule } from "@angular/forms";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module";
+import { BasementModule } from "../../shared/basement/basement.module";
+import { ConversationModule } from "../../shared/conversation/conversation.module";
 
 @NgModule({
   declarations: [
@@ -22,8 +23,9 @@ import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module
     IonicModule,
     HeaderModule,
     CommonModule,
+    BasementModule,
     ChatRoutingModule,
-    ReactiveFormsModule,
+    ConversationModule,
   ]
 })
 export class ChatModule { }

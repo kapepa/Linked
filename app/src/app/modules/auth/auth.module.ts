@@ -6,6 +6,7 @@ import { AuthRoutingModule } from "./auth-routing.module";
 import { IonicModule } from "@ionic/angular";
 import { FormLoginModule } from "../../shared/form-login/form-login.module";
 import { FormRegistrationModule } from "../../shared/form-registration/form-registration.module";
+import {BasementModule} from "../../shared/basement/basement.module";
 
 @NgModule({
   declarations: [
@@ -15,11 +16,12 @@ import { FormRegistrationModule } from "../../shared/form-registration/form-regi
     AuthComponent,
   ],
   imports: [
-    CommonModule,
-    AuthRoutingModule,
-    RouterModule,
     IonicModule,
+    CommonModule,
+    RouterModule,
+    BasementModule,
     FormLoginModule,
+    AuthRoutingModule,
     FormRegistrationModule,
   ]
 })

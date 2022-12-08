@@ -1,30 +1,34 @@
 <div class="basement">
   <ion-tab-bar class="basement__tab" slot="bottom">
-    <ion-tab-button class="basement__tab-btn" tab="home">
+
+    <ion-tab-button (click)="onClickBtn('')" class="basement__tab-btn">
       <ion-icon name="home" class="nav-main__ico"></ion-icon>
       <div class="nav-main__text">Home</div>
     </ion-tab-button>
 
-    <ion-tab-button class="basement__tab-btn" tab="network">
+    <ion-tab-button (click)="onFriends($event)" class="basement__tab-btn">
       <ion-icon name="people" class="nav-main__ico"></ion-icon>
       <div class="nav-main__text">Network</div>
+      <ion-badge *ngIf="user?.suggest.length" class="nav-main__badge" slot="start">{{user?.suggest.length}}</ion-badge>
     </ion-tab-button>
 
-    <ion-tab-button class="basement__tab-btn" tab="job">
+    <ion-tab-button class="basement__tab-btn">
       <ion-icon name="briefcase" class="nav-main__ico"></ion-icon>
       <div class="nav-main__text">Jobs</div>
     </ion-tab-button>
 
-    <ion-tab-button class="basement__tab-btn" tab="message">
+    <ion-tab-button (click)="onClickBtn('chat')" class="basement__tab-btn">
       <ion-icon name="chatbox-ellipses" class="nav-main__ico"></ion-icon>
+      <div *ngIf="noRead" class="nav-main__attention" slot="start"></div>
       <div class="nav-main__text">Chat</div>
 <!--      <ion-badge>6</ion-badge>-->
     </ion-tab-button>
 
-    <ion-tab-button class="basement__tab-btn" tab="message">
+    <ion-tab-button class="basement__tab-btn">
       <ion-icon name="notifications" class="nav-main__ico"></ion-icon>
       <div class="nav-main__text">Notification</div>
     </ion-tab-button>
+
   </ion-tab-bar>
 </div>
 
