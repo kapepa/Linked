@@ -7,11 +7,6 @@ import {UserInterface} from "../../core/interface/user.interface";
 import {Subscription} from "rxjs";
 import {ChatService} from "../../core/service/chat.service";
 
-export interface TabsCustomEvent extends CustomEvent {
-  detail: { tab: string };
-  target: HTMLIonTabsElement;
-}
-
 @Component({
   selector: 'app-basement',
   templateUrl: './basement.component.html',

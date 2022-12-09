@@ -1,9 +1,13 @@
 .conversation{
+  height: 100%;
+  max-height: 1000px;
   &__wrapper{
     display: flex;
     flex-direction: column;
   }
-
+  &__content{
+    height: 100%;
+  }
   &-author{
     &__avatar{
       max-width: 30px;
@@ -42,7 +46,7 @@
       right: 2px;
     }
   }
-  &__conversation{
+  &__chat{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
