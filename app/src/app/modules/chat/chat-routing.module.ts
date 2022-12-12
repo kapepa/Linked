@@ -6,8 +6,6 @@ import { AuthGuard } from "../../core/guard/auth.guard";
 import { UserResolver } from "../../core/resolver/user.resolver";
 import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module";
 import { ConversationResolver } from "../../core/resolver/conversation.resolver";
-import { ConversationComponent } from "../../shared/conversation/conversation.component";
-import { FriendsTapComponent } from "../friends-tap/friends-tap.component";
 
 const routes: Routes = [
   {
@@ -20,13 +18,22 @@ const routes: Routes = [
     },
   },
   {
-    path: 'friends',
-    component: FriendsTapComponent,
+    path: 'mobile',
     canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'friends',
+        loadChildren: () => import('./../friends-tap/friends-tap.module').then(m => m.FriendsTapModule),
+      },
+      {
+        path: 'message',
+        loadChildren: () => import('./../message-tap/message-tap.module').then(m => m.MessageTapModule),
+      }
+    ],
     resolve: {
       user: UserResolver,
       conversation: ConversationResolver,
-    }
+    },
   },
 ];
 
