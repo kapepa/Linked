@@ -49,7 +49,9 @@
       grid-template-columns: 1fr 1fr;
     }
     &__button{
-      font-size: 13px;
+      font-size: 12px;
+      --padding-start: 5px;
+      --padding-end: 5px;
       //height: 40px;
     }
   }
