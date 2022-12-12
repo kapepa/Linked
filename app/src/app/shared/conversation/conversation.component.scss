@@ -62,7 +62,6 @@
     padding: 8px 12px;
     border-radius: 10px;
     border: 1px solid gray;
-    min-width: 300px;
     width: 100%;
     position: relative;
   }
@@ -93,5 +92,16 @@
   &__spinner{
     width: 60px;
     height: 60px;
+  }
+  &__item{
+
+  }
+}
+
+@media screen and ( max-width: 576px ) {
+  .conversation{
+    &__item{
+      --padding-start: 0;
+    }
   }
 }

@@ -162,11 +162,11 @@ export class ChatService {
     )
   }
 
-  changeActiveConversation(id: string, index: number): Observable<any> {
+  changeActiveConversation(id: string, index: number): Observable<ChatInterface> {
     this.setChat = { ...this.chat, chat: [] };
     this.setChatLoad = true;
 
-    return this.http.get<any>(`${this.configUrl}/api/chat/change/${id}`).pipe(
+    return this.http.get<ChatInterface>(`${this.configUrl}/api/chat/change/${id}`).pipe(
       take(1),
       tap((chat: ChatInterface) => {
         this.setActiveFriend = index;

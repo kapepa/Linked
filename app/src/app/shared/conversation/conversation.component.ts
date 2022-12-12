@@ -49,7 +49,10 @@ export class ConversationComponent implements OnInit, OnDestroy {
     this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
     this.limitedSub = this.chatService.getMessageLimited.subscribe(( limited: boolean ) => this.limited = limited);
     this.friendsSub = this.chatService.getFriends.subscribe((friends: UserInterface[]) => this.friends = friends);
-    this.messagesSub = this.chatService.getMessages.subscribe((messages: MessageInterface[]) => this.messages = messages);
+    this.messagesSub = this.chatService.getMessages.subscribe((messages: MessageInterface[]) => {
+      this.messages = messages
+      console.log(messages)
+    });
     this.chatLoadSub = this.chatService.getChatLoad.subscribe((load: boolean) => this.chatLoad = load);
     this.chatSub = this.chatService.getChat.subscribe((chat: ChatInterface) => {
       if(!!chat?.id || !!chat?.chat){

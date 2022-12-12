@@ -5,6 +5,7 @@ import { IonicModule } from "@ionic/angular";
 import { TapeFriendsModule } from "../../shared/tape-friends/tape-friends.module";
 import { HeaderModule } from "../../shared/header/header.module";
 import { BasementModule } from "../../shared/basement/basement.module";
+import { FriendsTapRoutingModule } from "./friends-tap-routing.module";
 
 @NgModule({
   declarations: [
@@ -16,9 +17,7 @@ import { BasementModule } from "../../shared/basement/basement.module";
     CommonModule,
     BasementModule,
     TapeFriendsModule,
+    FriendsTapRoutingModule,
   ],
-  exports: [
-    FriendsTapComponent,
-  ]
 })
 export class FriendsTapModule { }

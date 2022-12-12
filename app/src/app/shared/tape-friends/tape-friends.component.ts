@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from "../../core/service/chat.service";
 import { UserInterface } from "../../core/interface/user.interface";
 import { Subscription } from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tape-friends',
@@ -19,6 +20,7 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   noReadSub: Subscription;
 
   constructor(
+    private router: Router,
     private chatService: ChatService,
   ) { }
 
@@ -52,7 +54,9 @@ export class TapeFriendsComponent implements OnInit, OnDestroy {
   }
 
   onFriends(id: string, index: number) {
-    this.chatService.changeActiveConversation(id, index).subscribe(() => {});
+    this.chatService.changeActiveConversation(id, index).subscribe((chat) => {
+      if( this.router.url === '/chat/mobile/friends' ) this.router.navigate(['chat/mobile/message'])
+    });
   }
 
 }
