@@ -13,6 +13,7 @@ export interface UserInterface {
   request?: FriendsInterface[];
   suggest?: FriendsInterface[];
   friends?: UserInterface[];
+  my_like?: PostInterface[];
   role: Role;
   feet?: PostInterface[];
   created_at?: Date;

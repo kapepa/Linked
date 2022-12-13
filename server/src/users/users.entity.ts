@@ -52,6 +52,10 @@ export class User {
   @ManyToMany(() => Chat, (chat) => chat.conversation)
   chat: Chat[];
 
+  @ManyToMany(() => Feet, (feet) => feet.like)
+  @JoinTable({ name: 'feet-like' })
+  my_like: Feet[];
+
   @OneToMany(() => MessageEntity, (message) => message.owner)
   messages: MessageEntity[];
 

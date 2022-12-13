@@ -1,26 +1,36 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { PostInterface } from "../../core/interface/post.interface";
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
-import {PostService} from "../../core/service/post.service";
+import { PostService } from "../../core/service/post.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss'],
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, OnDestroy {
   @Input() index: number;
   @Input() userID: string;
   @Input() post: PostInterface;
   @Input() userAvatar: string;
 
+  postLoad: boolean;
+  postLoadSub: Subscription;
+
   constructor(
-    public popoverController: PopoverController,
-    private postService: PostService
+    private postService: PostService,
+    private popoverController: PopoverController,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.postLoadSub = this.postService.getPostLoad.subscribe((bool: boolean) => this.postLoad = bool);
+  }
+
+  ngOnDestroy() {
+    this.postLoadSub.unsubscribe();
+  }
 
   async onEdit(e: Event) {
     const popover = await this.popoverController.create({
@@ -38,6 +48,16 @@ export class PostComponent implements OnInit {
 
   onDelete(e: Event) {
     this.postService.deletePost(this.index, this.post.id).subscribe(() => {})
+  }
+
+  onAuthor(e: Event) {
+    e.stopPropagation();
+  }
+
+  onLike(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.postService.likeTapePost(this.post.id, this.index).subscribe();
   }
 
   get avatar () {

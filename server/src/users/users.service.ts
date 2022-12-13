@@ -1,7 +1,7 @@
-import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
-import {from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { from, map, Observable, of, switchMap, toArray } from "rxjs";
 import { User } from "./users.entity";
-import {DeleteResult, Repository, UpdateResult} from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersDto } from "./users.dto";
 import { UsersInterface } from "./users.interface";
@@ -21,7 +21,7 @@ export class UsersService {
     private fileService: FileService,
   ) {}
 
-  findOne(key: string, val: string, additional?: { relations?: string[], select?: string[] } ) {
+  findOne(key: string, val: string, additional?: { relations?: string[], select?: string[] } ): Observable<UsersInterface> {
     return from(this.usersRepository.findOne({ where: { [key]: val }, ...additional as {} })).pipe(
       switchMap((user: UsersInterface) => (of(user)))
     );
@@ -50,7 +50,7 @@ export class UsersService {
     );
   }
 
-  saveUser(data: UsersDto | UsersInterface ): Observable<UsersInterface>{
+  saveUser(data: UsersDto | UsersInterface ): Observable<(UsersInterface | UsersDto)>{
     return from(this.usersRepository.save(data));
   }
 

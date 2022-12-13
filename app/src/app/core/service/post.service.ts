@@ -19,6 +19,9 @@ export class PostService {
   searchWord = '';
   searchWord$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
+  postLoad = false;
+  postLoad$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   firstLoad = true;
   firstLoad$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
@@ -33,46 +36,79 @@ export class PostService {
   }
 
   getPosts(query: PostQueryDto, search?: boolean): Observable<PostInterface[]> {
+    this.setPostLoad = !this.postLoad;
     return this.http.get<PostInterface[]>(`${this.configUrl}/api/feet`,{
       params: !this.searchWord.length ? {...query, word: this.searchWord} : {...query},
     }).pipe(
       take(1),
-      tap((posts: PostInterface[]) => {
-        search ? this.posts = posts : this.posts.push(...posts);
-        this.setPosts = this.posts;
+      tap({
+        next: (posts: PostInterface[]) => {
+          search ? this.posts = posts : this.posts.push(...posts);
+          this.setPosts = this.posts;
+        },
+        complete: () => this.setPostLoad = !this.postLoad,
       }),
       catchError(this.httpService.handleError),
     )
   }
 
   createPost(body: {body: string}): Observable<PostInterface> {
+    this.setPostLoad = !this.postLoad;
     return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,body).pipe(
       take(1),
-      tap((post: PostInterface) => {
-        this.posts.unshift(post);
-        this.setPosts = this.posts;
+      tap({
+        next: (post: PostInterface) => {
+          this.posts.unshift(post);
+          this.setPosts = this.posts;
+        },
+        complete: () => this.setPostLoad = !this.postLoad,
       }),
       catchError(this.httpService.handleError),
     )
   }
 
+  likePost(postID: string): Observable<PostInterface> {
+    this.setPostLoad = !this.postLoad;
+    return this.http.put<PostInterface>(`${this.configUrl}/api/feet/like/${postID}`,{}).pipe(
+      take(1),
+      tap({ complete: () => this.setPostLoad = !this.postLoad }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
+  likeTapePost(postID: string, index: number) {
+    return this.likePost(postID).pipe(
+      tap((post: PostInterface) => {
+        console.log(post)
+      })
+    );
+  }
+
   updatePost(index: number, id: string, body: PostInterface): Observable<PostInterface> {
+    this.setPostLoad = !this.postLoad;
     return this.http.patch<PostInterface>(`${this.configUrl}/api/feet/update/${id}`, body).pipe(
       take(1),
-      tap((post: PostInterface) => {
-        this.posts.splice(index, 1, {...this.posts[index], ...post})
-        this.setPosts = this.posts;
+      tap({
+        next: (post: PostInterface) => {
+          this.posts.splice(index, 1, {...this.posts[index], ...post})
+          this.setPosts = this.posts;
+        },
+        complete: () => this.setPostLoad = !this.postLoad,
       }),
       catchError(this.httpService.handleError)
     )
   }
 
   deletePost(index: number, id: string): Observable<any> {
+    this.setPostLoad = !this.postLoad;
     return this.http.delete(`${this.configUrl}/api/feet/${id}`).pipe(
       take(1),
-      tap(() => {
-        this.posts.splice(index,1);
-        this.setPosts = this.posts;
+      tap({
+        next: () => {
+          this.posts.splice(index,1);
+          this.setPosts = this.posts;
+        },
+        complete: () => this.setPostLoad = !this.postLoad,
       }),
       catchError(this.httpService.handleError)
     )
@@ -91,6 +127,15 @@ export class PostService {
   set setFirstLoad(bool: boolean) {
     this.firstLoad = bool;
     this.firstLoad$.next(this.firstLoad);
+  }
+
+  set setPostLoad(bool: boolean) {
+    this.postLoad = bool;
+    this.postLoad$.next(this.postLoad);
+  }
+
+  get getPostLoad(): Observable<boolean> {
+    return this.postLoad$.asObservable();
   }
 
   get postLength(): Observable<number> {
