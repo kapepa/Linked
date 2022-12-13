@@ -4,5 +4,6 @@ export class PostDto {
   id?: string
   body: string
   author?: UserDto
+  like?: number
   createdAt?: Date
 }

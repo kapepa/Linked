@@ -25,6 +25,7 @@
   }
   &__content{
     font-size: 14px;
+    --color: grey;
   }
   &__footer{
     padding-top: 0;
@@ -44,6 +45,9 @@
     --padding-end: 0;
     --padding-start: 0;
     --ripple-color: transparent;
+  }
+  &__link{
+    color: grey;
   }
 }
 
