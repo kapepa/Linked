@@ -55,7 +55,7 @@ export class FeetService {
   updateFeet(id: string, feet: FeetDto): Observable<FeetInterface | FeetDto> {
     return from(this.feetRepository.update({ id }, feet )).pipe(
       switchMap(() => this.getFeet(id)),
-      catchError(err => { throw new HttpException('Something went wrong when update feet.', HttpStatus.BAD_REQUEST)})
+      catchError(err => { throw new HttpException('Something went wrong when update feet.', HttpStatus.BAD_REQUEST)}),
     )
   }
 
