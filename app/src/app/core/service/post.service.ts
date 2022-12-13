@@ -80,6 +80,7 @@ export class PostService {
     return this.likePost(postID).pipe(
       tap((post: PostInterface) => {
         console.log(post)
+
       })
     );
   }
