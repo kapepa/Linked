@@ -79,8 +79,8 @@ export class PostService {
   likeTapePost(postID: string, index: number) {
     return this.likePost(postID).pipe(
       tap((post: PostInterface) => {
-        console.log(post)
-
+        this.posts.splice(index,1,post);
+        this.setPosts = this.posts;
       })
     );
   }

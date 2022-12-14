@@ -19,6 +19,8 @@ import { PopupFriendsModule } from "./shared/popup-friends/popup-friends.module"
 import { PopupNotificationModule } from "./shared/popup-notification/popup-notification.module";
 import { HttpService } from "./core/service/http.service";
 import { BasementModule } from "./shared/basement/basement.module";
+import { CommentModule } from "./shared/comment/comment.module";
+import { PopupCommentModule } from "./shared/popup-comment/popup-comment.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,10 +29,12 @@ import { BasementModule } from "./shared/basement/basement.module";
     CommonModule,
     BrowserModule,
     PopoverModule,
+    CommentModule,
     BasementModule,
     DirectiveModule,
     AppRoutingModule,
     HttpClientModule,
+    PopupCommentModule,
     PopupFriendsModule,
     ReactiveFormsModule,
     PopupNotificationModule,

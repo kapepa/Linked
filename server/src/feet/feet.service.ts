@@ -3,7 +3,7 @@ import {FeetDto} from "./feet.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {DeleteResult, FindOperator, Repository, UpdateResult} from "typeorm";
 import {Feet} from "./feet.entity";
-import {catchError, from, Observable, of, switchMap, tap} from "rxjs";
+import {catchError, from, Observable, of, switchMap, tap, toArray} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
@@ -43,12 +43,44 @@ export class FeetService {
     },
     user: UsersDto,
     ): Observable<FeetInterface[]> {
-    return this.findFeet({...options, order: { createdAt: 'DESC' }, relations: ['author']}).pipe(
+    return this.findFeet({...options, order: { createdAt: 'DESC' }, relations: ['author', 'like']}).pipe(
       switchMap((feetList: FeetInterface[]) => {
-        // feetList.map((feet) => feet.like.filter(fe => fe.id === user.id));
-        return of(feetList);
+        return of(feetList).pipe(
+          switchMap((feet:FeetInterface[]) => {
+            return from(feet)
+              .pipe(
+                switchMap(( feet: FeetInterface) => {
+                  feet.like = feet.like.filter(person => person.id === user.id);
+                  return of(feet);
+                }),
+                toArray(),
+              )
+          })
+        )
       }),
       catchError(err => { throw new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND)})
+    )
+  }
+
+  likePost(feetID, user: UsersDto): Observable<FeetInterface> {
+    return this.findOneFeet({ where: { id: feetID }, relations: ['like'] }).pipe(
+      switchMap((feet: FeetInterface) => {
+        let index = feet.like.findIndex(person => person.id === user.id);
+        index === -1 ?  feet.like.push(user as UsersInterface) : feet.like.splice(index, 1);
+        return from(this.saveFeet(feet)).pipe(
+          switchMap(() => {
+            return this.findOneFeet({ where: { id: feetID }, relations: ['author', 'like'] }).pipe(
+              switchMap((feet: FeetInterface) => {
+                let myLike = feet.like.filter( person => person.id === user.id );
+                feet.like_count = feet.like.length;
+                return of({...feet, like: myLike}).pipe(
+                  tap(() => this.saveFeet(feet).subscribe())
+                );
+              })
+            )
+          })
+        )
+      })
     )
   }
 
@@ -75,27 +107,6 @@ export class FeetService {
     relations?: string[],
   }) {
     return from(this.feetRepository.find(options))
-  }
-
-  likePost(feetID, user: UsersDto): Observable<FeetInterface> {
-    return this.findOneFeet({ where: { id: feetID }, relations: ['like'] }).pipe(
-      switchMap((feet: FeetInterface) => {
-        feet.like.push(user as UsersInterface);
-        return from(this.saveFeet(feet)).pipe(
-          switchMap(() => {
-            return this.findOneFeet({ where: { id: feetID }, relations: ['like'] }).pipe(
-              switchMap((feet: FeetInterface) => {
-                let myLike = feet.like.filter( person => person.id === user.id );
-                feet.like_count = feet.like.length;
-                return of({...feet, like: myLike}).pipe(
-                  tap(() => this.saveFeet(feet).subscribe())
-                );
-              })
-            )
-          })
-        )
-      })
-    )
   }
 
   deleteFeet(id: string): Observable<DeleteResult> {

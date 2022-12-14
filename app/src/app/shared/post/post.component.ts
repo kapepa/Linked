@@ -4,6 +4,7 @@ import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
 import { PostService } from "../../core/service/post.service";
 import {Subscription} from "rxjs";
+import {PopupCommentComponent} from "../popup-comment/popup-comment.component";
 
 @Component({
   selector: 'app-post',
@@ -58,6 +59,17 @@ export class PostComponent implements OnInit, OnDestroy {
     e.preventDefault();
     e.stopPropagation();
     this.postService.likeTapePost(this.post.id, this.index).subscribe();
+  }
+
+  async onComment(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const popover = await this.popoverController.create({
+      component: PopupCommentComponent,
+    });
+
+    await popover.present();
   }
 
   get avatar () {
