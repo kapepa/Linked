@@ -37,10 +37,13 @@
 
     <ion-card-content class="post__footer">
       <ion-button [disabled]="!postLoad" (click)="onLike($event)" class="post__btn-action" fill="clear" color="medium">
-        <ion-icon slot="start" name="thumbs-up-outline"> </ion-icon>
+        <ion-icon *ngIf="!post.like.length; else haveLike" slot="start" name="thumbs-up-outline"></ion-icon>
+        <ng-template #haveLike>
+          <ion-icon slot="start" name="thumbs-up"></ion-icon>
+        </ng-template>
         Like
       </ion-button>
-      <ion-button class="post__btn-action" fill="clear" color="medium">
+      <ion-button (click)="onComment($event)" class="post__btn-action" fill="clear" color="medium">
         <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
         Comment
       </ion-button>
