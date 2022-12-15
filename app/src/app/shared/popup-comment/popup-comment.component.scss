@@ -1,0 +1,38 @@
+.popup-comment{
+  --padding-end: 15px;
+  --padding-start: 15px;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  &__h3{
+    text-align: center;
+    padding: 0;
+    margin: 0;
+  }
+  &__close{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    opacity: 0.3;
+    cursor: pointer;
+    z-index: 10;
+    &:hover {
+      opacity: 1;
+    }
+    &:before, &:after {
+      position: absolute;
+      left: 11px;
+      content: ' ';
+      height: 25px;
+      width: 2px;
+      background-color: #333;
+    }
+    &:before {
+      transform: rotate(45deg);
+    }
+    &:after {
+      transform: rotate(-45deg);
+    }
+  }
+}

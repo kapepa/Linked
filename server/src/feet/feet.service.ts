@@ -7,12 +7,16 @@ import {catchError, from, Observable, of, switchMap, tap, toArray} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
+import {CommentInterface} from "./comment.interface";
+import {CommentEntity} from "./comment.entity";
 
 @Injectable()
 export class FeetService {
   constructor(
     @InjectRepository(Feet)
-    private feetRepository: Repository<Feet>
+    private feetRepository: Repository<Feet>,
+    @InjectRepository(CommentEntity)
+    private commentRepository: Repository<CommentEntity>,
   ) {}
 
   createFeet(feet: FeetDto): Observable<FeetInterface | FeetDto> {
@@ -22,9 +26,7 @@ export class FeetService {
   }
 
   getFeet(id: string): Observable<FeetInterface> {
-    return from(this.feetRepository.findOne({ where: { id } })).pipe(
-      catchError(err => { throw new HttpException('db didn\'t find those feet.', HttpStatus.NOT_FOUND) })
-    )
+    return this.findOneFeet({ where: { id }, relations: ['author', 'comments', 'comments.host'] })
   }
 
   allFeet(options: { where?: {[key: string]: string | FindOperator<string> | {[key: string]: string }}, take?: number, skip?: number, relations?: string[] }): Observable<FeetInterface[]> {
@@ -84,6 +86,19 @@ export class FeetService {
     )
   }
 
+  commentCreate(feetID: string, comment: CommentInterface, user: UsersDto): Observable<any> {
+    return this.findOneFeet({ where: { id: feetID }, relations: ['comments'] }).pipe(
+      switchMap((feet: FeetInterface) => {
+        return this.saveComment({...comment, host: user as UsersInterface, feet }).pipe(
+          switchMap((comment) => this.findOneComment({
+            where: { id: comment.id },
+            relations: ['host'],
+          }))
+        )
+      })
+    )
+  }
+
   updateFeet(id: string, feet: FeetDto): Observable<FeetInterface | FeetDto> {
     return from(this.feetRepository.update({ id }, feet )).pipe(
       switchMap(() => this.getFeet(id)),
@@ -95,8 +110,15 @@ export class FeetService {
     where?: { [key: string]: string | FindOperator<string> | { [key: string]: string } },
     order?: { [key: string]: 'DESC' | 'ASC' | { [key: string]: 'DESC' | 'ASC' } },
     relations?: string[],
-  }) {
+  }): Observable<FeetInterface> {
     return from(this.feetRepository.findOne(options))
+  }
+
+  findOneComment(options?: {
+    where?: { [key: string]: string | FindOperator<string> | { [key: string]: string } },
+    relations?: string[],
+  }): Observable<CommentInterface> {
+    return from(this.commentRepository.findOne(options));
   }
 
   findFeet(options: {
@@ -117,5 +139,9 @@ export class FeetService {
 
   saveFeet(feet: FeetInterface | FeetDto): Observable<FeetInterface | FeetDto> {
     return from(this.feetRepository.save(feet));
+  }
+
+  saveComment(comment: CommentInterface): Observable<CommentInterface>{
+    return from(this.commentRepository.save(comment));
   }
 }

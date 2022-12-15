@@ -46,7 +46,7 @@ export class UsersService {
 
   existUser(key: string, val: string): Observable<boolean> {
     return from(this.usersRepository.findOne({ where:{ [key]: val } })).pipe(
-      map((user: UsersDto) => !!user)
+      map((user: User) => !!user)
     );
   }
 
@@ -82,7 +82,7 @@ export class UsersService {
 
   avatarUser(file: Express.Multer.File, user: UsersDto): Observable<{access_token: string}> {
     let updateUser = () => {
-      return from(this.updateUser('id', user.id, {avatar: file.filename})).pipe(
+      return from(this.saveUser({...user, avatar: file.filename})).pipe(
         switchMap(() => {
           return this.authService.loginUser(of({...user, avatar: file.filename}));
         })

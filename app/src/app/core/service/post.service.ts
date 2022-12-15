@@ -6,12 +6,16 @@ import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { HttpService } from "./http.service";
+import {CommentInterface} from "../interface/comment.interface";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
   configUrl = environment.configUrl;
+
+  post: PostInterface;
+  post$: BehaviorSubject<PostInterface> = new BehaviorSubject(null);
 
   posts: PostInterface[] = [] as PostInterface[];
   posts$: BehaviorSubject<PostInterface[]> = new BehaviorSubject<PostInterface[]>([]);
@@ -67,6 +71,18 @@ export class PostService {
     )
   }
 
+  getOnePost(id: string): Observable<PostInterface> {
+    this.setPostLoad = !this.postLoad;
+    return this.http.get<PostInterface>(`${this.configUrl}/api/feet/${id}`).pipe(
+      take(1),
+      tap({
+        next: (feet: PostInterface) => this.setPost = feet,
+        complete: () => this.setPostLoad = !this.postLoad,
+      }),
+      catchError(this.httpService.handleError),
+    )
+  }
+
   likePost(postID: string): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
     return this.http.put<PostInterface>(`${this.configUrl}/api/feet/like/${postID}`,{}).pipe(
@@ -115,6 +131,26 @@ export class PostService {
     )
   }
 
+  createComment(postID: string, body: { comment: string }): Observable<CommentInterface>{
+    this.setPostLoad = !this.postLoad;
+    return this.http.post<CommentInterface>(`${this.configUrl}/api/feet/comment/create/${postID}`, body).pipe(
+      take(1),
+      tap({
+        next: (comment: CommentInterface) => {
+          this.post.comments.unshift(comment);
+          this.setPost = this.post;
+        },
+        complete: () => this.setPostLoad = !this.postLoad,
+      }),
+      catchError(this.httpService.handleError)
+    )
+  }
+
+  set setPost(post: PostInterface) {
+    this.post = post;
+    this.post$.next(this.post);
+  }
+
   set setPosts(posts: PostInterface[]) {
     this.posts = posts;
     this.posts$.next(this.posts);
@@ -133,6 +169,18 @@ export class PostService {
   set setPostLoad(bool: boolean) {
     this.postLoad = bool;
     this.postLoad$.next(this.postLoad);
+  }
+
+  get getComments(): Observable<CommentInterface[]> {
+    return this.post$.asObservable().pipe(
+      switchMap((post: PostInterface) => {
+        return of(post.comments);
+      })
+    )
+  }
+
+  get getPost(): Observable<PostInterface> {
+    return this.post$.asObservable();
   }
 
   get getPostLoad(): Observable<boolean> {

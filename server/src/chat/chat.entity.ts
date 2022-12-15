@@ -3,11 +3,11 @@ import { User } from "../users/users.entity";
 import { MessageEntity } from "./message.entity";
 
 @Entity()
-export class Chat {
+export class Chat{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToMany(() => User, (user) => user.chat, {cascade: true})
+  @ManyToMany(() => User, (user) => user.chat, )
   @JoinTable({ name: 'chat_user' })
   conversation: User[];
 

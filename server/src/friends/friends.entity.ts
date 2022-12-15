@@ -1,5 +1,6 @@
 import {CreateDateColumn, Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany} from "typeorm";
 import {User} from "../users/users.entity";
+import {FriendsInterface} from "./friends.interface";
 
 export enum Status {
   PENDING = "pending",
@@ -8,7 +9,7 @@ export enum Status {
 }
 
 @Entity()
-export class FriendsEntity{
+export class FriendsEntity implements FriendsInterface{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

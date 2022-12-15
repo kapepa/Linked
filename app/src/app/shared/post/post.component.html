@@ -1,5 +1,5 @@
 <ion-card class="post">
-  <ion-router-link class="post__link" [routerLink]="'/post/' + post.id" >
+  <ion-router-link class="post__link" [routerLink]="'/feet/' + post.id" >
     <ion-card-header class="post__header">
       <ion-router-link
         [routerLink]="userID === post?.author?.id ? null :['/person', post?.author?.id]"

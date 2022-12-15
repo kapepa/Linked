@@ -3,18 +3,20 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany, ManyToOne,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
-import {Feet} from "../feet/feet.entity";
-import {Role} from "../auth/role.enum";
-import {FriendsEntity} from "../friends/friends.entity";
-import {Chat} from "../chat/chat.entity";
-import {MessageEntity} from "../chat/message.entity";
+import { Feet } from "../feet/feet.entity";
+import { Role } from "../auth/role.enum";
+import { FriendsEntity } from "../friends/friends.entity";
+import { Chat } from "../chat/chat.entity";
+import { MessageEntity } from "../chat/message.entity";
+import { CommentEntity } from "../feet/comment.entity";
+import { UsersInterface } from "./users.interface";
 
 @Entity()
-export class User {
+export class User implements UsersInterface{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -55,6 +57,9 @@ export class User {
   @ManyToMany(() => Feet, (feet) => feet.like)
   @JoinTable({ name: 'feet-like' })
   my_like: Feet[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.host)
+  comment: CommentEntity[]
 
   @OneToMany(() => MessageEntity, (message) => message.owner)
   messages: MessageEntity[];
