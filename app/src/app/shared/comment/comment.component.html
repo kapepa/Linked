@@ -1,3 +1,25 @@
-<p>
-  comment works!
-</p>
+<div class="comment">
+  <form class="comment__form" [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+    <ion-input
+      placeholder="Enter new comment"
+      class="comment__input"
+      id="comment"
+      formControlName="comment"
+    ></ion-input>
+    <ion-button class="comment__submit" type="submit" [disabled]="!commentForm.valid">Send</ion-button>
+  </form>
+  <div class="comment__conversation">
+    <div class="comment__cell" *ngFor="let comment of comments">
+      <div class="comment__person">
+        <div>
+          <img *ngIf="!!comment.host.avatar; else avatarIco" class="comment__avatar" alt="avatar" src="{{comment.host.avatar | url}}" />
+          <ng-template #avatarIco>
+            <ion-icon  class="comment__avatar" name="person-outline"></ion-icon>
+          </ng-template>
+        </div>
+        <div class="comment__name">{{comment.host.firstName}} {{comment.host.lastName}}</div>
+      </div>
+      <div class="comment__text">{{comment.comment}}</div>
+    </div>
+  </div>
+</div>

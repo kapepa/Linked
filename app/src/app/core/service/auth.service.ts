@@ -124,7 +124,7 @@ export class AuthService {
   get userAvatar (): Observable<string> {
     return this.user$.asObservable().pipe(
       switchMap((user: UserJwtDto) => {
-        return of(user.avatar);
+        return of(user?.avatar);
       }),
     );
   }

@@ -4,9 +4,10 @@ import {IsEmail, IsNotEmpty, IsString} from "class-validator";
 import {FeetDto} from "../feet/feet.dto";
 import {FriendsDto} from "../friends/friends.dto";
 import {CommentDto} from "../feet/comment.dto";
-import {FeetInterface} from "../feet/feet.interface";
+import {ChatDto} from "../chat/chat.dto";
+import {MessageDto} from "../chat/message.dto";
 
-export class UsersDto {
+export class UsersDto{
   @ApiProperty()
   id?: string;
 
@@ -35,11 +36,8 @@ export class UsersDto {
   @ApiProperty({ type: () => FriendsDto })
   suggest?: FriendsDto[];
 
-  @ApiProperty()
+  @ApiProperty({ type: () => UsersDto })
   friends?: UsersDto[];
-
-  @ApiProperty({ type: () => CommentDto })
-  comments?: CommentDto[]
 
   @ApiProperty({ enum: Role })
   role?: Role;
@@ -47,8 +45,17 @@ export class UsersDto {
   @ApiProperty({ type: () => FeetDto })
   feet?: FeetDto[];
 
-  @ApiProperty({ type: () => FriendsDto })
-  my_like?: FeetInterface[]
+  @ApiProperty()
+  chat?: ChatDto[]
+
+  @ApiProperty()
+  messages?: MessageDto[]
+
+  @ApiProperty({ type: () => FeetDto })
+  my_like?: FeetDto[]
+
+  @ApiProperty({ type: () => CommentDto })
+  comment?: CommentDto[]
 
   @ApiProperty()
   created_at?: Date;

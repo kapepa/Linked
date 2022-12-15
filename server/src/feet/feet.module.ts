@@ -4,15 +4,16 @@ import { FeetService } from './feet.service';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Feet } from "./feet.entity";
 import { JwtModule } from "@nestjs/jwt";
+import { CommentEntity } from "./comment.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Feet]),
+    TypeOrmModule.forFeature([Feet, CommentEntity]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),
   ],
-  controllers: [FeetController],
   providers: [FeetService],
+  controllers: [FeetController],
 })
 export class FeetModule {}

@@ -1,10 +1,10 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
 import { PostInterface } from "../../core/interface/post.interface";
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
 import { PostService } from "../../core/service/post.service";
-import {Subscription} from "rxjs";
-import {PopupCommentComponent} from "../popup-comment/popup-comment.component";
+import { Subscription } from "rxjs";
+import { PopupCommentComponent } from "../popup-comment/popup-comment.component";
 
 @Component({
   selector: 'app-post',
@@ -67,6 +67,8 @@ export class PostComponent implements OnInit, OnDestroy {
 
     const popover = await this.popoverController.create({
       component: PopupCommentComponent,
+      cssClass: 'post__popup-comment',
+      componentProps: { closePopup: async () => { await popover.dismiss() } }
     });
 
     await popover.present();

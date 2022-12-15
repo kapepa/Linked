@@ -6,4 +6,5 @@ export class CommentInterface {
   host?: UsersInterface
   feet?: FeetInterface
   comment?: string
+  created_at?: Date;
 }

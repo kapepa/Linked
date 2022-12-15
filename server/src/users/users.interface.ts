@@ -3,7 +3,7 @@ import { FeetInterface } from "../feet/feet.interface";
 import { FriendsInterface } from "../friends/friends.interface";
 import { ChatInterface } from "../chat/chat.interface";
 import { MessageInterface } from "../chat/message.interface";
-import {CommentInterface} from "../feet/comment.interface";
+import { CommentInterface } from "../feet/comment.interface";
 
 export class UsersInterface {
   id?: string;
@@ -21,5 +21,6 @@ export class UsersInterface {
   chat?: ChatInterface[];
   messages?: MessageInterface[]
   my_like?: FeetInterface[]
+  comment?: CommentInterface[]
   created_at?: Date;
 }

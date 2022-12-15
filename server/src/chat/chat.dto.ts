@@ -6,7 +6,7 @@ export class ChatDto {
   @ApiProperty()
   id?: string;
 
-  @ApiProperty({type: () => ChatDto})
+  @ApiProperty({type: () => UsersDto})
   conversation?: UsersDto[];
 
   @ApiProperty({type: () => MessageDto})

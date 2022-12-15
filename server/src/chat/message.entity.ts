@@ -4,7 +4,7 @@ import { Chat } from "./chat.entity";
 import { MessageStatus } from "./status.enum";
 
 @Entity()
-export class MessageEntity {
+export class MessageEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

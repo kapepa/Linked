@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import {from, Observable, throwError} from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -23,6 +23,7 @@ import { Role } from "../auth/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FounderGuard } from "../auth/founder.guard";
+import {CommentInterface} from "./comment.interface";
 
 @ApiTags('feet')
 @Controller('feet')
@@ -71,6 +72,14 @@ export class FeetController {
   @ApiResponse({ status: 404, description: 'Forbidden when set like'})
   postLike(@Param('id') id, @Req() req): Observable<FeetInterface> {
     return this.feetService.likePost(id, req.user);
+  }
+
+  @Post('/comment/create/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'create new comment'})
+  @ApiResponse({ status: 404, description: 'didn\'t create comment'})
+  commentCreate(@Param('id') id, @Body() body: CommentInterface, @Req() req): Observable<any> {
+    return this.feetService.commentCreate(id, body, req.user);
   }
 
   @Delete('/:id')

@@ -7,7 +7,7 @@ export class MessageDto {
   @ApiProperty()
   id?: string;
 
-  @ApiProperty()
+  @ApiProperty({type: () => UsersDto})
   owner?: UsersDto;
 
   @ApiProperty({type: () => ChatDto})
@@ -20,5 +20,5 @@ export class MessageDto {
   status?: MessageStatus;
 
   @ApiProperty()
-  created_at: Date;
+  created_at?: Date;
 }

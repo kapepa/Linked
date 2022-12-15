@@ -15,11 +15,11 @@ export class FeetDto {
   @ApiProperty({ type: () => UsersDto })
   like?: UsersDto[]
 
-  @ApiProperty({ type: () => CommentDto })
-  comments?: CommentDto[]
-
   @ApiProperty()
   like_count?: number
+
+  @ApiProperty({ type: () => CommentDto })
+  comments?: CommentDto[]
 
   @ApiProperty()
   createdAt?: Date

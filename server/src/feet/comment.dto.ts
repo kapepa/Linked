@@ -14,4 +14,7 @@ export class CommentDto {
 
   @ApiProperty()
   comment?: string
+
+  @ApiProperty()
+  created_at?: Date;
 }

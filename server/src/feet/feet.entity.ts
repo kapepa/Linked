@@ -1,9 +1,18 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, ManyToMany, JoinTable} from 'typeorm';
-import {FeetInterface} from "./feet.interface";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  ManyToOne,
+  ManyToMany,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import {User} from "../users/users.entity";
+import {CommentEntity} from "./comment.entity";
 
 @Entity()
-export class Feet implements FeetInterface {
+export class Feet {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -18,6 +27,9 @@ export class Feet implements FeetInterface {
 
   @Column({ default: 0 })
   like_count: number
+
+  @OneToMany(() => CommentEntity, (comment) => comment.feet)
+  comments: CommentEntity[];
 
   @CreateDateColumn({ name: 'created_at'})
   createdAt: Date;

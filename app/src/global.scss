@@ -85,6 +85,12 @@ cdk-virtual-scroll-viewport {
   --width: 100%;
 }
 
+.post__popup-comment{
+  --min-width: 320px;
+  --max-width: 440px;
+  --width: 100%;
+}
+
 
 
 @media screen and (max-width: 992px){
