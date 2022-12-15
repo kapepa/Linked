@@ -4,6 +4,7 @@ import { PostService } from "../../core/service/post.service";
 import { PostInterface } from "../../core/interface/post.interface";
 import { Subscription } from "rxjs";
 import {CommentInterface} from "../../core/interface/comment.interface";
+import {UserService} from "../../core/service/user.service";
 
 @Component({
   selector: 'app-comment',
@@ -20,6 +21,7 @@ export class CommentComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private postService: PostService,
+    private userService: UserService,
   ) { }
 
   ngOnInit() {
