@@ -9,7 +9,10 @@
     <ion-button class="comment__submit" type="submit" [disabled]="!commentForm.valid">Send</ion-button>
   </form>
   <div class="comment__conversation">
-    <div class="comment__cell" *ngFor="let comment of comments">
+    <div
+      *ngFor="let comment of comments"
+      [ngClass]="{'comment__cell': true, 'comment__my-comments': comment.host.id }"
+    >
       <div class="comment__person">
         <div>
           <img *ngIf="!!comment.host.avatar; else avatarIco" class="comment__avatar" alt="avatar" src="{{comment.host.avatar | url}}" />
