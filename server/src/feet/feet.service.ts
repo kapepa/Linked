@@ -90,7 +90,7 @@ export class FeetService {
                 let myLike = feet.like.filter( person => person.id === user.id );
                 feet.like_count = feet.like.length;
                 return of({...feet, like: myLike}).pipe(
-                  tap(() => this.saveFeet(feet).subscribe())
+                  tap(() => this.saveFeet(feet).subscribe()),
                 );
               })
             )
