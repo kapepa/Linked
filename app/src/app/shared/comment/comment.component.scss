@@ -24,6 +24,9 @@
     align-items: center;
     column-gap: 8px;
   }
+  &__my-comments{
+    flex-direction: row-reverse;
+  }
   &__avatar{
     width: 25px;
     height: 25px;

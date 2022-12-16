@@ -5,6 +5,7 @@ import { PostInterface } from "../../core/interface/post.interface";
 import { Subscription } from "rxjs";
 import { CommentInterface } from "../../core/interface/comment.interface";
 import { UserService } from "../../core/service/user.service";
+import {UserInterface} from "../../core/interface/user.interface";
 
 @Component({
   selector: 'app-comment',
@@ -18,6 +19,9 @@ export class CommentComponent implements OnInit, OnDestroy {
   comments: CommentInterface[];
   commentsSub: Subscription;
 
+  user: UserInterface;
+  userSub: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private postService: PostService,
@@ -25,16 +29,18 @@ export class CommentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.userSub = this.userService.getUser.subscribe((user: UserInterface) => this.user = user);
+    this.commentsSub = this.postService.getComments.subscribe((comments: CommentInterface[]) => this.comments = comments);
     this.postSub = this.postService.getPost.subscribe(( post: PostInterface ) => {
       this.commentForm = this.fb.group({
         id: [post.id, Validators.required],
         comment: ['', Validators.required],
       });
     })
-    this.commentsSub = this.postService.getComments.subscribe((comments: CommentInterface[]) => this.comments = comments);
   }
 
   ngOnDestroy() {
+    this.userSub.unsubscribe();
     this.postSub.unsubscribe();
     this.commentsSub.unsubscribe();
   }
