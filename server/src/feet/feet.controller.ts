@@ -23,7 +23,7 @@ import { Role } from "../auth/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FounderGuard } from "../auth/founder.guard";
-import {CommentInterface} from "./comment.interface";
+import { CommentInterface } from "./comment.interface";
 
 @ApiTags('feet')
 @Controller('feet')
@@ -91,4 +91,11 @@ export class FeetController {
     return this.feetService.deleteFeet(id);
   }
 
+  @Delete('/comment/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'The successfully delete comment on id.'})
+  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those comment.'})
+  deleteComment(@Param('id') id, @Req() req): Observable<DeleteResult> {
+    return this.feetService.deleteComment(id, req.user);
+  }
 }
