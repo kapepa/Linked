@@ -50,6 +50,10 @@ export class CommentComponent implements OnInit, OnDestroy {
     this.postService.createComment( this.getPostID.value, { comment: this.getComment.value } ).subscribe();
   }
 
+  onDel(index: number, commentID: string) {
+    this.postService.deleteComment(index, commentID).subscribe();
+  }
+
   get getComment() {
     return this.commentForm.get('comment');
   }

@@ -131,6 +131,19 @@ export class PostService {
     )
   }
 
+  deleteComment(index: number, commentID: string): Observable<{raw: any[], affected: number}> {
+    return this.http.delete<{raw: any[], affected: number}>(`${this.configUrl}/api/feet/comment/${commentID}`).pipe(
+      take(1),
+      tap(() => {
+        if( this.post.comments[index].id === commentID) {
+          this.post.comments.splice(index,1);
+          this.setPost = this.post;
+        }
+      }),
+      catchError(this.httpService.handleError),
+    );
+  }
+
   createComment(postID: string, body: { comment: string }): Observable<CommentInterface>{
     this.setPostLoad = !this.postLoad;
     return this.http.post<CommentInterface>(`${this.configUrl}/api/feet/comment/create/${postID}`, body).pipe(

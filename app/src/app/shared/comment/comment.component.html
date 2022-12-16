@@ -10,9 +10,12 @@
   </form>
   <div class="comment__conversation">
     <div
-      *ngFor="let comment of comments"
-      [ngClass]="{'comment__cell': true, 'comment__my-comments': comment.host.id }"
+      *ngFor="let comment of comments; let i = index"
+      [ngClass]="{'comment__cell': true, 'comment__my': comment.host.id === user.id }"
     >
+      <ng-template [ngIf]="comment.host.id === user.id">
+        <div (click)="onDel(i, comment.id)" class="comment__del"></div>
+      </ng-template>
       <div class="comment__person">
         <div>
           <img *ngIf="!!comment.host.avatar; else avatarIco" class="comment__avatar" alt="avatar" src="{{comment.host.avatar | url}}" />

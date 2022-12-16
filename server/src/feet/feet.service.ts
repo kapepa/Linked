@@ -26,7 +26,21 @@ export class FeetService {
   }
 
   getFeet(id: string): Observable<FeetInterface> {
-    return this.findOneFeet({ where: { id }, relations: ['author', 'comments', 'comments.host'] })
+    return this.findOneFeet({ where: { id }, relations: ['author', 'comments', 'comments.host'] }).pipe(
+      switchMap((feet: FeetInterface) => {
+        return this.findComment({
+          where: { feet: { id: feet.id } },
+          order: { createdAt: 'DESC' },
+          relations: ['host'],
+          take: 20,
+          skip: 0,
+        }).pipe(
+          switchMap((comments: CommentInterface[]) => {
+            return of({ ...feet, comments })
+          })
+        );
+      })
+    )
   }
 
   allFeet(options: { where?: {[key: string]: string | FindOperator<string> | {[key: string]: string }}, take?: number, skip?: number, relations?: string[] }): Observable<FeetInterface[]> {
@@ -121,6 +135,16 @@ export class FeetService {
     return from(this.commentRepository.findOne(options));
   }
 
+  findComment(options?: {
+    where?: { [key: string]: string | FindOperator<string> | { [key: string]: string } },
+    order?: { [key: string]: 'DESC' | 'ASC' | { [key: string]: 'DESC' | 'ASC' } },
+    relations?: string[],
+    take?: number,
+    skip?: number,
+  }): Observable<CommentInterface[]> {
+    return from(this.commentRepository.find(options));
+  }
+
   findFeet(options: {
     where?: { [key: string]: string | FindOperator<string> | { [key: string]: string } },
     order?: { [key: string]: 'DESC' | 'ASC' | { [key: string]: 'DESC' | 'ASC' } },
@@ -135,6 +159,15 @@ export class FeetService {
     return  from(this.feetRepository.delete({ id })).pipe(
       catchError(err => { throw new HttpException('Something went wrong when delete feet.', HttpStatus.NOT_FOUND)})
     )
+  }
+
+  deleteComment(commentID: string, user: UsersDto): Observable<DeleteResult> {
+    return from(this.findOneComment({ where: { id: commentID }, relations: ['host'] })).pipe(
+      switchMap((feet: CommentInterface) => {
+        if(feet.host.id !== user.id) throw new HttpException('You didn\'t delete this comment', HttpStatus.FORBIDDEN);
+        return from(this.commentRepository.delete({ id: commentID }));
+      })
+    );
   }
 
   saveFeet(feet: FeetInterface | FeetDto): Observable<FeetInterface | FeetDto> {
