@@ -56,9 +56,10 @@ export class PostService {
     )
   }
 
-  createPost(body: {body: string}): Observable<PostInterface> {
+  createPost(body: { body: string, img?: File }): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
-    return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,body).pipe(
+    let form = this.toForm(body);
+    return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
       take(1),
       tap({
         next: (post: PostInterface) => {
@@ -174,6 +175,12 @@ export class PostService {
       }),
       catchError(this.httpService.handleError),
     );
+  }
+
+  toForm(obj:{ [key: string]: any }) {
+    let fromData = new FormData();
+    Object.keys(obj).forEach((key: string) => fromData.append(key, obj[key]));
+    return fromData;
   }
 
   set setPost(post: PostInterface) {

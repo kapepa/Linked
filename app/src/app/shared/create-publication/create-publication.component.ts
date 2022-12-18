@@ -20,6 +20,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   @Input() onClosePublication: () => void;
   @Input() post?: PostInterface;
   @Input() index?: number;
+
   postForm: FormGroup;
 
   constructor(
@@ -32,7 +33,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     if ( this.index !== null && !!this.post ){
       this.postForm = this.fb.group({
         id: [this.post.id],
-        img: [null, Validators.required],
+        img: [this.post.img],
         body: [this.post.body, Validators.required],
       });
     } else {
@@ -55,18 +56,23 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(e: Event) {
-    // if( this.index !== null && !!this.post ){
-    //   this.postService.updatePost(this.index, this.edit, {body: this.body.value}).subscribe((post: PostInterface) => {
-    //     this.onClosePublication();
-    //     this.postForm.reset();
-    //   })
-    // } else {
-    //   this.postService.createPost({body: this.body.value}).subscribe((post: PostInterface) => {
-    //     this.onClosePublication();
-    //     this.postForm.reset();
-    //   })
-    // }
-    console.log(!!this.img)
+    if( this?.index !== null && !!this?.post ){
+      this.postService.updatePost(this.index, this.edit,{
+        img: this.img,
+        body: this.body.value,
+      }).subscribe((post: PostInterface) => {
+        this.onClosePublication();
+        this.postForm.reset();
+      })
+    } else {
+      this.postService.createPost({
+        img: this.img,
+        body: this.body.value,
+      }).subscribe((post: PostInterface) => {
+        this.onClosePublication();
+        this.postForm.reset();
+      })
+    }
   }
 
   onImg(e: Event){

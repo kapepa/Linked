@@ -24,7 +24,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit() {
-    this.post['el'].click()
+    // this.post['el'].click()
   }
 
   ngOnDestroy() {

@@ -73,6 +73,9 @@
   &__input-img{
     display: none;
   }
+  &__file-reader{
+    height: 100%;
+  }
 }
 
 @media screen and (max-width: 576px) {
