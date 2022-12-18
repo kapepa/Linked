@@ -9,12 +9,12 @@ import {
   Patch,
   Post, Put,
   Query,
-  Req,
-  UseGuards,
+  Req, UploadedFile,
+  UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import { Observable, throwError } from "rxjs";
+import {from, Observable, switchMap, throwError} from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -24,19 +24,29 @@ import { RolesGuard } from "../auth/roles.guard";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FounderGuard } from "../auth/founder.guard";
 import { CommentInterface } from "./comment.interface";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { FileService, multerOption } from "../file/file.service";
 
 @ApiTags('feet')
 @Controller('feet')
 export class FeetController {
-  constructor(private feetService: FeetService) {}
+  constructor(
+    private feetService: FeetService,
+    private fileService: FileService
+  ) {}
 
   @Post('/create')
   @Roles(Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseInterceptors(FileInterceptor('img', multerOption))
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  createFeet(@Body() body: FeetDto, @Req() req): Observable<FeetInterface | FeetDto> {
-    return this.feetService.createFeet({...body, author: req.user});
+  createFeet(@Body() body: FeetDto, @UploadedFile() img: Express.Multer.File, @Req() req): Observable<FeetInterface | FeetDto> {
+    return this.fileService.formFile(img.filename).pipe(
+      switchMap((save: boolean) => {
+        return this.feetService.createFeet({...JSON.parse(JSON.stringify(body)), img: img.filename, author: req.user})
+      })
+    )
   }
 
   @Get('/one/:id')

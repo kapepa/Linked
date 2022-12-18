@@ -13,9 +13,9 @@ export const multerOption = {
     destination: './static',
     filename(req: Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
       const fileExtension: string = file.originalname.split('.').pop();
-      const fileName: string = `${uuidv4() + fileExtension}.${fileExtension}`;
+      const fileName: string = `${uuidv4()}.${fileExtension}`;
       callback(null, fileName)
-    }
+    },
   }),
   fileFilter: (req, file, cb) => {
     if(!['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.mimetype)){
@@ -23,10 +23,13 @@ export const multerOption = {
     }
     cb(null, true);
   },
+  rename: (name) => {
+    console.log(name)
+  },
   limits: {
     fieldNameSize: 300,
     fileSize: 50000,
-  }
+  },
 }
 
 @Injectable()

@@ -9,6 +9,7 @@ import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
 import {CommentInterface} from "./comment.interface";
 import {CommentEntity} from "./comment.entity";
+import {FileService} from "../file/file.service";
 
 @Injectable()
 export class FeetService {
@@ -21,7 +22,7 @@ export class FeetService {
 
   createFeet(feet: FeetDto): Observable<FeetInterface | FeetDto> {
     return from(this.feetRepository.save(feet)).pipe(
-      catchError(err => { throw err })
+      switchMap((feet: FeetInterface) => this.findOneFeet({ where: { id: feet.id }, relations: ['author', 'like'] }))
     );
   }
 
