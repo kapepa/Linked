@@ -2,11 +2,17 @@
   height: 100%;
   max-width: 700px;
   margin: 0 auto;
+  &__content{
+    height: 100vh;
+    max-height: 510px;
+    --padding-end: 10px;
+  }
   &__conversation{
     padding-top: 20px;
     display: flex;
     flex-direction: column;
     row-gap: 5px;
+    background-color: transparent;
   }
   &__del{
     position: absolute;
@@ -58,6 +64,7 @@
   &__avatar{
     width: 25px;
     height: 25px;
+    border-radius: 50%;
   }
   &__name{
     white-space: nowrap;

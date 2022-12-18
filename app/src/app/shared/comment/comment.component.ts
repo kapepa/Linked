@@ -5,7 +5,7 @@ import { PostInterface } from "../../core/interface/post.interface";
 import { Subscription } from "rxjs";
 import { CommentInterface } from "../../core/interface/comment.interface";
 import { UserService } from "../../core/service/user.service";
-import {UserInterface} from "../../core/interface/user.interface";
+import { UserInterface } from "../../core/interface/user.interface";
 
 @Component({
   selector: 'app-comment',
@@ -52,6 +52,12 @@ export class CommentComponent implements OnInit, OnDestroy {
 
   onDel(index: number, commentID: string) {
     this.postService.deleteComment(index, commentID).subscribe();
+  }
+
+  onIonInfinite(e: Event) {
+    this.postService.receiveComment({ take: 20, skip: this.comments.length }).subscribe(async () => {
+      await (e.target as HTMLIonInfiniteScrollElement).complete();
+    })
   }
 
   get getComment() {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../core/service/post.service";
 import {PostInterface} from "../../core/interface/post.interface";
@@ -15,6 +15,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   user: UserJwtDto;
   userSub: Subscription;
 
+  @ViewChild('inputImg') inputImg: ElementRef<HTMLInputElement>;
+
   @Input() onClosePublication: () => void;
   @Input() post?: PostInterface;
   @Input() index?: number;
@@ -30,11 +32,13 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     if ( this.index !== null && !!this.post ){
       this.postForm = this.fb.group({
         id: [this.post.id],
+        img: [null, Validators.required],
         body: [this.post.body, Validators.required],
       });
     } else {
       this.postForm = this.fb.group({
         id: [''],
+        img: [null],
         body: ['', Validators.required],
       });
     }
@@ -51,24 +55,38 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(e: Event) {
-    if( this.index !== null && !!this.post ){
-      this.postService.updatePost(this.index, this.edit, {body: this.body.value}).subscribe((post: PostInterface) => {
-        this.onClosePublication();
-        this.postForm.reset();
-      })
-    } else {
-      this.postService.createPost({body: this.body.value}).subscribe((post: PostInterface) => {
-        this.onClosePublication();
-        this.postForm.reset();
-      })
-    }
+    // if( this.index !== null && !!this.post ){
+    //   this.postService.updatePost(this.index, this.edit, {body: this.body.value}).subscribe((post: PostInterface) => {
+    //     this.onClosePublication();
+    //     this.postForm.reset();
+    //   })
+    // } else {
+    //   this.postService.createPost({body: this.body.value}).subscribe((post: PostInterface) => {
+    //     this.onClosePublication();
+    //     this.postForm.reset();
+    //   })
+    // }
+    console.log(!!this.img)
   }
 
-  get body (){
-    return this.postForm.get('body')
+  onImg(e: Event){
+    (this.inputImg.nativeElement as HTMLInputElement).click();
+  }
+
+  onChangeImg(e: Event) {
+    let file = (e.target as HTMLInputElement).files[0];
+    this.postForm.patchValue({img: file});
+  }
+
+  get body () {
+    return this.postForm.get('body');
   }
 
   get edit () {
-    return this.postForm.get('id').value
+    return this.postForm.get('id').value;
+  }
+
+  get img () {
+    return this.postForm.get('img').value;
   }
 }

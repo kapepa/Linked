@@ -3,6 +3,7 @@ import { CommentInterface } from "./comment.interface";
 
 export interface FeetInterface {
   id?: string,
+  img?: string,
   body?: string,
   author?: UsersInterface,
   like?: UsersInterface[],

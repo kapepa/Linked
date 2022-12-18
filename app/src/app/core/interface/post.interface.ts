@@ -3,6 +3,7 @@ import {CommentInterface} from "./comment.interface";
 
 export interface PostInterface {
   id?: string,
+  img?: string,
   body: string,
   author?: UserInterface,
   like?: UserInterface[],

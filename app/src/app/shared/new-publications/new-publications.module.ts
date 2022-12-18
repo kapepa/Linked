@@ -14,8 +14,8 @@ import { PipeModule } from "../../core/pipe/pipe.module";
   ],
   imports: [
     PipeModule,
-    CommonModule,
     IonicModule,
+    CommonModule,
     CreatePublicationModule,
   ]
 })

@@ -6,7 +6,6 @@ import {
   ManyToOne,
   ManyToMany,
   OneToMany,
-  JoinColumn,
 } from 'typeorm';
 import {User} from "../users/users.entity";
 import {CommentEntity} from "./comment.entity";
@@ -15,6 +14,9 @@ import {CommentEntity} from "./comment.entity";
 export class Feet {
   @PrimaryGeneratedColumn("uuid")
   id: string;
+
+  @Column()
+  img: string;
 
   @Column()
   body: string;

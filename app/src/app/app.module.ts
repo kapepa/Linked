@@ -21,6 +21,8 @@ import { HttpService } from "./core/service/http.service";
 import { BasementModule } from "./shared/basement/basement.module";
 import { CommentModule } from "./shared/comment/comment.module";
 import { PopupCommentModule } from "./shared/popup-comment/popup-comment.module";
+import { PostEditionModule } from "./shared/post-edition/post-edition.module";
+import {FileReaderModule} from "./shared/file-reader/file-reader.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +36,8 @@ import { PopupCommentModule } from "./shared/popup-comment/popup-comment.module"
     DirectiveModule,
     AppRoutingModule,
     HttpClientModule,
+    FileReaderModule,
+    PostEditionModule,
     PopupCommentModule,
     PopupFriendsModule,
     ReactiveFormsModule,

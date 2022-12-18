@@ -28,19 +28,23 @@ export class FeetService {
   getFeet(id: string): Observable<FeetInterface> {
     return this.findOneFeet({ where: { id }, relations: ['author', 'comments', 'comments.host'] }).pipe(
       switchMap((feet: FeetInterface) => {
-        return this.findComment({
-          where: { feet: { id: feet.id } },
-          order: { createdAt: 'DESC' },
-          relations: ['host'],
-          take: 20,
-          skip: 0,
-        }).pipe(
+        return this.getComment({ id: feet.id, take: 20, skip: 0 }).pipe(
           switchMap((comments: CommentInterface[]) => {
             return of({ ...feet, comments })
           })
         );
       })
     )
+  }
+
+  getComment(options: { id: string, take: number, skip: number }): Observable<CommentInterface[]> {
+    let { id, take, skip } = options;
+    return this.findComment({
+      where: { feet: { id: id } },
+      order: { createdAt: 'DESC' },
+      relations: ['host'],
+      take, skip,
+    })
   }
 
   allFeet(options: { where?: {[key: string]: string | FindOperator<string> | {[key: string]: string }}, take?: number, skip?: number, relations?: string[] }): Observable<FeetInterface[]> {
