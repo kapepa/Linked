@@ -38,7 +38,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     } else {
       this.postForm = this.fb.group({
         id: [''],
-        img: [null],
+        img: [null, Validators.required],
         body: ['', Validators.required],
       });
     }
