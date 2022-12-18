@@ -6,7 +6,7 @@ import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { HttpService } from "./http.service";
-import {CommentInterface} from "../interface/comment.interface";
+import { CommentInterface } from "../interface/comment.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +73,7 @@ export class PostService {
 
   getOnePost(id: string): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
-    return this.http.get<PostInterface>(`${this.configUrl}/api/feet/${id}`).pipe(
+    return this.http.get<PostInterface>(`${this.configUrl}/api/feet/one/${id}`).pipe(
       take(1),
       tap({
         next: (feet: PostInterface) => this.setPost = feet,
@@ -157,6 +157,23 @@ export class PostService {
       }),
       catchError(this.httpService.handleError)
     )
+  }
+
+  receiveComment(query: {skip: number, take: number}): Observable<CommentInterface[]> {
+    this.setPostLoad = ! this.postLoad;
+    return this.http.get<CommentInterface[]>(`${this.configUrl}/api/feet/comments`,{
+      params: {...query, id: this.post.id},
+    }).pipe(
+      take(1),
+      tap({
+        next: (comments: CommentInterface[]) => {
+          this.post.comments.push(...comments);
+          this.setPost = this.post;
+        },
+        complete: () => this.setPostLoad = !this.setPostLoad,
+      }),
+      catchError(this.httpService.handleError),
+    );
   }
 
   set setPost(post: PostInterface) {

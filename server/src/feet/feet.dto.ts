@@ -7,6 +7,9 @@ export class FeetDto {
   id: string
 
   @ApiProperty()
+  img?: string
+
+  @ApiProperty()
   body: string
 
   @ApiProperty({ type: () => UsersDto })

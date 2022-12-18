@@ -36,15 +36,14 @@
         >
         </ion-textarea>
       </div>
-      <div>
-        <ion-button fill="clear">Add hashtag</ion-button>
-      </div>
     </ion-content>
     <ion-footer class="ion-no-border" collapse="fade">
       <div class="create-publication__footer">
         <div class="create-publication__shape_btn">
-          <ion-fab-button class="create-publication__fab" color="light">
-            <ion-icon name="image"></ion-icon>
+          <ion-fab-button (click)="onImg($event)" class="create-publication__fab" color="light">
+            <ion-icon  *ngIf="!img" name="image"></ion-icon>
+            <app-file-reader *ngIf="!!img"></app-file-reader>
+            <input type="file" name="img" class="create-publication__input-img" #inputImg (change)="onChangeImg($event)" />
           </ion-fab-button>
           <ion-fab-button class="create-publication__fab" color="light">
             <ion-icon name="logo-youtube"></ion-icon>

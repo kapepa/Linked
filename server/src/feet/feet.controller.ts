@@ -39,7 +39,7 @@ export class FeetController {
     return this.feetService.createFeet({...body, author: req.user});
   }
 
-  @Get('/:id')
+  @Get('/one/:id')
   @ApiResponse({ status: 200, description: 'The received has been successfully feet on id.', type: FeetDto})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   getFeet(@Param('id') id): Observable<FeetInterface> {
@@ -72,6 +72,14 @@ export class FeetController {
   @ApiResponse({ status: 404, description: 'Forbidden when set like'})
   postLike(@Param('id') id, @Req() req): Observable<FeetInterface> {
     return this.feetService.likePost(id, req.user);
+  }
+
+  @Get('/comments')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'get comment in feet on query'})
+  @ApiResponse({ status: 404, description: 'didn\'t get comment'})
+  getComment(@Query() query): Observable<CommentInterface[]> {
+    return this.feetService.getComment(query);
   }
 
   @Post('/comment/create/:id')

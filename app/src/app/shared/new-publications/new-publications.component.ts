@@ -1,8 +1,8 @@
 import {  AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
-import {BehaviorSubject, Subscription} from "rxjs";
-import {AuthService} from "../../core/service/auth.service";
+import { Subscription } from "rxjs";
+import { AuthService } from "../../core/service/auth.service";
 
 @Component({
   selector: 'app-new-publications',
@@ -24,7 +24,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit() {
-    // this.post['el'].click()
+    this.post['el'].click()
   }
 
   ngOnDestroy() {

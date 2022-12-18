@@ -34,6 +34,8 @@ export class PostComponent implements OnInit, OnDestroy {
   }
 
   async onEdit(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
     const popover = await this.popoverController.create({
       component: CreatePublicationComponent,
       cssClass: 'new-publications__create',
@@ -48,6 +50,8 @@ export class PostComponent implements OnInit, OnDestroy {
   }
 
   onDelete(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
     this.postService.deletePost(this.index, this.post.id).subscribe(() => {})
   }
 

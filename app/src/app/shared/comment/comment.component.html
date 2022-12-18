@@ -8,24 +8,30 @@
     ></ion-input>
     <ion-button class="comment__submit" type="submit" [disabled]="!commentForm.valid">Send</ion-button>
   </form>
-  <div class="comment__conversation">
-    <div
-      *ngFor="let comment of comments; let i = index"
-      [ngClass]="{'comment__cell': true, 'comment__my': comment.host.id === user.id }"
-    >
-      <ng-template [ngIf]="comment.host.id === user.id">
-        <div (click)="onDel(i, comment.id)" class="comment__del"></div>
-      </ng-template>
-      <div class="comment__person">
-        <div>
-          <img *ngIf="!!comment.host.avatar; else avatarIco" class="comment__avatar" alt="avatar" src="{{comment.host.avatar | url}}" />
-          <ng-template #avatarIco>
-            <ion-icon  class="comment__avatar" name="person-outline"></ion-icon>
-          </ng-template>
+
+  <ion-content class="comment__content">
+    <ion-list class="comment__conversation">
+      <div
+        *ngFor="let comment of comments; let i = index"
+        [ngClass]="{'comment__cell': true, 'comment__my': comment.host.id === user.id }"
+      >
+        <ng-template [ngIf]="comment.host.id === user.id">
+          <div (click)="onDel(i, comment.id)" class="comment__del"></div>
+        </ng-template>
+        <div class="comment__person">
+          <div>
+            <img *ngIf="!!comment.host.avatar; else avatarIco" class="comment__avatar" alt="avatar" src="{{comment.host.avatar | url}}" />
+            <ng-template #avatarIco>
+              <ion-icon  class="comment__avatar" name="person-outline"></ion-icon>
+            </ng-template>
+          </div>
+          <div class="comment__name">{{comment.host.firstName}} {{comment.host.lastName}}</div>
         </div>
-        <div class="comment__name">{{comment.host.firstName}} {{comment.host.lastName}}</div>
+        <div class="comment__text">{{comment.comment}}</div>
       </div>
-      <div class="comment__text">{{comment.comment}}</div>
-    </div>
-  </div>
+    </ion-list>
+    <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-content>
 </div>

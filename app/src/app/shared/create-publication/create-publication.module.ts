@@ -4,6 +4,7 @@ import { CreatePublicationComponent } from "./create-publication.component";
 import { IonicModule } from "@ionic/angular";
 import { ReactiveFormsModule } from "@angular/forms";
 import { PipeModule } from "../../core/pipe/pipe.module";
+import { FileReaderModule } from "../file-reader/file-reader.module";
 
 @NgModule({
   declarations: [
@@ -14,9 +15,10 @@ import { PipeModule } from "../../core/pipe/pipe.module";
   ],
   imports: [
     PipeModule,
-    CommonModule,
     IonicModule,
-    ReactiveFormsModule
+    CommonModule,
+    FileReaderModule,
+    ReactiveFormsModule,
   ]
 })
 export class CreatePublicationModule { }
