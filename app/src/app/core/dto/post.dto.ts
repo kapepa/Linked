@@ -4,6 +4,7 @@ import {CommentDto} from "./comment.dto";
 export class PostDto {
   id?: string
   img?: string
+  video?: string
   body: string
   author?: UserDto
   like?: number

@@ -10,6 +10,9 @@ export class FeetDto {
   img?: string
 
   @ApiProperty()
+  video?: string
+
+  @ApiProperty()
   body: string
 
   @ApiProperty({ type: () => UsersDto })

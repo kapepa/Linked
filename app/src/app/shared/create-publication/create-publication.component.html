@@ -40,21 +40,40 @@
     <ion-footer class="ion-no-border" collapse="fade">
       <div class="create-publication__footer">
         <div class="create-publication__shape_btn">
-          <ion-fab-button (click)="onImg($event)" class="create-publication__fab create-publication__fa--warningb" color="light">
-            <ion-icon *ngIf="!img" name="image"></ion-icon>
+          <ion-fab-button
+            (click)="onImg($event)"
+            class="create-publication__fab create-publication__fab--warning"
+            [ngClass]="{'create-publication__fab--warning': img.invalid }"
+            color="light"
+          >
+            <ion-icon *ngIf="!img.value" name="image"></ion-icon>
             <app-file-reader
               class="create-publication__file-reader"
-              *ngIf="!!img"
-              [img]="img"
+              *ngIf="!!img.value"
+              [img]="img.value"
               [alt]="'picture'"
               [class]="''"
             >
             </app-file-reader>
             <input type="file" name="img" class="create-publication__input-img" #inputImg (change)="onChangeImg($event)" />
           </ion-fab-button>
-          <ion-fab-button class="create-publication__fab" color="light">
+          <ion-fab-button
+            (click)="onVideo($event)"
+            class="create-publication__fab create-publication__fab--green"
+            [color]="!!video.value ? 'success' : 'light'"
+          >
             <ion-icon name="logo-youtube"></ion-icon>
+            <input
+              #inputVideo
+              type="file"
+              name="video"
+              class="create-publication__input-video"
+              (change)="onChangeVideo($event)"
+              accept="video/mp4, video/mov"
+              formControlName="video"
+            >
           </ion-fab-button>
+
           <ion-fab-button class="create-publication__fab" color="light">
             <ion-icon name="document-text"></ion-icon>
           </ion-fab-button>
