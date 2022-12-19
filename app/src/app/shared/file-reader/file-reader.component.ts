@@ -18,7 +18,7 @@ export class FileReaderComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    this.imgSrc();
+    // this.imgSrc();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -26,7 +26,7 @@ export class FileReaderComponent implements OnInit, OnChanges {
   }
 
   imgSrc() {
-    if (!!this.img.name) {
+    if (!!this.img?.name) {
       this.reader.readAsDataURL(this.img);
       this.reader.onload = () => this.imgText = this.reader.result as string;
     } else if (typeof this.img === 'string' ) {

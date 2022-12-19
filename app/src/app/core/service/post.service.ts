@@ -72,6 +72,22 @@ export class PostService {
     )
   }
 
+  updatePost(index: number, id: string, body: PostInterface): Observable<PostInterface> {
+    this.setPostLoad = !this.postLoad;
+    let form = this.toForm(body);
+    return this.http.patch<PostInterface>(`${this.configUrl}/api/feet/update/${id}`, form).pipe(
+      take(1),
+      tap({
+        next: (post: PostInterface) => {
+          this.posts.splice(index, 1, {...this.posts[index], ...post})
+          this.setPosts = this.posts;
+        },
+        complete: () => this.setPostLoad = !this.postLoad,
+      }),
+      catchError(this.httpService.handleError)
+    )
+  }
+
   getOnePost(id: string): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
     return this.http.get<PostInterface>(`${this.configUrl}/api/feet/one/${id}`).pipe(
@@ -100,21 +116,6 @@ export class PostService {
         this.setPosts = this.posts;
       })
     );
-  }
-
-  updatePost(index: number, id: string, body: PostInterface): Observable<PostInterface> {
-    this.setPostLoad = !this.postLoad;
-    return this.http.patch<PostInterface>(`${this.configUrl}/api/feet/update/${id}`, body).pipe(
-      take(1),
-      tap({
-        next: (post: PostInterface) => {
-          this.posts.splice(index, 1, {...this.posts[index], ...post})
-          this.setPosts = this.posts;
-        },
-        complete: () => this.setPostLoad = !this.postLoad,
-      }),
-      catchError(this.httpService.handleError)
-    )
   }
 
   deletePost(index: number, id: string): Observable<any> {

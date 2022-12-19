@@ -61,7 +61,10 @@
     width: 40px;
     height: 40px;
     &--warning{
-      border: 1px solid indianred;
+      --box-shadow: 0 3px 5px -1px red;
+    }
+    &--green{
+      --background: #7c3aed
     }
   }
   &__shape_btn{
@@ -73,7 +76,7 @@
     justify-content: flex-end;
     grid-area: post;
   }
-  &__input-img{
+  &__input-img, &__input-video{
     display: none;
   }
   &__file-reader{

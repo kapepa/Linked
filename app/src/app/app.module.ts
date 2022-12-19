@@ -22,7 +22,8 @@ import { BasementModule } from "./shared/basement/basement.module";
 import { CommentModule } from "./shared/comment/comment.module";
 import { PopupCommentModule } from "./shared/popup-comment/popup-comment.module";
 import { PostEditionModule } from "./shared/post-edition/post-edition.module";
-import {FileReaderModule} from "./shared/file-reader/file-reader.module";
+import { FileReaderModule } from "./shared/file-reader/file-reader.module";
+import { VideoReaderModule } from "./shared/video-reader/video-reader.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +39,7 @@ import {FileReaderModule} from "./shared/file-reader/file-reader.module";
     HttpClientModule,
     FileReaderModule,
     PostEditionModule,
+    VideoReaderModule,
     PopupCommentModule,
     PopupFriendsModule,
     ReactiveFormsModule,

@@ -18,6 +18,7 @@ export class FeetService {
     private feetRepository: Repository<Feet>,
     @InjectRepository(CommentEntity)
     private commentRepository: Repository<CommentEntity>,
+    private fileService: FileService,
   ) {}
 
   createFeet(feet: FeetDto): Observable<FeetInterface | FeetDto> {
@@ -118,10 +119,18 @@ export class FeetService {
     )
   }
 
-  updateFeet(id: string, feet: FeetDto): Observable<FeetInterface | FeetDto> {
-    return from(this.feetRepository.update({ id }, feet )).pipe(
-      switchMap(() => this.getFeet(id)),
-      catchError(err => { throw new HttpException('Something went wrong when update feet.', HttpStatus.BAD_REQUEST)}),
+  updateFeet(feet: FeetInterface): Observable<FeetInterface | FeetDto> {
+    let { id, img, ...other } = feet;
+    if(!!img) other['img'] = img;
+
+    return this.findOneFeet({ where: { id } }).pipe(
+      switchMap((post: FeetInterface) => {
+        return this.saveFeet({...post, ...other}).pipe(
+          tap(async () => {
+            if(!!post.img) await this.fileService.removeFile(post.img);
+          })
+        );
+      })
     )
   }
 

@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import {from, Observable, switchMap, throwError} from "rxjs";
+import { Observable, switchMap, throwError } from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -49,6 +49,22 @@ export class FeetController {
     )
   }
 
+  @Patch('/update/:id')
+  @UseGuards(JwtAuthGuard, FounderGuard)
+  @UseInterceptors(FileInterceptor('img', multerOption))
+  @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
+  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
+  updateFeet(
+    @Param('id') id: string,
+    @UploadedFile() img: Express.Multer.File,
+    @Body() body: FeetDto
+  ): Observable<FeetInterface | FeetDto>{
+    if(!Object.keys(body).length) return throwError(() => new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND));
+    return  this.fileService.formFile(img.filename).pipe(
+      switchMap(() => this.feetService.updateFeet({ id, img: img.filename, ...JSON.parse(JSON.stringify(body)) })),
+    )
+  }
+
   @Get('/one/:id')
   @ApiResponse({ status: 200, description: 'The received has been successfully feet on id.', type: FeetDto})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
@@ -65,15 +81,6 @@ export class FeetController {
     let { take, skip, word } = query;
     let where = !!word.length ? {  where: { body: Like(`%${word}%`) }  } : {};
     return this.feetService.findFeetList({ ...where, take: Number(take), skip: Number(skip) }, req.user);
-  }
-
-  @Patch('/update/:id')
-  @UseGuards(JwtAuthGuard, FounderGuard)
-  @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
-  @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
-  updateFeet(@Param('id') id: string, @Body() body: FeetDto): Observable<FeetInterface | FeetDto>{
-    if(!Object.keys(body).length) return throwError(() => new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND));
-    return this.feetService.updateFeet(id, body);
   }
 
   @Put('/like/:id')
