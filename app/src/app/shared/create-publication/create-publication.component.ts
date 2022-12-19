@@ -93,8 +93,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   async onVideo(e: Event) {
     if(!!this.video.value){
-      // await this.openVideo(this.video.value);
-      console.log(this.video.value)
+      let video = (this.inputVideo.nativeElement as HTMLInputElement).files[0]
+      await this.openVideo(video);
     } else {
       (this.inputVideo.nativeElement as HTMLInputElement).click()
     }
@@ -102,7 +102,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   async onChangeVideo(e: Event) {
     let video = (e.target as HTMLInputElement).files[0];
-    this.postForm.patchValue({ video: video });
+    // this.postForm.patchValue({ video: video });
 
     await this.openVideo(video);
   }
