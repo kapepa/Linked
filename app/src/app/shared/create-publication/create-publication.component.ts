@@ -57,8 +57,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
+      let img = this.img !== this.post.img? {img: this.img} : {};
       this.postService.updatePost(this.index, this.edit,{
-        img: this.img,
+        ...img,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
         this.onClosePublication();
