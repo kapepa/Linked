@@ -9,12 +9,12 @@ import {
   Patch,
   Post, Put,
   Query,
-  Req, UploadedFile,
+  Req, UploadedFile, UploadedFiles,
   UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import { Observable, switchMap, throwError } from "rxjs";
+import {Observable, of, switchMap, throwError} from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -24,8 +24,8 @@ import { RolesGuard } from "../auth/roles.guard";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FounderGuard } from "../auth/founder.guard";
 import { CommentInterface } from "./comment.interface";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { FileService, multerOption } from "../file/file.service";
+import {FileFieldsInterceptor, FileInterceptor} from "@nestjs/platform-express";
+import { FileService, multerOption, } from "../file/file.service";
 
 @ApiTags('feet')
 @Controller('feet')
@@ -36,17 +36,29 @@ export class FeetController {
   ) {}
 
   @Post('/create')
-  @Roles(Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor('img', multerOption))
+  // @Roles(Role.User)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @UseInterceptors(FileInterceptor('img', multerOptionImg))
+  // @UseInterceptors(FileInterceptor('video', multerOptionVideo))
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'img', maxCount: 1 },
+    { name: 'video', maxCount: 1 },
+  ], multerOption))
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  createFeet(@Body() body: FeetDto, @UploadedFile() img: Express.Multer.File, @Req() req): Observable<FeetInterface | FeetDto> {
-    return this.fileService.formFile(img.filename).pipe(
-      switchMap((save: boolean) => {
-        return this.feetService.createFeet({...JSON.parse(JSON.stringify(body)), img: img.filename, author: req.user})
-      })
-    )
+  createFeet(
+    @Body() body: FeetDto,
+    // @UploadedFiles() files,
+    @UploadedFiles() file,
+    @Req() req,
+  ): Observable<FeetInterface | FeetDto> {
+    // return this.fileService.formFile(img.filename).pipe(
+    //   switchMap((save: boolean) => {
+    //     return this.feetService.createFeet({...JSON.parse(JSON.stringify(body)), img: img.filename, author: req.user})
+    //   })
+    // )
+    console.log( file)
+    return of({} as FeetInterface | FeetDto)
   }
 
   @Patch('/update/:id')

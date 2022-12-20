@@ -59,6 +59,7 @@ export class PostService {
   createPost(body: { body: string, img?: File }): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
     let form = this.toForm(body);
+    console.log(form)
     return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
       take(1),
       tap({
@@ -75,6 +76,7 @@ export class PostService {
   updatePost(index: number, id: string, body: PostInterface): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
     let form = this.toForm(body);
+    console.log(form)
     return this.http.patch<PostInterface>(`${this.configUrl}/api/feet/update/${id}`, form).pipe(
       take(1),
       tap({

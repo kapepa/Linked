@@ -64,8 +64,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
       let img = this.img.value !== this.post.img? {img: this.img.value} : {};
+      let video = this.video.value !== this.post.video? {img: this.video.value} : {};
       this.postService.updatePost(this.index, this.edit,{
-        ...img,
+        ...img, ...video,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
         this.onClosePublication();
@@ -103,7 +104,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   async onChangeVideo(e: Event) {
     let video = (e.target as HTMLInputElement).files[0];
     // this.postForm.patchValue({ video: video });
-
     await this.openVideo(video);
   }
 
