@@ -2,9 +2,9 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { diskStorage } from "multer";
 import { Request } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import {catchError, from, Observable, of, switchMap} from "rxjs";
-import {FileTypeResult, fromFile} from 'file-type';
-import {join} from "path";
+import { catchError, from, Observable, of, switchMap } from "rxjs";
+import { FileTypeResult, fromFile } from 'file-type';
+import { join } from "path";
 import * as sharp from "sharp";
 import * as fs from "fs";
 
@@ -18,13 +18,10 @@ export const multerOption = {
     },
   }),
   fileFilter: (req, file, cb) => {
-    if(!['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.mimetype)){
+    if(!['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'video/mp3','video/mp4'].includes(file.mimetype)){
       return cb(new HttpException('Extensions file is not correct', HttpStatus.FORBIDDEN));
     }
     cb(null, true);
-  },
-  rename: (name) => {
-    console.log(name)
   },
   limits: {
     fieldNameSize: 300,
