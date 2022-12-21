@@ -55,7 +55,13 @@
               [class]="''"
             >
             </app-file-reader>
-            <input type="file" name="img" class="create-publication__input-img" #inputImg (change)="onChangeImg($event)" />
+            <input
+              #inputImg
+              type="file"
+              name="img"
+              class="create-publication__input-img"
+              (change)="onChangeImg($event)"
+            />
           </ion-fab-button>
           <ion-fab-button
             (click)="onVideo($event)"
@@ -70,7 +76,6 @@
               class="create-publication__input-video"
               (change)="onChangeVideo($event)"
               accept="video/mp4, video/mov"
-              formControlName="video"
             >
           </ion-fab-button>
 
