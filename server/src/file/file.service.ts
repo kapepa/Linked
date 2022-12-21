@@ -25,7 +25,7 @@ export const multerOption = {
   },
   limits: {
     fieldNameSize: 300,
-    fileSize: 50000,
+    fileSize: 10000000,
   },
 }
 

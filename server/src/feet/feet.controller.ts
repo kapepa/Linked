@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import {Observable, of, switchMap, throwError} from "rxjs";
+import {Observable, of, switchMap, tap, throwError} from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -36,44 +36,49 @@ export class FeetController {
   ) {}
 
   @Post('/create')
-  // @Roles(Role.User)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @UseInterceptors(FileInterceptor('img', multerOptionImg))
-  // @UseInterceptors(FileInterceptor('video', multerOptionVideo))
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'img', maxCount: 1 },
-    { name: 'video', maxCount: 1 },
-  ], multerOption))
+  @Roles(Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },], multerOption))
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(
     @Body() body: FeetDto,
-    // @UploadedFiles() files,
-    @UploadedFiles() file,
+    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
     @Req() req,
   ): Observable<FeetInterface | FeetDto> {
-    // return this.fileService.formFile(img.filename).pipe(
-    //   switchMap((save: boolean) => {
-    //     return this.feetService.createFeet({...JSON.parse(JSON.stringify(body)), img: img.filename, author: req.user})
-    //   })
-    // )
-    console.log( file)
-    return of({} as FeetInterface | FeetDto)
+    let { img, video } = JSON.parse(JSON.stringify(files));
+    return this.feetService.createFeet({
+      ...JSON.parse(JSON.stringify(body)),
+      ...(!!img && !!img.length) ? { img: img[0]?.filename } : undefined,
+      ...(!!video && !!video.length) ? { video: video[0]?.filename } : undefined,
+      author: req.user,
+    }).pipe(
+      tap(() => {
+        if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
+      })
+    )
   }
 
   @Patch('/update/:id')
   @UseGuards(JwtAuthGuard, FounderGuard)
-  @UseInterceptors(FileInterceptor('img', multerOption))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },], multerOption))
   @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   updateFeet(
     @Param('id') id: string,
-    @UploadedFile() img: Express.Multer.File,
+    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
     @Body() body: FeetDto
   ): Observable<FeetInterface | FeetDto>{
-    if(!Object.keys(body).length) return throwError(() => new HttpException('Not Found data for update.', HttpStatus.NOT_FOUND));
-    return  this.fileService.formFile(img.filename).pipe(
-      switchMap(() => this.feetService.updateFeet({ id, img: img.filename, ...JSON.parse(JSON.stringify(body)) })),
+    let { img, video } = JSON.parse(JSON.stringify(files));
+    return this.feetService.updateFeet({
+      id,
+      ...(!!img && !!img.length) ? { img: img[0]?.filename } : undefined,
+      ...(!!video && !!video.length) ? { video: video[0]?.filename } : undefined,
+      ...JSON.parse(JSON.stringify(body))
+    }).pipe(
+      tap(() => {
+        if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
+      })
     )
   }
 

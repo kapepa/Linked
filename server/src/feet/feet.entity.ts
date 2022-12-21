@@ -19,6 +19,9 @@ export class Feet {
   img: string;
 
   @Column()
+  video?: string;
+
+  @Column()
   body: string;
 
   @ManyToOne(() => User, (user) => user.feet)

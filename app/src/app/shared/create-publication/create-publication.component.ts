@@ -63,18 +63,17 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
-      let img = this.img.value !== this.post.img? {img: this.img.value} : {};
-      let video = this.video.value !== this.post.video? {img: this.video.value} : {};
-      this.postService.updatePost(this.index, this.edit,{
-        ...img, ...video,
-        body: this.body.value,
-      }).subscribe((post: PostInterface) => {
-        this.onClosePublication();
-        this.postForm.reset();
-      })
+      let img = this.img.value !== this.post.img? {img: this.img.value} : undefined
+      let video = this.video.value !== this.post.video? {img: this.video.value} : undefined;
+      this.postService.updatePost(this.index, this.edit, Object.assign({body: this.body.value}, video, img))
+        .subscribe((post: PostInterface) => {
+          this.onClosePublication();
+          this.postForm.reset();
+        })
     } else {
       this.postService.createPost({
         img: this.img.value,
+        ...(!!this.video.value) ? { video: this.video.value } : undefined,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
         this.onClosePublication();
@@ -94,8 +93,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   async onVideo(e: Event) {
     if(!!this.video.value){
-      let video = (this.inputVideo.nativeElement as HTMLInputElement).files[0]
-      await this.openVideo(video);
+      await this.openVideo();
     } else {
       (this.inputVideo.nativeElement as HTMLInputElement).click()
     }
@@ -103,18 +101,19 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   async onChangeVideo(e: Event) {
     let video = (e.target as HTMLInputElement).files[0];
-    // this.postForm.patchValue({ video: video });
-    await this.openVideo(video);
+    this.postForm.patchValue({ video: video });
+    await this.openVideo();
   }
 
-  async openVideo(video: File) {
+  async openVideo() {
     const popover = await this.popoverController.create({
       component: VideoReaderComponent,
       componentProps: {
-        audio: video,
+        audio: this.video.value,
         alt: 'video',
         clearAudio: () => {
           this.video.setValue(null);
+          this.inputVideo.nativeElement.value = null;
           this.popoverController.dismiss();
         }
       }
