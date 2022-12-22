@@ -5,6 +5,7 @@ export class PostDto {
   id?: string
   img?: string
   video?: string
+  file?: string
   body: string
   author?: UserDto
   like?: number

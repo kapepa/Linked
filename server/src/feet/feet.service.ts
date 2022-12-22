@@ -170,9 +170,18 @@ export class FeetService {
   }
 
   deleteFeet(id: string): Observable<DeleteResult> {
-    return  from(this.feetRepository.delete({ id })).pipe(
-      catchError(err => { throw new HttpException('Something went wrong when delete feet.', HttpStatus.NOT_FOUND)})
-    )
+    return this.findOneFeet({ where: { id } }).pipe(
+      switchMap(( feet: FeetInterface ) => {
+        return  from(this.feetRepository.delete({ id })).pipe(
+          tap( async () => {
+            if (!!feet.img) await this.fileService.removeFile(feet.img);
+            if (!!feet.video) await this.fileService.removeFile(feet.video);
+            if (!!feet.file) await this.fileService.removeFile(feet.file);
+          }),
+          catchError(err => { throw new HttpException('Something went wrong when delete feet.', HttpStatus.NOT_FOUND)})
+        )
+      })
+    );
   }
 
   deleteComment(commentID: string, user: UsersDto): Observable<DeleteResult> {

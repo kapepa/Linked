@@ -78,9 +78,20 @@
               accept="video/mp4, video/mov"
             >
           </ion-fab-button>
-
-          <ion-fab-button class="create-publication__fab" color="light">
+          <ion-fab-button
+            (click)="onFile($event)"
+            class="create-publication__fab"
+            [color]="!!file.value ? 'success' : 'light'"
+          >
             <ion-icon name="document-text"></ion-icon>
+            <input
+              #inputFile
+              type="file"
+              name="file"
+              class="create-publication__input-file"
+              (change)="onChangeFile($event)"
+              accept="application/pdf"
+            />
           </ion-fab-button>
           <ion-fab-button class="create-publication__fab" color="light">
             <ion-icon name="briefcase"></ion-icon>

@@ -5,6 +5,7 @@ export interface FeetInterface {
   id?: string,
   img?: string,
   video?: string,
+  file?: string,
   body?: string,
   author?: UsersInterface,
   like?: UsersInterface[],

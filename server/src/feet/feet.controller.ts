@@ -38,7 +38,7 @@ export class FeetController {
   @Post('/create')
   @Roles(Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },], multerOption))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },{ name: 'file', maxCount: 1 }], multerOption))
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(
@@ -46,11 +46,12 @@ export class FeetController {
     @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
     @Req() req,
   ): Observable<FeetInterface | FeetDto> {
-    let { img, video } = JSON.parse(JSON.stringify(files));
+    let { img, video, file } = JSON.parse(JSON.stringify(files));
     return this.feetService.createFeet({
       ...JSON.parse(JSON.stringify(body)),
       ...(!!img && !!img.length) ? { img: img[0]?.filename } : undefined,
       ...(!!video && !!video.length) ? { video: video[0]?.filename } : undefined,
+      ...(!!file && !!file.length) ? { file: file[0]?.filename } : undefined,
       author: req.user,
     }).pipe(
       tap(() => {
@@ -61,7 +62,7 @@ export class FeetController {
 
   @Patch('/update/:id')
   @UseGuards(JwtAuthGuard, FounderGuard)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },], multerOption))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },{ name: 'file', maxCount: 1 }], multerOption))
   @ApiResponse({ status: 200, description: 'The received has been successfully update feet.'})
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   updateFeet(
@@ -69,11 +70,12 @@ export class FeetController {
     @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
     @Body() body: FeetDto
   ): Observable<FeetInterface | FeetDto>{
-    let { img, video } = JSON.parse(JSON.stringify(files));
+    let { img, video, file } = JSON.parse(JSON.stringify(files));
     return this.feetService.updateFeet({
       id,
       ...(!!img && !!img.length) ? { img: img[0]?.filename } : undefined,
       ...(!!video && !!video.length) ? { video: video[0]?.filename } : undefined,
+      ...(!!file && !!file.length) ? { file: file[0]?.filename } : undefined,
       ...JSON.parse(JSON.stringify(body))
     }).pipe(
       tap(() => {

@@ -76,7 +76,7 @@
     justify-content: flex-end;
     grid-area: post;
   }
-  &__input-img, &__input-video{
+  &__input-img, &__input-video, &__input-file{
     display: none;
   }
   &__file-reader{
