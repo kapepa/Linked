@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import {User} from "../users/users.entity";
 import {CommentEntity} from "./comment.entity";
+import {AccessEnum} from "./access.enum";
 
 @Entity()
 export class Feet {
@@ -26,6 +27,13 @@ export class Feet {
 
   @Column()
   body: string;
+
+  @Column( {
+    type: "enum",
+    enum: AccessEnum,
+    default: AccessEnum.ANYONE
+  } )
+  access: AccessEnum
 
   @ManyToOne(() => User, (user) => user.feet)
   author: User;

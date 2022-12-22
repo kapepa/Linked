@@ -82,6 +82,9 @@
   &__file-reader{
     height: 100%;
   }
+  &__chip{
+    padding: 0
+  }
 }
 
 @media screen and (max-width: 576px) {

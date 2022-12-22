@@ -1,5 +1,6 @@
 import { UsersInterface } from "../users/users.interface";
 import { CommentInterface } from "./comment.interface";
+import {AccessEnum} from "./access.enum";
 
 export interface FeetInterface {
   id?: string,
@@ -7,6 +8,7 @@ export interface FeetInterface {
   video?: string,
   file?: string,
   body?: string,
+  access?: AccessEnum,
   author?: UsersInterface,
   like?: UsersInterface[],
   comments?: CommentInterface[],

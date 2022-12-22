@@ -20,10 +20,22 @@
           <ion-title class="ion-no-padding create-publication__title">{{ user.firstName }} {{user.lastName}}</ion-title>
         </div>
         <div class="create-publication__anyone-g">
-          <ion-chip class="ion-no-margin" [outline]="true">
-            <ion-icon name="earth"></ion-icon>
-            Anyone
-            <ion-icon name="caret-down"></ion-icon>
+          <ion-chip class="ion-no-margin create-publication__chip" [outline]="true">
+            <ion-list>
+              <ion-item>
+                <ion-select
+                  (ionChange)="handleChange($event)"
+                  [selectedText]="!!post?.access ? select[post.access].name : select.anyone.name"
+                  [compareWith]="compareWith"
+                  placeholder="Select"
+                >
+                  <ion-select-option
+                    *ngFor="let options of getSelectKey"
+                    [value]=select[options].value
+                  >{{select[options].name}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-list>
           </ion-chip>
         </div>
       </div>

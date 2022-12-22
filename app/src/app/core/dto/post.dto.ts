@@ -1,5 +1,6 @@
 import {UserDto} from "./user.dto";
 import {CommentDto} from "./comment.dto";
+import {AccessEnum} from "../enum/access.enum";
 
 export class PostDto {
   id?: string
@@ -7,6 +8,7 @@ export class PostDto {
   video?: string
   file?: string
   body: string
+  access?: AccessEnum
   author?: UserDto
   like?: number
   comments?: CommentDto[]
