@@ -61,7 +61,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     }
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
-    this.compareWith(this.select.anyone.value, this.select.anyone.value)
+    this.compareWith(this.select.anyone.value, this.select.anyone.value);
   }
 
   ngOnDestroy() {
