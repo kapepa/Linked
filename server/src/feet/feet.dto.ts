@@ -13,6 +13,9 @@ export class FeetDto {
   video?: string
 
   @ApiProperty()
+  file?: string
+
+  @ApiProperty()
   body: string
 
   @ApiProperty({ type: () => UsersDto })

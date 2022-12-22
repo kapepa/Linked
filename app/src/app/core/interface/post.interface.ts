@@ -5,6 +5,7 @@ export interface PostInterface {
   id?: string,
   img?: string,
   video?: string,
+  file?: string,
   body: string,
   author?: UserInterface,
   like?: UserInterface[],

@@ -18,7 +18,7 @@ export const multerOption = {
     },
   }),
   fileFilter: (req, file, cb) => {
-    if(!['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'video/mp3','video/mp4'].includes(file.mimetype)){
+    if(!['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'video/mp3','video/mp4', 'application/pdf'].includes(file.mimetype)){
       return cb(new HttpException('Extensions file is not correct', HttpStatus.FORBIDDEN));
     }
     cb(null, true);

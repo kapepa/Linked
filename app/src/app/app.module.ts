@@ -24,6 +24,7 @@ import { PopupCommentModule } from "./shared/popup-comment/popup-comment.module"
 import { PostEditionModule } from "./shared/post-edition/post-edition.module";
 import { FileReaderModule } from "./shared/file-reader/file-reader.module";
 import { VideoReaderModule } from "./shared/video-reader/video-reader.module";
+import { DocReaderModule } from "./shared/doc-reader/doc-reader.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +35,7 @@ import { VideoReaderModule } from "./shared/video-reader/video-reader.module";
     PopoverModule,
     CommentModule,
     BasementModule,
+    DocReaderModule,
     DirectiveModule,
     AppRoutingModule,
     HttpClientModule,

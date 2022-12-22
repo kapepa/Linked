@@ -7,6 +7,7 @@ import {Subscription} from "rxjs";
 import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 import {PopoverController} from "@ionic/angular";
 import {VideoReaderComponent} from "../video-reader/video-reader.component";
+import {DocReaderComponent} from "../doc-reader/doc-reader.component";
 
 @Component({
   selector: 'app-create-publication',
@@ -18,6 +19,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   userSub: Subscription;
 
   @ViewChild('inputImg') inputImg: ElementRef<HTMLInputElement>;
+  @ViewChild('inputFile') inputFile: ElementRef<HTMLInputElement>;
   @ViewChild('inputVideo') inputVideo: ElementRef<HTMLInputElement>;
 
   @Input() onClosePublication: () => void;
@@ -39,6 +41,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
         id: [this.post.id],
         img: [this.post.img],
         video: [this.post.video],
+        file: [this.post.file],
         body: [this.post.body, Validators.required],
       });
     } else {
@@ -46,6 +49,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
         id: [''],
         img: [null, Validators.required],
         video: [null],
+        file: [null],
         body: ['', Validators.required],
       });
     }
@@ -63,9 +67,10 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
-      let img = this.img.value !== this.post.img? {img: this.img.value} : undefined
-      let video = this.video.value !== this.post.video? {img: this.video.value} : undefined;
-      this.postService.updatePost(this.index, this.edit, Object.assign({body: this.body.value}, video, img))
+      let img = this.img.value !== this.post.img ? {img: this.img.value} : undefined
+      let video = this.video.value !== this.post.video ? {img: this.video.value} : undefined;
+      let file = this.file.value !== this.post.file ? {file: this.file.value} : undefined;
+      this.postService.updatePost(this.index, this.edit, Object.assign({body: this.body.value}, video, img, file))
         .subscribe((post: PostInterface) => {
           this.onClosePublication();
           this.postForm.reset();
@@ -74,6 +79,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
       this.postService.createPost({
         img: this.img.value,
         ...(!!this.video.value) ? { video: this.video.value } : undefined,
+        ...(!!this.file.value) ? { file: this.file.value } : undefined,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
         this.onClosePublication();
@@ -122,6 +128,33 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     await popover.present();
   }
 
+  async onFile(e: Event) {
+    this.inputFile.nativeElement.click();
+  }
+
+  async onChangeFile(e: Event) {
+    let file = (e.target as HTMLInputElement).files[0];
+    this.postForm.patchValue({ file });
+    await this.onChangeDoc();
+  }
+
+  async onChangeDoc(){
+    const popover = await this.popoverController.create({
+      component: DocReaderComponent,
+      componentProps: {
+        doc: this.file.value,
+        alt: 'file',
+        clearFile: () => {
+          this.file.setValue(null);
+          this.inputFile.nativeElement.value = null;
+          this.popoverController.dismiss();
+        }
+      }
+    });
+
+    await popover.present();
+  }
+
   get body () {
     return this.postForm.get('body');
   }
@@ -136,5 +169,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   get video () {
     return this.postForm.get('video');
+  }
+
+  get file() {
+    return this.postForm.get('file')
   }
 }
