@@ -1,6 +1,7 @@
 import {UsersDto} from "../users/users.dto";
 import {CommentDto} from "./comment.dto";
 import {ApiProperty} from "@nestjs/swagger";
+import {AccessEnum} from "./access.enum";
 
 export class FeetDto {
   @ApiProperty()
@@ -17,6 +18,9 @@ export class FeetDto {
 
   @ApiProperty()
   body: string
+
+  @ApiProperty()
+  access?: AccessEnum
 
   @ApiProperty({ type: () => UsersDto })
   author?: UsersDto

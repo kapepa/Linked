@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../core/service/post.service";
 import {PostInterface} from "../../core/interface/post.interface";
@@ -15,6 +15,12 @@ import {DocReaderComponent} from "../doc-reader/doc-reader.component";
   styleUrls: ['./create-publication.component.scss'],
 })
 export class CreatePublicationComponent implements OnInit, OnDestroy {
+  select = {
+    anyone: { name: 'Anyone', value: 'anyone'},
+    contact: { name: 'Contact', value: 'contact'},
+    outside: { name: 'Outside', value: 'outside'},
+  };
+
   user: UserJwtDto;
   userSub: Subscription;
 
@@ -54,11 +60,31 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.userSub = this.authService.getUser.subscribe((user: UserJwtDto ) => this.user = user);
+    this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
+    this.compareWith(this.select.anyone.value, this.select.anyone.value)
   }
 
   ngOnDestroy() {
     this.userSub.unsubscribe();
+  }
+
+  handleChange(e: Event) {
+    console.log('onchange')
+  }
+
+  compareWith(o1, o2) {
+    console.log(o1)
+    console.log(o2)
+
+    if (!o1 || !o2) {
+      return o1 === o2;
+    }
+
+    if (Array.isArray(o2)) {
+      return o2.some((o) => o === o1);
+    }
+
+    return o1 === o2;
   }
 
   onClose(e: Event) {
@@ -173,5 +199,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   get file() {
     return this.postForm.get('file')
+  }
+
+  get getSelectKey() {
+    return Object.keys(this.select);
   }
 }

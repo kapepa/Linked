@@ -1,5 +1,6 @@
 import {UserInterface} from "./user.interface";
 import {CommentInterface} from "./comment.interface";
+import {AccessEnum} from "../enum/access.enum";
 
 export interface PostInterface {
   id?: string,
@@ -7,6 +8,7 @@ export interface PostInterface {
   video?: string,
   file?: string,
   body: string,
+  access?: AccessEnum,
   author?: UserInterface,
   like?: UserInterface[],
   like_count?: number,
