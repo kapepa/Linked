@@ -67,7 +67,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
-      let img = this.img.value !== this.post.img ? {img: this.img.value} : undefined
+      let img = this.img.value !== this.post.img ? {img: this.img.value} : undefined;
       let video = this.video.value !== this.post.video ? {img: this.video.value} : undefined;
       let file = this.file.value !== this.post.file ? {file: this.file.value} : undefined;
       this.postService.updatePost(this.index, this.edit, Object.assign({body: this.body.value}, video, img, file))
@@ -101,7 +101,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     if(!!this.video.value){
       await this.openVideo();
     } else {
-      (this.inputVideo.nativeElement as HTMLInputElement).click()
+      (this.inputVideo.nativeElement as HTMLInputElement).click();
     }
   }
 
