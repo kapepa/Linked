@@ -83,7 +83,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     if (Array.isArray(o2)) {
       return o2.some((o) => o === o1);
     }
-
     return o1 === o2;
   }
 
