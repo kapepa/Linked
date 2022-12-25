@@ -4,6 +4,7 @@ import { NewPublicationsComponent } from "./new-publications.component";
 import { IonicModule } from "@ionic/angular";
 import { CreatePublicationModule } from "../create-publication/create-publication.module";
 import { PipeModule } from "../../core/pipe/pipe.module";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { PipeModule } from "../../core/pipe/pipe.module";
     IonicModule,
     CommonModule,
     CreatePublicationModule,
+    RouterModule,
   ]
 })
 export class NewPublicationsModule { }

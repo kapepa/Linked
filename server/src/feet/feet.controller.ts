@@ -49,9 +49,9 @@ export class FeetController {
     let { img, video, file } = JSON.parse(JSON.stringify(files));
     return this.feetService.createFeet({
       ...JSON.parse(JSON.stringify(body)),
-      ...(!!img && !!img.length) ? { img: img[0]?.filename } : undefined,
-      ...(!!video && !!video.length) ? { video: video[0]?.filename } : undefined,
-      ...(!!file && !!file.length) ? { file: file[0]?.filename } : undefined,
+      ...(!!img && !!img?.length) ? { img: img[0]?.filename } : undefined,
+      ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
+      ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
       author: req.user,
     }).pipe(
       tap(() => {

@@ -8,6 +8,7 @@ import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 import {PopoverController} from "@ionic/angular";
 import {VideoReaderComponent} from "../video-reader/video-reader.component";
 import {DocReaderComponent} from "../doc-reader/doc-reader.component";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-publication',
@@ -37,6 +38,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
     private postService: PostService,
     private authService: AuthService,
     private popoverController: PopoverController
@@ -50,6 +53,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         video: [this.post.video],
         file: [this.post.file],
         body: [this.post.body, Validators.required],
+        access: [this.post.access],
       });
     } else {
       this.postForm = this.fb.group({
@@ -58,29 +62,30 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         video: [null],
         file: [null],
         body: ['', Validators.required],
+        access: [ !!this.post?.access ? this.post?.access : this.select.anyone.value ],
       });
     }
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
     this.userSub.unsubscribe();
+    if (this.route.snapshot.queryParams?.open !== 'addition')
+      await this.router.navigate([window.location.pathname], {queryParams: { }});
   }
 
   ngAfterViewInit() {
-    console.log((this.selectOptions as any).el.selected = this.select.anyone.name )
+
   }
 
   handleChange(e: Event) {
-    console.log('onchange')
+    let target = (e.target as HTMLIonSelectElement).value;
+    this.getAccess.patchValue(target);
+
   }
 
   compareWith(o1, o2) {
-    console.log('compareWith')
-    console.log(o1)
-    console.log(o2)
-
     if (!o1 || !o2) {
       return o1 === o2;
     }
@@ -101,7 +106,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
       let img = this.img.value !== this.post.img ? {img: this.img.value} : undefined;
       let video = this.video.value !== this.post.video ? {img: this.video.value} : undefined;
       let file = this.file.value !== this.post.file ? {file: this.file.value} : undefined;
-      this.postService.updatePost(this.index, this.edit, Object.assign({body: this.body.value}, video, img, file))
+      this.postService.updatePost(this.index, this.edit, Object.assign(
+        {body: this.body.value, access: this.getAccess.value}, video, img, file)
+      )
         .subscribe((post: PostInterface) => {
           this.onClosePublication();
           this.postForm.reset();
@@ -111,6 +118,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         img: this.img.value,
         ...(!!this.video.value) ? { video: this.video.value } : undefined,
         ...(!!this.file.value) ? { file: this.file.value } : undefined,
+        access: this.getAccess.value,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
         this.onClosePublication();
@@ -208,5 +216,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   get getSelectKey() {
     return Object.keys(this.select);
+  }
+
+  get getAccess() {
+    return this.postForm.get('access');
   }
 }

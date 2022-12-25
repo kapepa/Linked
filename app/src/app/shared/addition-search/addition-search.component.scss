@@ -1,0 +1,38 @@
+.addition-publication{
+  &__header{
+    position: relative;
+  }
+  &__label{
+    font-size: 20px;
+    margin: 16px 48px 16px 0;
+  }
+  &__close{
+    position: absolute;
+    transform: translateY(-50%);
+    top: 45%;
+    right: 10px;
+    height: 33px;
+    width: auto;
+  }
+  &__x-close{
+    font-size: 33px
+  }
+  &__content{
+    --padding-start: 24px;
+    --padding-end: 24px;
+  }
+
+}
+
+@media screen and (max-width: 576px) {
+  .addition-publication{
+    &__footer{
+      grid-template-columns: 1fr;
+      grid-template-areas: 'btn' 'post';
+      grid-row-gap: 15px;
+    }
+    &__post_shape, &__shape_btn{
+      justify-content: center;
+    }
+  }
+}

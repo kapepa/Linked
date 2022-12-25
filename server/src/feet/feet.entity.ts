@@ -19,10 +19,10 @@ export class Feet {
   @Column()
   img: string;
 
-  @Column()
+  @Column({ default: '' })
   video?: string;
 
-  @Column()
+  @Column({ default: '' })
   file?: string;
 
   @Column()

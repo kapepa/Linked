@@ -24,8 +24,9 @@
             <ion-list>
               <ion-item>
                 <ion-select
+                  interface="popover"
                   (ionChange)="handleChange($event)"
-                  [selectedText]="!!post?.access ? select[post.access].name : select.anyone.name"
+                  [selectedText]="select[getAccess.value]?.name"
                   [compareWith]="compareWith"
                   placeholder="Select"
                   #selectOptions
@@ -106,9 +107,11 @@
               accept="application/pdf"
             />
           </ion-fab-button>
-          <ion-fab-button class="create-publication__fab" color="light">
-            <ion-icon name="briefcase"></ion-icon>
-          </ion-fab-button>
+          <ion-router-link [routerLink]="['/home']" [queryParams]="{open: 'addition'}" >
+            <ion-fab-button class="create-publication__fab" color="light">
+              <ion-icon name="briefcase"></ion-icon>
+            </ion-fab-button>
+          </ion-router-link>
           <ion-fab-button class="create-publication__fab" color="light">
             <ion-icon name="contract"></ion-icon>
           </ion-fab-button>

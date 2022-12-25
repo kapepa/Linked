@@ -51,7 +51,6 @@ export class ConversationComponent implements OnInit, OnDestroy {
     this.friendsSub = this.chatService.getFriends.subscribe((friends: UserInterface[]) => this.friends = friends);
     this.messagesSub = this.chatService.getMessages.subscribe((messages: MessageInterface[]) => {
       this.messages = messages
-      console.log(messages)
     });
     this.chatLoadSub = this.chatService.getChatLoad.subscribe((load: boolean) => this.chatLoad = load);
     this.chatSub = this.chatService.getChat.subscribe((chat: ChatInterface) => {
