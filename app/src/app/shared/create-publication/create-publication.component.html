@@ -28,6 +28,7 @@
                   [selectedText]="!!post?.access ? select[post.access].name : select.anyone.name"
                   [compareWith]="compareWith"
                   placeholder="Select"
+                  #selectOptions
                 >
                   <ion-select-option
                     *ngFor="let options of getSelectKey"

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../core/service/post.service";
 import {PostInterface} from "../../core/interface/post.interface";
@@ -14,7 +14,7 @@ import {DocReaderComponent} from "../doc-reader/doc-reader.component";
   templateUrl: './create-publication.component.html',
   styleUrls: ['./create-publication.component.scss'],
 })
-export class CreatePublicationComponent implements OnInit, OnDestroy {
+export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewInit {
   select = {
     anyone: { name: 'Anyone', value: 'anyone'},
     contact: { name: 'Contact', value: 'contact'},
@@ -27,6 +27,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   @ViewChild('inputImg') inputImg: ElementRef<HTMLInputElement>;
   @ViewChild('inputFile') inputFile: ElementRef<HTMLInputElement>;
   @ViewChild('inputVideo') inputVideo: ElementRef<HTMLInputElement>;
+  @ViewChild('selectOptions') selectOptions: ElementRef<HTMLIonSelectElement>
 
   @Input() onClosePublication: () => void;
   @Input() post?: PostInterface;
@@ -61,11 +62,14 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
     }
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
-    this.compareWith(this.select.anyone.value, this.select.anyone.value);
   }
 
   ngOnDestroy() {
     this.userSub.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+    console.log((this.selectOptions as any).el.selected = this.select.anyone.name )
   }
 
   handleChange(e: Event) {
@@ -73,6 +77,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy {
   }
 
   compareWith(o1, o2) {
+    console.log('compareWith')
     console.log(o1)
     console.log(o2)
 
