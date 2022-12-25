@@ -22,6 +22,6 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   }
 
   onClose(e: Event) {
-    this.onClosePublication()
+    this.onClosePublication();
   }
 }
