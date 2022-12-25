@@ -56,7 +56,7 @@ export class PostService {
     )
   }
 
-  createPost(body: { body: string, img?: File }): Observable<PostInterface> {
+  createPost(body: { body: string, img?: File, access: string }): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
     let form = this.toForm(body);
     return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(

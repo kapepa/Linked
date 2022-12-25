@@ -7,7 +7,9 @@
       </ng-template>
     </ion-avatar>
     <div class="new-publications__btn-wrapper">
-      <ion-button #post (click)="onPublication($event)" class="new-publications__btn" shape="round" expand="block" fill="outline">Start a post</ion-button>
+      <ion-router-link  [routerLink]="['/home']" [queryParams]="{open: 'create'}">
+        <ion-button class="new-publications__btn" shape="round" expand="block" fill="outline">Start a post</ion-button>
+      </ion-router-link>
     </div>
   </ion-card-header>
 

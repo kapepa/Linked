@@ -6,6 +6,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { FileReaderModule } from "../file-reader/file-reader.module";
 import { VideoReaderModule } from "../video-reader/video-reader.module";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { VideoReaderModule } from "../video-reader/video-reader.module";
     IonicModule,
     FormsModule,
     CommonModule,
+    RouterModule,
     FileReaderModule,
     VideoReaderModule,
     ReactiveFormsModule,
