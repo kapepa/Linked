@@ -32,7 +32,7 @@ export class FeetService {
       switchMap((feet: FeetInterface) => {
         return this.getComment({ id: feet.id, take: 20, skip: 0 }).pipe(
           switchMap((comments: CommentInterface[]) => {
-            return of({ ...feet, comments })
+            return of({ ...feet, comments });
           })
         );
       })
