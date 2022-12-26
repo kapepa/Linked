@@ -7,6 +7,7 @@ import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { HttpService } from "./http.service";
 import { CommentInterface } from "../interface/comment.interface";
+import {AdditionDto} from "../dto/addition.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,9 @@ export class PostService {
 
   firstLoad = true;
   firstLoad$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+  createAddition: AdditionDto;
+  createAddition$: BehaviorSubject<AdditionDto> = new BehaviorSubject<AdditionDto>(null);
 
   constructor(
     private http: HttpClient,
@@ -209,6 +213,11 @@ export class PostService {
     this.postLoad$.next(this.postLoad);
   }
 
+  set setCreateAddition(addition: AdditionDto) {
+    this.createAddition = addition;
+    this.createAddition$.next(this.createAddition);
+  }
+
   get getComments(): Observable<CommentInterface[]> {
     return this.post$.asObservable().pipe(
       switchMap((post: PostInterface) => {
@@ -235,5 +244,9 @@ export class PostService {
 
   get getPostsAll(): Observable<PostInterface[]> {
     return this.posts$.asObservable();
+  }
+
+  get getCreateAddition(): Observable<AdditionDto> {
+    return this.createAddition$.asObservable();
   }
 }
