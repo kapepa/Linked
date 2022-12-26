@@ -25,6 +25,7 @@ import { PostEditionModule } from "./shared/post-edition/post-edition.module";
 import { FileReaderModule } from "./shared/file-reader/file-reader.module";
 import { VideoReaderModule } from "./shared/video-reader/video-reader.module";
 import { DocReaderModule } from "./shared/doc-reader/doc-reader.module";
+import {AdditionSearchModule} from "./shared/addition-search/addition-search.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,6 +46,7 @@ import { DocReaderModule } from "./shared/doc-reader/doc-reader.module";
     PopupCommentModule,
     PopupFriendsModule,
     ReactiveFormsModule,
+    AdditionSearchModule,
     PopupNotificationModule,
     CreatePublicationModule,
     IonicModule.forRoot(),

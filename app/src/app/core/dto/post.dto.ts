@@ -1,6 +1,7 @@
 import {UserDto} from "./user.dto";
 import {CommentDto} from "./comment.dto";
 import {AccessEnum} from "../enum/access.enum";
+import {AdditionDto} from "./addition.dto";
 
 export class PostDto {
   id?: string
@@ -9,6 +10,7 @@ export class PostDto {
   file?: string
   body: string
   access?: AccessEnum
+  addition?: AdditionDto
   author?: UserDto
   like?: number
   comments?: CommentDto[]
