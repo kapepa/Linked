@@ -52,7 +52,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     this.postService.setCreateAddition = this.additionForm.value;
-    this.router.navigate(['/home'], { queryParams: { open: 'create' } })
+    this.router.navigate(['/home'], { queryParams: { open: 'create' } });
   }
 
   get getJob() {
