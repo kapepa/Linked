@@ -5,7 +5,7 @@ import {AdditionInterface} from "./addition.interface";
 
 export interface PostInterface {
   id?: string,
-  img?: string,
+  img?: string | File,
   video?: string,
   file?: string,
   body: string,
