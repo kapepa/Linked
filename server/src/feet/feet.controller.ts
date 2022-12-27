@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import {Observable, of, switchMap, tap, throwError} from "rxjs";
+import {from, Observable, of, switchMap, tap, throwError} from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -42,7 +42,7 @@ export class FeetController {
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(
-    @Body() body: FeetDto,
+    @Body() body: any,
     @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
     @Req() req,
   ): Observable<FeetInterface | FeetDto> {

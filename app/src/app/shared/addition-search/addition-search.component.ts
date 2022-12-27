@@ -44,6 +44,12 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.queryParams?.open !== 'create')
       await this.router.navigate([window.location.pathname], {queryParams: { }});
     this.additionSub.unsubscribe();
+    this.postService.setCreateAddition = {
+      ...(!!this.getJob.value) ? { jobTitle: this.getJob.value } : undefined,
+      ...(!!this.getCompany.value) ? { company: this.getCompany.value } : undefined,
+      ...(!!this.getPlace.value) ? { placesWork: this.getPlace.value } : undefined,
+      ...(!!this.getRegion.value) ? { region: this.getRegion.value } : undefined,
+    } as AdditionDto;
   }
 
   onClose(e: Event) {

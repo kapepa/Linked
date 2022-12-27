@@ -9,6 +9,9 @@ import {PopoverController} from "@ionic/angular";
 import {VideoReaderComponent} from "../video-reader/video-reader.component";
 import {DocReaderComponent} from "../doc-reader/doc-reader.component";
 import {ActivatedRoute, Params, Router} from "@angular/router";
+import {PostDto} from "../../core/dto/post.dto";
+import {body} from "ionicons/icons";
+import {AdditionDto} from "../../core/dto/addition.dto";
 
 @Component({
   selector: 'app-create-publication',
@@ -24,6 +27,12 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   user: UserJwtDto;
   userSub: Subscription;
+
+  createdPost: PostDto;
+  createdPostSub: Subscription;
+
+  createAddition: AdditionDto;
+  createAdditionSub: Subscription;
 
   @ViewChild('inputImg') inputImg: ElementRef<HTMLInputElement>;
   @ViewChild('inputFile') inputFile: ElementRef<HTMLInputElement>;
@@ -47,36 +56,40 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   ngOnInit() {
     if ( this.index !== null && !!this.post ){
-      this.postForm = this.fb.group({
-        id: [this.post.id],
-        img: [this.post.img],
-        video: [this.post.video],
-        file: [this.post.file],
-        body: [this.post.body, Validators.required],
-        access: [this.post.access],
-      });
+      // this.initForm(this.post);
     } else {
-      this.postForm = this.fb.group({
-        id: [''],
-        img: [null, Validators.required],
-        video: [null],
-        file: [null],
-        body: ['', Validators.required],
-        access: [ !!this.post?.access ? this.post?.access : this.select.anyone.value ],
-      });
+      this.createdPostSub = this.postService.getCreatedPost.subscribe((post: PostDto) => {
+        this.initForm(post);
+      })
     }
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
   async ngOnDestroy() {
-    this.userSub.unsubscribe();
     if (this.route.snapshot.queryParams?.open !== 'addition')
       await this.router.navigate([window.location.pathname], {queryParams: { }});
+    this.userSub.unsubscribe();
+    this.postService.setCreatedPost = {
+      ...(!!this.img.value) ? {img: this.img.value} : undefined,
+      ...(!!this.body.value) ? {body: this.body.value} : undefined,
+      ...(!!this.video.value) ? {video: this.video.value} : undefined,
+      ...(!!this.file.value) ? {file: this.file.value} : undefined,
+      ...(!!this.getAccess.value) ? {access: this.getAccess.value} : undefined,
+    } as PostDto
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {}
 
+  initForm(post: PostDto | PostInterface) {
+    this.postForm = this.fb.group({
+      id: [ !!post?.id ? post.id : ''],
+      img: [ !!post?.img ? post?.img : null , Validators.required ],
+      video: [ !!post?.video ? post.video : null ],
+      file: [ !!post?.file ? post.file : null ],
+      body: [ !!post?.body ? post.body : '' , Validators.required],
+      access: [ !!post?.access ? post.access : this.select.anyone.value ],
+    });
   }
 
   handleChange(e: Event) {

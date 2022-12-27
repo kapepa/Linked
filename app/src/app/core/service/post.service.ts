@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import {BehaviorSubject, from, Observable, of} from "rxjs";
 import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 import { HttpService } from "./http.service";
 import { CommentInterface } from "../interface/comment.interface";
-import {AdditionDto} from "../dto/addition.dto";
+import { AdditionDto } from "../dto/addition.dto";
+import { PostDto } from "../dto/post.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,9 @@ export class PostService {
 
   firstLoad = true;
   firstLoad$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+  createdPost: PostDto;
+  createdPost$: BehaviorSubject<PostDto> = new BehaviorSubject<PostDto>(null);
 
   createAddition: AdditionDto;
   createAddition$: BehaviorSubject<AdditionDto> = new BehaviorSubject<AdditionDto>(null);
@@ -60,9 +64,9 @@ export class PostService {
     )
   }
 
-  createPost(body: { body: string, img?: File, access: string }): Observable<PostInterface> {
+  createPost(body: PostDto): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
-    let form = this.toForm(body);
+    let form = this.toForm({...body, addition: this.createAddition});
     return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
       take(1),
       tap({
@@ -182,9 +186,12 @@ export class PostService {
     );
   }
 
-  toForm(obj:{ [key: string]: any }) {
+  toForm(post: PostDto | PostInterface) {
     let fromData = new FormData();
-    Object.keys(obj).forEach((key: string) => fromData.append(key, obj[key]));
+    for (let key in post) {
+      if(key !== 'addition') fromData.append(key, post[key]);
+      if(key === 'addition') for (let val in post[key]) fromData.append(`${key}[${val}]`, post[key][val]);
+    }
     return fromData;
   }
 
@@ -218,6 +225,11 @@ export class PostService {
     this.createAddition$.next(this.createAddition);
   }
 
+  set setCreatedPost(post: PostDto) {
+    this.createdPost = post;
+    this.createdPost$.next(this.createdPost);
+  }
+
   get getComments(): Observable<CommentInterface[]> {
     return this.post$.asObservable().pipe(
       switchMap((post: PostInterface) => {
@@ -248,5 +260,9 @@ export class PostService {
 
   get getCreateAddition(): Observable<AdditionDto> {
     return this.createAddition$.asObservable();
+  }
+
+  get getCreatedPost(): Observable<PostDto> {
+    return this.createdPost$.asObservable();
   }
 }
