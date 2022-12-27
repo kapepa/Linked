@@ -7,7 +7,7 @@ export class PostDto {
   id?: string
   img?: string
   video?: string
-  file?: string
+  file?: string | File
   body: string
   access?: AccessEnum
   addition?: AdditionDto
