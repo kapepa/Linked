@@ -2,6 +2,7 @@ import {UsersDto} from "../users/users.dto";
 import {CommentDto} from "./comment.dto";
 import {ApiProperty} from "@nestjs/swagger";
 import {AccessEnum} from "./access.enum";
+import {AdditionDto} from "./addition.dto";
 
 export class FeetDto {
   @ApiProperty()
@@ -21,6 +22,9 @@ export class FeetDto {
 
   @ApiProperty()
   access?: AccessEnum
+
+  @ApiProperty({ type: () => AdditionDto })
+  addition: AdditionDto
 
   @ApiProperty({ type: () => UsersDto })
   author?: UsersDto

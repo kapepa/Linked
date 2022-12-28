@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import {BehaviorSubject, from, Observable, of} from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
@@ -9,6 +9,7 @@ import { HttpService } from "./http.service";
 import { CommentInterface } from "../interface/comment.interface";
 import { AdditionDto } from "../dto/addition.dto";
 import { PostDto } from "../dto/post.dto";
+import {AdditionInterface} from "../interface/addition.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +35,8 @@ export class PostService {
   createdPost: PostDto;
   createdPost$: BehaviorSubject<PostDto> = new BehaviorSubject<PostDto>(null);
 
-  createAddition: AdditionDto;
-  createAddition$: BehaviorSubject<AdditionDto> = new BehaviorSubject<AdditionDto>(null);
+  createAddition: AdditionDto | AdditionInterface;
+  createAddition$: BehaviorSubject<AdditionDto | AdditionInterface> = new BehaviorSubject<AdditionDto | AdditionInterface>(null);
 
   constructor(
     private http: HttpClient,
@@ -66,7 +67,7 @@ export class PostService {
 
   createPost(body: PostDto): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
-    let form = this.toForm({...body, addition: this.createAddition});
+    let form = this.toForm({...body, addition: this.createAddition as AdditionDto});
     return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
       take(1),
       tap({
@@ -80,9 +81,9 @@ export class PostService {
     )
   }
 
-  updatePost(index: number, id: string, body: PostInterface): Observable<PostInterface> {
+  updatePost(index: number, id: string, body: PostInterface | PostDto): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
-    let form = this.toForm(body);
+    let form = this.toForm({...body, addition: this.createAddition} as PostInterface);
     return this.http.patch<PostInterface>(`${this.configUrl}/api/feet/update/${id}`, form).pipe(
       take(1),
       tap({
@@ -220,7 +221,7 @@ export class PostService {
     this.postLoad$.next(this.postLoad);
   }
 
-  set setCreateAddition(addition: AdditionDto) {
+  set setCreateAddition(addition: AdditionDto | AdditionInterface) {
     this.createAddition = addition;
     this.createAddition$.next(this.createAddition);
   }
@@ -258,7 +259,7 @@ export class PostService {
     return this.posts$.asObservable();
   }
 
-  get getCreateAddition(): Observable<AdditionDto> {
+  get getCreateAddition(): Observable<AdditionDto | AdditionInterface> {
     return this.createAddition$.asObservable();
   }
 

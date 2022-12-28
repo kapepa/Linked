@@ -1,7 +1,14 @@
 <ion-content class="tape-post">
   <ion-list class="tape-post__list" >
     <ion-item class="tape-post__list" *ngFor="let post of posts; let i = index;">
-      <app-post style="width: 100%" [post]="post" [index]="i" [userID]="userID" [userAvatar]="userAvatar"></app-post>
+      <app-post
+        style="width: 100%"
+        [post]="post"
+        [index]="i"
+        [userID]="userID"
+        [userAvatar]="userAvatar"
+        (editPost)="editPost($event)"
+      ></app-post>
     </ion-item>
   </ion-list>
 

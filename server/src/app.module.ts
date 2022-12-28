@@ -20,6 +20,7 @@ import { Chat } from "./chat/chat.entity";
 import { MessageEntity } from "./chat/message.entity";
 import { AppGateway } from "./app.gateway.spec";
 import { CommentEntity } from "./feet/comment.entity";
+import { AdditionEntity } from "./feet/addition.entity";
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ dotenv.config();
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [ User, Feet, FriendsEntity, Chat, MessageEntity, CommentEntity ],
+      entities: [ User, Feet, FriendsEntity, Chat, MessageEntity, CommentEntity, AdditionEntity ],
       synchronize: true,
     }),
     ServeStaticModule.forRoot({

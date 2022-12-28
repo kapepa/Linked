@@ -10,7 +10,6 @@ import {VideoReaderComponent} from "../video-reader/video-reader.component";
 import {DocReaderComponent} from "../doc-reader/doc-reader.component";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {PostDto} from "../../core/dto/post.dto";
-import {body} from "ionicons/icons";
 import {AdditionDto} from "../../core/dto/addition.dto";
 
 @Component({
@@ -56,7 +55,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   ngOnInit() {
     if ( this.index !== null && !!this.post ){
-      // this.initForm(this.post);
+      this.initForm(this.post);
+      this.postService.setCreateAddition = this.post.addition;
     } else {
       this.createdPostSub = this.postService.getCreatedPost.subscribe((post: PostDto) => {
         this.initForm(post);
@@ -99,14 +99,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   compareWith(o1, o2) {
-    if (!o1 || !o2) {
-      return o1 === o2;
-    }
-
-    if (Array.isArray(o2)) {
-      return o2.some((o) => o === o1);
-    }
-
+    if (!o1 || !o2) return o1 === o2;
+    if (Array.isArray(o2)) return o2.some((o) => o === o1);
     return o1 === o2;
   }
 
