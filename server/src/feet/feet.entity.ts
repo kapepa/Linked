@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   ManyToOne,
   ManyToMany,
-  OneToMany,
+  OneToMany, OneToOne, JoinColumn,
 } from 'typeorm';
 import {User} from "../users/users.entity";
 import {CommentEntity} from "./comment.entity";
 import {AccessEnum} from "./access.enum";
+import {AdditionEntity} from "./addition.entity";
+
 
 @Entity()
 export class Feet {
@@ -34,6 +36,10 @@ export class Feet {
     default: AccessEnum.ANYONE
   } )
   access: AccessEnum
+
+  @OneToOne(() => AdditionEntity, (addition) => addition.post)
+  @JoinColumn()
+  addition: AdditionEntity
 
   @ManyToOne(() => User, (user) => user.feet)
   author: User;

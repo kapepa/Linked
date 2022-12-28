@@ -1,4 +1,14 @@
-import {Component, Input, OnDestroy, OnInit, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { PostInterface } from "../../core/interface/post.interface";
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
@@ -16,6 +26,7 @@ export class PostComponent implements OnInit, OnDestroy {
   @Input() userID: string;
   @Input() post: PostInterface;
   @Input() userAvatar: string;
+  @Output() editPost = new EventEmitter<{index: number, post: PostInterface}>()
 
   postLoad: boolean;
   postLoadSub: Subscription;
@@ -33,9 +44,15 @@ export class PostComponent implements OnInit, OnDestroy {
     this.postLoadSub.unsubscribe();
   }
 
-  async onEdit(e: Event) {
+  onEdit(e: Event) {
     e.preventDefault();
     e.stopPropagation();
+
+    this.editPost.emit({index: this.index, post: this.post})
+    // await this.popoverEdit();
+  }
+
+  async popoverEdit() {
     const popover = await this.popoverController.create({
       component: CreatePublicationComponent,
       cssClass: 'new-publications__create',

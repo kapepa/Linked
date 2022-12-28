@@ -55,4 +55,8 @@ export class TapePostComponent implements OnInit, OnDestroy {
   loadData(event) {
     this.getPost({take: 6, skip: this.postLength}, () => event.target.complete());
   }
+
+  editPost(data: {index: number, post: PostInterface}) {
+    console.log(data)
+  }
 }

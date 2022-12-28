@@ -10,6 +10,9 @@ import {UsersInterface} from "../users/users.interface";
 import {CommentInterface} from "./comment.interface";
 import {CommentEntity} from "./comment.entity";
 import {FileService} from "../file/file.service";
+import {AdditionEntity} from "./addition.entity";
+import {AdditionDto} from "./addition.dto";
+import {AdditionInterface} from "./addition.interface";
 
 @Injectable()
 export class FeetService {
@@ -18,17 +21,39 @@ export class FeetService {
     private feetRepository: Repository<Feet>,
     @InjectRepository(CommentEntity)
     private commentRepository: Repository<CommentEntity>,
+    @InjectRepository(AdditionEntity)
+    private additionRepository: Repository<AdditionEntity>,
     private fileService: FileService,
   ) {}
 
   createFeet(feet: FeetDto): Observable<FeetInterface | FeetDto> {
-    return from(this.feetRepository.save(feet)).pipe(
-      switchMap((feet: FeetInterface) => this.findOneFeet({ where: { id: feet.id }, relations: ['author', 'like'] }))
-    );
+    return this.saveAddition(feet.addition).pipe(
+      switchMap((addition: AdditionInterface) => {
+        return from(this.feetRepository.save({ ...feet, addition })).pipe(
+          switchMap((feet: FeetDto) => this.findOneFeet({ where: { id: feet.id }, relations: ['author', 'like', 'addition'] })),
+        );
+      })
+    )
+  }
+
+  updateFeet(feet: FeetInterface): Observable<FeetInterface | FeetDto> {
+    let { id, img, ...other } = feet;
+    if(!!img) other['img'] = img;
+
+    return this.findOneFeet({ where: { id } }).pipe(
+      switchMap((post: FeetInterface) => {
+        return this.saveFeet({...post, ...other}).pipe(
+          tap(async () => {
+            if(!!post.img) await this.fileService.removeFile(post.img);
+            // if(!!feet.addition) this.saveAddition(feet.addition).subscribe()
+          })
+        );
+      })
+    )
   }
 
   getFeet(id: string): Observable<FeetInterface> {
-    return this.findOneFeet({ where: { id }, relations: ['author', 'comments', 'comments.host'] }).pipe(
+    return this.findOneFeet({ where: { id }, relations: ['author', 'comments', 'addition', 'comments.host'] }).pipe(
       switchMap((feet: FeetInterface) => {
         return this.getComment({ id: feet.id, take: 20, skip: 0 }).pipe(
           switchMap((comments: CommentInterface[]) => {
@@ -65,7 +90,7 @@ export class FeetService {
     },
     user: UsersDto,
     ): Observable<FeetInterface[]> {
-    return this.findFeet({...options, order: { createdAt: 'DESC' }, relations: ['author', 'like']}).pipe(
+    return this.findFeet({...options, order: { createdAt: 'DESC' }, relations: ['author', 'like', 'addition']}).pipe(
       switchMap((feetList: FeetInterface[]) => {
         return of(feetList).pipe(
           switchMap((feet:FeetInterface[]) => {
@@ -119,26 +144,11 @@ export class FeetService {
     )
   }
 
-  updateFeet(feet: FeetInterface): Observable<FeetInterface | FeetDto> {
-    let { id, img, ...other } = feet;
-    if(!!img) other['img'] = img;
-
-    return this.findOneFeet({ where: { id } }).pipe(
-      switchMap((post: FeetInterface) => {
-        return this.saveFeet({...post, ...other}).pipe(
-          tap(async () => {
-            if(!!post.img) await this.fileService.removeFile(post.img);
-          })
-        );
-      })
-    )
-  }
-
   findOneFeet(options: {
     where?: { [key: string]: string | FindOperator<string> | { [key: string]: string } },
     order?: { [key: string]: 'DESC' | 'ASC' | { [key: string]: 'DESC' | 'ASC' } },
     relations?: string[],
-  }): Observable<FeetInterface> {
+  }): Observable<FeetInterface > {
     return from(this.feetRepository.findOne(options))
   }
 
@@ -199,5 +209,9 @@ export class FeetService {
 
   saveComment(comment: CommentInterface): Observable<CommentInterface>{
     return from(this.commentRepository.save(comment));
+  }
+
+  saveAddition(addition: AdditionDto | AdditionInterface): Observable<AdditionDto | AdditionInterface> {
+    return from(this.additionRepository.save(addition));
   }
 }
