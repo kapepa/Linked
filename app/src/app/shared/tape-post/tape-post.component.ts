@@ -48,7 +48,7 @@ export class TapePostComponent implements OnInit, OnDestroy {
   getPost(query: PostQueryDto, cd: () => void){
     this.postService.getPosts(query).subscribe({
       next: () => {},
-      complete: () => cd()
+      complete: () => cd(),
     });
   }
 
