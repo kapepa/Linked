@@ -5,6 +5,7 @@ import { PostModule } from "../post/post.module";
 import { IonicModule } from "@ionic/angular";
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import {PipeModule} from "../../core/pipe/pipe.module";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -14,10 +15,11 @@ import {PipeModule} from "../../core/pipe/pipe.module";
     TapePostComponent,
   ],
   imports: [
-    PipeModule,
-    CommonModule,
     PostModule,
+    PipeModule,
     IonicModule,
+    CommonModule,
+    RouterModule,
     ScrollingModule
   ]
 })

@@ -67,16 +67,17 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   async ngOnDestroy() {
-    if (this.route.snapshot.queryParams?.open !== 'addition')
-      await this.router.navigate([window.location.pathname], {queryParams: { }});
     this.userSub.unsubscribe();
-    this.postService.setCreatedPost = {
-      ...(!!this.img.value) ? {img: this.img.value} : undefined,
-      ...(!!this.body.value) ? {body: this.body.value} : undefined,
-      ...(!!this.video.value) ? {video: this.video.value} : undefined,
-      ...(!!this.file.value) ? {file: this.file.value} : undefined,
-      ...(!!this.getAccess.value) ? {access: this.getAccess.value} : undefined,
-    } as PostDto
+    if (this.route.snapshot.queryParams?.open === 'create') this.postService.setCreatedPost = {
+        ...(!!this.img.value) ? {img: this.img.value} : undefined,
+        ...(!!this.body.value) ? {body: this.body.value} : undefined,
+        ...(!!this.video.value) ? {video: this.video.value} : undefined,
+        ...(!!this.file.value) ? {file: this.file.value} : undefined,
+        ...(!!this.getAccess.value) ? {access: this.getAccess.value} : undefined,
+      } as PostDto
+
+    if (!(this.route.snapshot.queryParams?.open === 'addition' || this.route.snapshot.queryParams?.edit === 'addition'))
+      await this.router.navigate([window.location.pathname], {queryParams: { }} );
   }
 
   ngAfterViewInit() {}
@@ -110,12 +111,13 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
-      let img = this.img.value !== this.post.img ? {img: this.img.value} : undefined;
-      let video = this.video.value !== this.post.video ? {img: this.video.value} : undefined;
-      let file = this.file.value !== this.post.file ? {file: this.file.value} : undefined;
-      this.postService.updatePost(this.index, this.edit, Object.assign(
-        {body: this.body.value, access: this.getAccess.value}, video, img, file)
-      )
+      this.postService.updatePost(this.index, this.edit, {
+        ...(!!this.img.value) ? { img: this.img.value } : undefined,
+        ...(!!this.file.value) ? { file: this.file.value } : undefined,
+        ...(!!this.body.value) ? { body: this.body.value } : undefined,
+        ...(!!this.video.value) ? { video: this.video.value } : undefined,
+        ...(!!this.getAccess.value) ? { access: this.getAccess.value } : undefined,
+      })
         .subscribe((post: PostInterface) => {
           this.onClosePublication();
           this.postForm.reset();

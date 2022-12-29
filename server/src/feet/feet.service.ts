@@ -45,7 +45,7 @@ export class FeetService {
         return this.saveFeet({...post, ...other}).pipe(
           tap(async () => {
             if(!!post.img) await this.fileService.removeFile(post.img);
-            // if(!!feet.addition) this.saveAddition(feet.addition).subscribe()
+            if(!!feet.addition) this.saveAddition(feet.addition).subscribe()
           })
         );
       })

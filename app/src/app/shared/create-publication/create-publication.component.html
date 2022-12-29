@@ -107,7 +107,7 @@
               accept="application/pdf"
             />
           </ion-fab-button>
-          <ion-router-link [routerLink]="['/home']" [queryParams]="{open: 'addition'}" >
+          <ion-router-link [routerLink]="['/home']" [queryParams]=" !!edit ? {edit: 'addition', id: post.id} : {open: 'addition'}" >
             <ion-fab-button class="create-publication__fab" color="light">
               <ion-icon name="briefcase"></ion-icon>
             </ion-fab-button>
