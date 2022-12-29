@@ -32,11 +32,17 @@ export class PostService {
   firstLoad = true;
   firstLoad$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
-  createdPost: PostDto;
-  createdPost$: BehaviorSubject<PostDto> = new BehaviorSubject<PostDto>(null);
+  createdPost: PostDto | PostInterface;
+  createdPost$: BehaviorSubject<PostDto | PostInterface> = new BehaviorSubject<PostDto | PostInterface>(null);
 
   createAddition: AdditionDto | AdditionInterface;
   createAddition$: BehaviorSubject<AdditionDto | AdditionInterface> = new BehaviorSubject<AdditionDto | AdditionInterface>(null);
+
+  editPost: PostDto | PostInterface;
+  editPost$: BehaviorSubject<PostDto | PostInterface> = new BehaviorSubject<PostDto | PostInterface>(null);
+
+  editAddition: AdditionDto | AdditionInterface;
+  editAddition$: BehaviorSubject<AdditionDto | AdditionInterface> = new BehaviorSubject<AdditionDto | AdditionInterface>(null);
 
   constructor(
     private http: HttpClient,
@@ -196,6 +202,12 @@ export class PostService {
     return fromData;
   }
 
+  findEdit(id: string) {
+    let edit = this.posts.find((post) => post.id === id);
+    this.setEditPost = edit;
+    this.setEditAddition = edit.addition;
+  }
+
   set setPost(post: PostInterface) {
     this.post = post;
     this.post$.next(this.post);
@@ -226,9 +238,19 @@ export class PostService {
     this.createAddition$.next(this.createAddition);
   }
 
+  set setEditAddition(addition: AdditionDto | AdditionInterface) {
+    this.editAddition = addition;
+    this.editAddition$.next(this.editAddition);
+  }
+
   set setCreatedPost(post: PostDto) {
     this.createdPost = post;
     this.createdPost$.next(this.createdPost);
+  }
+
+  set setEditPost(post: PostDto | PostInterface) {
+    this.editPost = post;
+    this.editPost$.next(this.editPost);
   }
 
   get getComments(): Observable<CommentInterface[]> {
@@ -263,7 +285,15 @@ export class PostService {
     return this.createAddition$.asObservable();
   }
 
-  get getCreatedPost(): Observable<PostDto> {
+  get getEditAddition(): Observable<AdditionDto | AdditionInterface> {
+    return this.editAddition$.asObservable();
+  }
+
+  get getCreatedPost(): Observable<PostDto | PostInterface> {
     return this.createdPost$.asObservable();
+  }
+
+  get getEditPost(): Observable<PostDto | PostInterface> {
+    return this.editPost$.asObservable();
   }
 }

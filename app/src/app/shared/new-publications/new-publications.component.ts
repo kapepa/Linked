@@ -51,6 +51,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy() {
     this.userAvatarSubscription.unsubscribe();
+
   }
 
   closePublication(){
@@ -79,6 +80,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       size: "cover",
       animated: false,
       componentProps: {
+        type: 'create',
         onClosePublication: () => {
           this.additionPopover.dismiss();
           this.router.navigate([window.location.pathname], {queryParams: {}});
