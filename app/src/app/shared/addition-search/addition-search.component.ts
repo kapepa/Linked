@@ -14,6 +14,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   additionSub: Subscription;
 
   @Input() type: string;
+  @Input() query: string;
   @Input() onClosePublication: () => void;
 
   additionForm = this.fb.group({
@@ -78,9 +79,9 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
     this.onClosePublication();
   }
 
-  onSubmit(e: Event) {
+  async onSubmit(e: Event) {
     this.postService.setCreateAddition = this.additionForm.value;
-    this.router.navigate(['/home'], { queryParams: { open: 'create' } });
+    await this.router.navigate(['/home'], { queryParams: {...this.type === 'create' ? { open: 'create' } : { edit: this.query } } });
   }
 
   get getJob() {
