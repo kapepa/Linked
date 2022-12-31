@@ -52,12 +52,13 @@ export class TapePostComponent implements OnInit, OnDestroy {
         let { edit, index } = params;
         let order = Number(index);
 
-        if( edit === 'addition' ){
+        if( edit === 'addition'){
           if(!!this.editPopover) this.editPopover.dismiss();
-          return await this.additionPublication(edit);
+          return await this.additionPublication({ index: order, id: this.posts[order].id });
         }
 
         if(!!this.posts[order] && this.posts[order].author.id === this.userID) {
+          if(!!this.additionPopover) this.additionPopover.dismiss();
           await this.popoverEdit({index: order, post: this.posts[order]});
         } else {
           await this.router.navigate([],{queryParams: {}})
@@ -107,14 +108,16 @@ export class TapePostComponent implements OnInit, OnDestroy {
     await this.editPopover.present();
   }
 
-  async additionPublication (edit: string) {
+  async additionPublication (data: {index: number, id: string}) {
+    let { index, id } = data;
     this.additionPopover = await this.popoverController.create({
       component: AdditionSearchComponent,
       size: "cover",
       animated: false,
       componentProps: {
         type: 'edit',
-        query: edit,
+        query: id,
+        index: index,
         onClosePublication: () => {
           this.additionPopover.dismiss();
           this.router.navigate([window.location.pathname], {queryParams: {}});

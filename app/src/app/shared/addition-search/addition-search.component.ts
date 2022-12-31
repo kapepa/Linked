@@ -14,7 +14,8 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   additionSub: Subscription;
 
   @Input() type: string;
-  @Input() query: string;
+  @Input() query?: string;
+  @Input() index?: number;
   @Input() onClosePublication: () => void;
 
   additionForm = this.fb.group({
@@ -38,30 +39,20 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
     if(this.type === 'edit') this.additionSub = this.postService.getEditAddition.subscribe(( addition: AdditionDto ) => {
       if(!!addition) return this.createForm(addition);
-      if(this.route.snapshot.queryParams.id) this.postService.findEdit(this.route.snapshot.queryParams.id);
+
+      // if(this.route.snapshot.queryParams?.index) this.postService.findEdit(this.route.snapshot.queryParams?.index);
+
     });
   }
 
   async ngOnDestroy() {
-    if (!(this.route.snapshot.queryParams?.open === 'create')){
-      await this.router.navigate([window.location.pathname], {queryParams: { }});
-      this.postService.setCreateAddition = {
-        ...(!!this.getJob.value) ? { jobTitle: this.getJob.value } : undefined,
-        ...(!!this.getCompany.value) ? { company: this.getCompany.value } : undefined,
-        ...(!!this.getPlace.value) ? { placesWork: this.getPlace.value } : undefined,
-        ...(!!this.getRegion.value) ? { region: this.getRegion.value } : undefined,
-      } as AdditionDto;
-    }
+    let { index, edit, open, ...other} = this.route.snapshot.queryParams
 
-    if (this.route.snapshot.queryParams?.edit !== 'create'){
-      await this.router.navigate([window.location.pathname], {queryParams: { }});
-      this.postService.setEditAddition = {
-        ...(!!this.getJob.value) ? { jobTitle: this.getJob.value } : undefined,
-        ...(!!this.getCompany.value) ? { company: this.getCompany.value } : undefined,
-        ...(!!this.getPlace.value) ? { placesWork: this.getPlace.value } : undefined,
-        ...(!!this.getRegion.value) ? { region: this.getRegion.value } : undefined,
-      } as AdditionDto;
-    }
+    if (this.type === 'create') this.postService.setCreateAddition = this.createAddition();
+    if (this.type === 'edit') this.postService.setEditAddition = this.createAddition();
+
+    if( edit === 'addition' || open === 'addition' )
+      await this.router.navigate([window.location.pathname], {queryParams: other});
 
     this.additionSub.unsubscribe();
   }
@@ -75,13 +66,24 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
     });
   }
 
+  createAddition(): AdditionDto {
+    return {
+      ...(!!this.getJob.value) ? { jobTitle: this.getJob.value } : undefined,
+      ...(!!this.getCompany.value) ? { company: this.getCompany.value } : undefined,
+      ...(!!this.getPlace.value) ? { placesWork: this.getPlace.value } : undefined,
+      ...(!!this.getRegion.value) ? { region: this.getRegion.value } : undefined,
+    } as AdditionDto
+  }
+
   onClose(e: Event) {
     this.onClosePublication();
   }
 
   async onSubmit(e: Event) {
     this.postService.setCreateAddition = this.additionForm.value;
-    await this.router.navigate(['/home'], { queryParams: {...this.type === 'create' ? { open: 'create' } : { edit: this.query } } });
+    await this.router.navigate(['/home'],
+      { queryParams: {...this.type === 'create' ? { open: 'create' } : { edit: this.query, index: this.index } } }
+    );
   }
 
   get getJob() {
