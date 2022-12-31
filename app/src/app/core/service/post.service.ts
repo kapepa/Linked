@@ -10,6 +10,7 @@ import { CommentInterface } from "../interface/comment.interface";
 import { AdditionDto } from "../dto/addition.dto";
 import { PostDto } from "../dto/post.dto";
 import {AdditionInterface} from "../interface/addition.interface";
+import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,8 @@ export class PostService {
 
   constructor(
     private http: HttpClient,
-    private httpService: HttpService
+    private authService: AuthService,
+    private httpService: HttpService,
   ) {
     this.searchWord$.subscribe((word: string) => {
       if(!this.firstLoad) this.getPosts({ word, take: 20, skip: 0 }, true).subscribe();
@@ -206,6 +208,13 @@ export class PostService {
     let edit = this.posts.find((post) => post.id === id);
     this.setEditPost = edit;
     this.setEditAddition = edit.addition;
+  }
+
+  indexEdit(index) {
+    // this.authService.userID.subscribe((id: string) => {
+    //   console.log(this.posts[index])
+    // })
+    // console.log(this.posts[index])
   }
 
   set setPost(post: PostInterface) {
