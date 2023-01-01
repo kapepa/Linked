@@ -39,9 +39,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
     if(this.type === 'edit') this.additionSub = this.postService.getEditAddition.subscribe(( addition: AdditionDto ) => {
       if(!!addition) return this.createForm(addition);
-
-      // if(this.route.snapshot.queryParams?.index) this.postService.findEdit(this.route.snapshot.queryParams?.index);
-
+      if(!!this.route.snapshot.queryParams?.index) this.postService.indexEdit(Number(this.route.snapshot.queryParams?.index));
     });
   }
 

@@ -210,7 +210,9 @@ export class PostService {
     this.setEditAddition = edit.addition;
   }
 
-  indexEdit(index) {
+  indexEdit(index: number): Observable<boolean> {
+    console.log(index)
+    return  of(true);
     // this.authService.userID.subscribe((id: string) => {
     //   console.log(this.posts[index])
     // })
