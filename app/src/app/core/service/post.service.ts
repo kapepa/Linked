@@ -212,7 +212,6 @@ export class PostService {
 
   indexEdit(index: number): Observable<boolean> {
     console.log(index)
-
     return of(true);
     // this.authService.userID.subscribe((id: string) => {
     //   console.log(this.posts[index])
