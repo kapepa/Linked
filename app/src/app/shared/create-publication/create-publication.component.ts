@@ -41,6 +41,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   @Input() onClosePublication: () => void;
   @Input() post?: PostInterface;
   @Input() index?: number;
+  @Input() type?: string;
 
   postForm: FormGroup;
 
@@ -68,7 +69,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   async ngOnDestroy() {
     this.userSub.unsubscribe();
-    if (this.route.snapshot.queryParams?.open === 'create') this.postService.setCreatedPost = {
+    if (this.type === 'create') this.postService.setCreatedPost = {
         ...(!!this.img.value) ? {img: this.img.value} : undefined,
         ...(!!this.body.value) ? {body: this.body.value} : undefined,
         ...(!!this.video.value) ? {video: this.video.value} : undefined,

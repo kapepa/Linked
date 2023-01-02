@@ -99,9 +99,10 @@ export class TapePostComponent implements OnInit, OnDestroy {
       component: CreatePublicationComponent,
       cssClass: 'new-publications__create',
       componentProps: {
-        onClosePublication: () => this.editPopover.dismiss(),
+        type: 'edit',
         index: index,
         post: post,
+        onClosePublication: () => this.editPopover.dismiss(),
       }
     });
 

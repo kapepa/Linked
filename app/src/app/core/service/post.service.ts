@@ -211,12 +211,18 @@ export class PostService {
   }
 
   indexEdit(index: number): Observable<boolean> {
-    console.log(index)
-    return of(true);
-    // this.authService.userID.subscribe((id: string) => {
-    //   console.log(this.posts[index])
-    // })
-    // console.log(this.posts[index])
+    return  this.authService.userID
+      .pipe(
+        switchMap((userID: string) => {
+          let post = this.posts[index];
+          if( post.author.id === userID) {
+            this.setEditPost = post;
+            this.setEditAddition = post.addition;
+            return of(true);
+          }
+          return of(false);
+        })
+      )
   }
 
   set setPost(post: PostInterface) {

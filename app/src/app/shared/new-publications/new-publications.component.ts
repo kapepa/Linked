@@ -63,7 +63,9 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       component: CreatePublicationComponent,
       size: "cover",
       animated: false,
-      componentProps: { onClosePublication: () => {
+      componentProps: {
+        type: 'create',
+        onClosePublication: () => {
           this.createPopover.dismiss();
           this.router.navigate([window.location.pathname], {queryParams: {}});
         }

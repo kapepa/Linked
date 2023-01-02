@@ -40,16 +40,18 @@ export class FeetService {
     let { id, img, ...other } = feet;
     if(!!img) other['img'] = img;
 
-    return this.findOneFeet({ where: { id } }).pipe(
-      switchMap((post: FeetInterface) => {
-        return this.saveFeet({...post, ...other}).pipe(
-          tap(async () => {
-            if(!!post.img) await this.fileService.removeFile(post.img);
-            if(!!feet.addition) this.saveAddition(feet.addition).subscribe()
-          })
-        );
-      })
-    )
+    return from([{} as FeetInterface]);
+
+    // return this.findOneFeet({ where: { id } }).pipe(
+    //   switchMap((post: FeetInterface) => {
+    //     return this.saveFeet({...post, ...other}).pipe(
+    //       tap(async () => {
+    //         if(!!post.img) await this.fileService.removeFile(post.img);
+    //         if(!!feet.addition) this.saveAddition(feet.addition).subscribe()
+    //       })
+    //     );
+    //   })
+    // )
   }
 
   getFeet(id: string): Observable<FeetInterface> {
