@@ -113,11 +113,11 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   onSubmit(e: Event) {
     if( this?.index !== null && !!this?.post ){
       this.postService.updatePost(this.index, this.edit, {
-        ...(!!this.img.value) ? { img: this.img.value } : undefined,
-        ...(!!this.file.value) ? { file: this.file.value } : undefined,
-        ...(!!this.body.value) ? { body: this.body.value } : undefined,
-        ...(!!this.video.value) ? { video: this.video.value } : undefined,
-        ...(!!this.getAccess.value) ? { access: this.getAccess.value } : undefined,
+        ...(!!this.img.value && this.post?.img !== this.img.value) ? { img: this.img.value } : undefined,
+        ...(!!this.file.value && this.post?.file !== this.file.value) ? { file: this.file.value } : undefined,
+        ...(!!this.body.value && this.post?.body !== this.body.value) ? { body: this.body.value } : undefined,
+        ...(!!this.video.value && this.post?.video !== this.video.value) ? { video: this.video.value } : undefined,
+        ...(!!this.getAccess.value && this.post?.access !== this.getAccess.value) ? { access: this.getAccess.value } : undefined,
       })
         .subscribe((post: PostInterface) => {
           this.onClosePublication();
