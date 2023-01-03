@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import {BehaviorSubject, from, Observable, of} from "rxjs";
 import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
@@ -91,7 +91,7 @@ export class PostService {
 
   updatePost(index: number, id: string, body: PostInterface | PostDto): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
-    let form = this.toForm({...body, addition: this.createAddition} as PostInterface);
+    let form = this.toForm({...body, addition: this.editAddition} as PostInterface);
     return this.http.patch<PostInterface>(`${this.configUrl}/api/feet/update/${id}`, form).pipe(
       take(1),
       tap({
