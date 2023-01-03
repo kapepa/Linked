@@ -54,7 +54,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     private route: ActivatedRoute,
     private postService: PostService,
     private authService: AuthService,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
   ) { }
 
   ngOnInit() {
