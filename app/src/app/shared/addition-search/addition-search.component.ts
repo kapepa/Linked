@@ -19,6 +19,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   @Input() onClosePublication: () => void;
 
   additionForm = this.fb.group({
+    id: [''],
     jobTitle: ['', [Validators.required, Validators.minLength(4)] ],
     company: ['', [Validators.required, Validators.minLength(4)] ],
     placesWork: ['', [Validators.required, Validators.minLength(4)] ],
@@ -59,6 +60,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
   createForm(addition: AdditionDto) {
     this.additionForm = this.fb.group({
+      id: [ !!addition?.id ? addition?.id : '' ],
       jobTitle: [ !!addition?.jobTitle ? addition.jobTitle : '', [Validators.required, Validators.minLength(4)] ],
       company: [ !!addition?.company ? addition.company : '', [Validators.required, Validators.minLength(4)] ],
       placesWork: [ !!addition?.placesWork ? addition.placesWork : '', [Validators.required, Validators.minLength(4)] ],
@@ -68,6 +70,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
   createAddition(): AdditionDto {
     return {
+      ...(!!this.getID.value) ? { id: this.getID.value } : undefined,
       ...(!!this.getJob.value) ? { jobTitle: this.getJob.value } : undefined,
       ...(!!this.getCompany.value) ? { company: this.getCompany.value } : undefined,
       ...(!!this.getPlace.value) ? { placesWork: this.getPlace.value } : undefined,
@@ -100,5 +103,9 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
   get getRegion() {
     return this.additionForm.get('region');
+  }
+
+  get getID() {
+    return this.additionForm.get('id');
   }
 }

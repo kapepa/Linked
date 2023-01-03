@@ -30,6 +30,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   createdPost: PostDto;
   createdPostSub: Subscription;
 
+  editPost: PostDto;
+  editPostSub: Subscription;
+
   createAddition: AdditionDto;
   createAdditionSub: Subscription;
 
@@ -56,8 +59,11 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   ngOnInit() {
     if ( this.index !== null && !!this.post ){
-      this.initForm(this.post);
-      this.postService.setCreateAddition = this.post.addition;
+      this.editPostSub = this.postService.getEditPost.subscribe((post: PostDto) => {
+        if(this.post.id === post?.id) this.initForm(post);
+        if(!post || this.post.id !== post?.id) this.initForm(this.post);
+      })
+      // this.postService.setCreateAddition = this.post.addition;
     } else {
       this.createdPostSub = this.postService.getCreatedPost.subscribe((post: PostDto) => {
         this.initForm(post);
@@ -69,19 +75,25 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   async ngOnDestroy() {
     this.userSub.unsubscribe();
-    if (this.type === 'create') this.postService.setCreatedPost = {
-        ...(!!this.img.value) ? {img: this.img.value} : undefined,
-        ...(!!this.body.value) ? {body: this.body.value} : undefined,
-        ...(!!this.video.value) ? {video: this.video.value} : undefined,
-        ...(!!this.file.value) ? {file: this.file.value} : undefined,
-        ...(!!this.getAccess.value) ? {access: this.getAccess.value} : undefined,
-      } as PostDto
+    if ( this.type === 'create' ) this.postService.setCreatedPost =this.saveChangePost();
+    if ( this.type === 'edit' ) this.postService.setEditPost = this.saveChangePost();
 
     if (!(this.route.snapshot.queryParams?.open === 'addition' || this.route.snapshot.queryParams?.edit === 'addition'))
       await this.router.navigate([window.location.pathname], {queryParams: { }} );
   }
 
   ngAfterViewInit() {}
+
+  saveChangePost() {
+    return {
+      ...(!!this.getID.value) ? {id: this.getID.value} : undefined,
+      ...(!!this.img.value) ? {img: this.img.value} : undefined,
+      ...(!!this.body.value) ? {body: this.body.value} : undefined,
+      ...(!!this.video.value) ? {video: this.video.value} : undefined,
+      ...(!!this.file.value) ? {file: this.file.value} : undefined,
+      ...(!!this.getAccess.value) ? {access: this.getAccess.value} : undefined,
+    } as PostDto;
+  }
 
   initForm(post: PostDto | PostInterface) {
     this.postForm = this.fb.group({
@@ -230,5 +242,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   get getAccess() {
     return this.postForm.get('access');
+  }
+
+  get getID() {
+    return this.postForm.get('id');
   }
 }
