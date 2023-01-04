@@ -10,6 +10,7 @@ import { RecommendedModule } from "../../shared/recommended/recommended.module";
 import { NewPublicationsModule } from "../../shared/new-publications/new-publications.module";
 import { TapePostModule } from "../../shared/tape-post/tape-post.module";
 import { BasementModule } from "../../shared/basement/basement.module";
+import { GroupSideBarModule } from "../../shared/group-side-bar/group-side-bar.module";
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { BasementModule } from "../../shared/basement/basement.module";
     HomeRoutingModule,
     TapeProfileModule,
     RecommendedModule,
+    GroupSideBarModule,
     NewPublicationsModule,
   ]
 })

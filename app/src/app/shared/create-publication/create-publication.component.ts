@@ -70,6 +70,10 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
       })
     }
 
+    this.route.queryParams.subscribe((query: Params) => {
+      console.log(query)
+    })
+
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 

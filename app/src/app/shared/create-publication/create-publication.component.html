@@ -107,17 +107,16 @@
               accept="application/pdf"
             />
           </ion-fab-button>
-          <ion-router-link [routerLink]="['/home']" [queryParams]=" !!edit ? {edit: 'addition', index} : {open: 'addition'}" >
+          <ion-router-link [routerLink]="[]" [queryParams]=" !!edit ? {edit: 'addition', index} : {open: 'addition'}" >
             <ion-fab-button class="create-publication__fab" color="light">
               <ion-icon name="briefcase"></ion-icon>
             </ion-fab-button>
           </ion-router-link>
-          <ion-fab-button class="create-publication__fab" color="light">
-            <ion-icon name="contract"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button class="create-publication__fab" color="light">
-            <ion-icon name="git-pull-request"></ion-icon>
-          </ion-fab-button>
+          <ion-router-link [routerLink]="[]" [queryParams]="{event: true}" >
+            <ion-fab-button class="create-publication__fab" color="light">
+              <ion-icon name="magnet"></ion-icon>
+            </ion-fab-button>
+          </ion-router-link>
         </div>
         <div class="create-publication__post_shape">
           <ion-button [disabled]="!postForm.valid" type="submit" shape="round">{{ edit ? 'Edit' : 'Post'}}</ion-button>
