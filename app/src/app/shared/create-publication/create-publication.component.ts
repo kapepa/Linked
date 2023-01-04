@@ -11,6 +11,7 @@ import {DocReaderComponent} from "../doc-reader/doc-reader.component";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {PostDto} from "../../core/dto/post.dto";
 import {AdditionDto} from "../../core/dto/addition.dto";
+import {PopupEventComponent} from "../popup-event/popup-event.component";
 
 @Component({
   selector: 'app-create-publication',
@@ -23,6 +24,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     contact: { name: 'Contact', value: 'contact'},
     outside: { name: 'Outside', value: 'outside'},
   };
+
+  popoverEvent;
 
   user: UserJwtDto;
   userSub: Subscription;
@@ -70,8 +73,12 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
       })
     }
 
-    this.route.queryParams.subscribe((query: Params) => {
-      console.log(query)
+    this.route.queryParams.subscribe(async (query: Params) => {
+      if(query.hasOwnProperty('event') &&  query.event){
+        await this.openEvent();
+      } else if(!!this.popoverEvent) {
+        this.popoverEvent.dismiss();
+      }
     })
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
@@ -191,6 +198,19 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     });
 
     await popover.present();
+  }
+
+  async openEvent() {
+    this.popoverEvent = await this.popoverController.create({
+      component: PopupEventComponent,
+      componentProps: {
+        closeEvent: () => {
+          this.popoverEvent.dismiss();
+        }
+      }
+    });
+
+    await this.popoverEvent.present();
   }
 
   async onFile(e: Event) {
