@@ -25,7 +25,8 @@ import { PostEditionModule } from "./shared/post-edition/post-edition.module";
 import { FileReaderModule } from "./shared/file-reader/file-reader.module";
 import { VideoReaderModule } from "./shared/video-reader/video-reader.module";
 import { DocReaderModule } from "./shared/doc-reader/doc-reader.module";
-import {AdditionSearchModule} from "./shared/addition-search/addition-search.module";
+import { AdditionSearchModule } from "./shared/addition-search/addition-search.module";
+import { GroupSideBarModule } from "./shared/group-side-bar/group-side-bar.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +44,7 @@ import {AdditionSearchModule} from "./shared/addition-search/addition-search.mod
     FileReaderModule,
     PostEditionModule,
     VideoReaderModule,
+    GroupSideBarModule,
     PopupCommentModule,
     PopupFriendsModule,
     ReactiveFormsModule,
