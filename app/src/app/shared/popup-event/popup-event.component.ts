@@ -18,4 +18,5 @@ export class PopupEventComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.router.navigate([], {queryParams: {}})
   }
+
 }
