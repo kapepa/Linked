@@ -15,8 +15,8 @@ export class PopupEventComponent implements OnInit, OnDestroy {
 
   ngOnInit() {}
 
-  ngOnDestroy() {
-    this.router.navigate([], {queryParams: {}})
+  async ngOnDestroy() {
+    await this.router.navigate([], {queryParams: {}});
   }
 
 }
