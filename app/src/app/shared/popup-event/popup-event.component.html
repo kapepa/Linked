@@ -1,3 +1,8 @@
-<p>
-  popup-event works!
-</p>
+<ion-content class="popup-event">
+  <ion-item class="popup-event__header">
+    <ion-label class="popup-event__label">Create event</ion-label>
+    <ion-button id="close" class="popup-event__close ion-no-padding" fill="clear" color="medium" shape="round" (click)="onClose($event)">
+      <ion-icon class="popup-event__x-close" name="close-outline" ></ion-icon>
+    </ion-button>
+  </ion-item>
+</ion-content>

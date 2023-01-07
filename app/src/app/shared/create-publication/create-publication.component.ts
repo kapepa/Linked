@@ -25,8 +25,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     outside: { name: 'Outside', value: 'outside'},
   };
 
-  popoverEvent;
-
   user: UserJwtDto;
   userSub: Subscription;
 
@@ -73,24 +71,15 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
       })
     }
 
-    this.route.queryParams.subscribe(async (query: Params) => {
-      if(query.hasOwnProperty('event') &&  query.event){
-        await this.openEvent();
-      } else if(!!this.popoverEvent) {
-        this.popoverEvent.dismiss();
-      }
-    })
-
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
   }
 
   async ngOnDestroy() {
     this.userSub.unsubscribe();
-    if ( this.type === 'create' ) this.postService.setCreatedPost =this.saveChangePost();
+    if ( this.type === 'create' ) this.postService.setCreatedPost = this.saveChangePost();
     if ( this.type === 'edit' ) this.postService.setEditPost = this.saveChangePost();
 
-    if (!(this.route.snapshot.queryParams?.open === 'addition' || this.route.snapshot.queryParams?.edit === 'addition'))
-      await this.router.navigate([window.location.pathname], {queryParams: { }} );
+    this.onClosePublication();
   }
 
   ngAfterViewInit() {}
@@ -200,18 +189,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     await popover.present();
   }
 
-  async openEvent() {
-    this.popoverEvent = await this.popoverController.create({
-      component: PopupEventComponent,
-      componentProps: {
-        closeEvent: () => {
-          this.popoverEvent.dismiss();
-        }
-      }
-    });
 
-    await this.popoverEvent.present();
-  }
 
   async onFile(e: Event) {
     this.inputFile.nativeElement.click();
