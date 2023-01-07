@@ -47,15 +47,12 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy() {
-    let { index, edit, open, ...other} = this.route.snapshot.queryParams
+    this.additionSub.unsubscribe();
 
     if (this.type === 'create') this.postService.setCreateAddition = this.createAddition();
     if (this.type === 'edit') this.postService.setEditAddition = this.createAddition();
 
-    if( edit === 'addition' || open === 'addition' )
-      await this.router.navigate([window.location.pathname], {queryParams: other});
-
-    this.additionSub.unsubscribe();
+    this.onClosePublication();
   }
 
   createForm(addition: AdditionDto) {

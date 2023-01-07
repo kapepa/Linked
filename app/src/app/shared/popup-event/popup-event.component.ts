@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 
 @Component({
   selector: 'app-popup-event',
@@ -11,12 +11,18 @@ export class PopupEventComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
 
-  async ngOnDestroy() {
-    await this.router.navigate([], {queryParams: {}});
   }
 
+  async ngOnDestroy() {
+    this.closeEvent();
+  }
+
+  onClose(e: Event) {
+    this.closeEvent();
+  }
 }

@@ -1,0 +1,20 @@
+.popup-event{
+  &__header{
+    position: relative;
+  }
+  &__label{
+    font-size: 20px;
+    margin: 16px 48px 16px 0;
+  }
+  &__x-close{
+    font-size: 33px
+  }
+  &__close{
+    position: absolute;
+    transform: translateY(-50%);
+    top: 45%;
+    right: 10px;
+    height: 33px;
+    width: auto;
+  }
+}
