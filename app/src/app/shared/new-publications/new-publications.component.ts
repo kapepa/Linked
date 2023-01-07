@@ -56,7 +56,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   closePublication(){
-    console.log('close')
+
   }
 
   async cleanQuery(key: string, val: string | boolean) {
