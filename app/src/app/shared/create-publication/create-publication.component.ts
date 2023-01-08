@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../core/service/post.service";
 import {PostInterface} from "../../core/interface/post.interface";
 import {AuthService} from "../../core/service/auth.service";
-import {Subscription} from "rxjs";
+import {from, Subscription} from "rxjs";
 import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 import {PopoverController} from "@ionic/angular";
 import {VideoReaderComponent} from "../video-reader/video-reader.component";
@@ -45,6 +45,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   @Input() post?: PostInterface;
   @Input() index?: number;
   @Input() type?: string;
+  @Input() queryParam?: {[key: string]: string | boolean};
 
   postForm: FormGroup;
 
@@ -78,7 +79,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     if ( this.type === 'create' ) this.postService.setCreatedPost = this.saveChangePost();
     if ( this.type === 'edit' ) this.postService.setEditPost = this.saveChangePost();
 
-    this.onClosePublication();
+    this.onClosePublication()
   }
 
   ngAfterViewInit() {}
@@ -247,5 +248,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   get getID() {
     return this.postForm.get('id');
+  }
+
+  get getQuery(){
+    return (!!this.edit) ? { edit: true, index: this.index } : { ...this.queryParam, addition: true }
   }
 }

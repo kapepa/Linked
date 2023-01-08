@@ -1,7 +1,7 @@
 import {  AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PopoverController } from "@ionic/angular";
 import { CreatePublicationComponent } from "../create-publication/create-publication.component";
-import { BehaviorSubject, Subscription } from "rxjs";
+import { BehaviorSubject, from, Subscription } from "rxjs";
 import { AuthService } from "../../core/service/auth.service";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { AdditionSearchComponent } from "../addition-search/addition-search.component";
@@ -20,8 +20,8 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   userAvatar: string;
   userAvatarSubscription: Subscription;
 
-  query: string;
-  query$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  query: {[key: string]: string | boolean};
+  query$: BehaviorSubject<{[key: string]: string | boolean}> = new BehaviorSubject<{[key: string]: string | boolean}>({});
 
   @ViewChild('post') post: ElementRef;
 
@@ -38,13 +38,17 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
     this.route.queryParams.subscribe( async (query: Params) => {
       let { create, addition, event } = query;
 
-      if(!!this.createPopover) this.createPopover.dismiss();
-      if(!!this.additionPopover) this.additionPopover.dismiss();
-      if(!!this.popoverEvent) this.popoverEvent.dismiss();
+      console.log(query)
+
+      if(this.query?.create == 'true') this.createPopover.dismiss();
+      if(this.query?.addition == 'true') this.additionPopover.dismiss();
+      if(this.query?.event == 'true') this.popoverEvent.dismiss();
 
       if( query.hasOwnProperty('create') && JSON.parse(create) ) await this.createPublication();
       if( query.hasOwnProperty('addition') && JSON.parse(addition) ) await this.additionPublication();
       if( query.hasOwnProperty('event') && JSON.parse(event) ) await this.openEvent();
+
+      this.setQuery = query;
     })
   }
 
@@ -59,18 +63,15 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   closePublication(){
 
-
   }
 
   async cleanQuery(key: string) {
-    let query = this.route.snapshot.queryParams;
-
-
-    if( query.hasOwnProperty(key) ) {
-      // let { [key]: exclude, ...other } = query;
-      console.log(query)
-      await this.router.navigate([],{queryParams: {...query, [key]: false }});
-    }
+    // if( this.query[key] === query[key] ) {
+    //   let { [key]: exclude, ...other } = query;
+    //   await this.router.navigate([],{queryParams: {...other, [key]: false }});
+    // }
+    console.log(this.query[key])
+    await this.router.navigate([],{queryParams: {...this.query, [key]: false }});
   }
 
   async createPublication () {
@@ -80,8 +81,9 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       animated: false,
       componentProps: {
         type: 'create',
+        queryParam: this.query,
         onClosePublication: () => {
-          this.createPopover.dismiss();
+          if(this.query?.create == 'true') this.createPopover.dismiss();
           this.cleanQuery('create');
         },
       },
@@ -97,9 +99,10 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       size: "cover",
       animated: false,
       componentProps: {
-        type: 'create',
+        type: 'addition',
+        query: this.query,
         onClosePublication: () => {
-          this.additionPopover.dismiss();
+          if(this.query?.addition == 'true') this.additionPopover.dismiss();
           this.cleanQuery('addition');
         }
       },
@@ -126,7 +129,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
     await this.popoverEvent.present();
   }
 
-  set setQuery(query: string) {
+  set setQuery(query: {[key: string]: string | boolean}) {
     this.query = query;
     this.query$.next(this.query);
   }
