@@ -82,7 +82,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   async onSubmit(e: Event) {
     this.postService.setCreateAddition = this.additionForm.value;
     await this.router.navigate(['/home'],
-      { queryParams: {...this.type === 'create' ? { open: 'create' } : { edit: this.query, index: this.index } } }
+      { queryParams: {...this.type === 'create' ? { create: true } : { edit: this.query, index: this.index } } }
     );
   }
 
