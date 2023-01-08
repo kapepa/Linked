@@ -11,7 +11,6 @@ import {DocReaderComponent} from "../doc-reader/doc-reader.component";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {PostDto} from "../../core/dto/post.dto";
 import {AdditionDto} from "../../core/dto/addition.dto";
-import {PopupEventComponent} from "../popup-event/popup-event.component";
 
 @Component({
   selector: 'app-create-publication',

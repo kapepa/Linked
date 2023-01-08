@@ -36,13 +36,18 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
     this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
 
     this.route.queryParams.subscribe( async (query: Params) => {
+      // let params = this.route.snapshot.queryParams;
+      //
+      // console.log(params, query)
+      // console.log()
+
       if(!!this.createPopover) this.createPopover.dismiss();
       if(!!this.additionPopover) this.additionPopover.dismiss();
       if(!!this.popoverEvent) this.popoverEvent.dismiss();
 
-      if( query.hasOwnProperty('open') && query?.open === 'create' ) await this.createPublication();
-      if( query.hasOwnProperty('open') && query?.open === 'addition' ) await this.additionPublication();
-      if( query.hasOwnProperty('event') &&  !!query.event ) await this.openEvent();
+      if( query.hasOwnProperty('create') && !!query?.create ) await this.createPublication();
+      if( query.hasOwnProperty('addition') && !!query?.addition ) await this.additionPublication();
+      if( query.hasOwnProperty('event') && !!query?.event ) await this.openEvent();
     })
   }
 
@@ -59,12 +64,14 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   }
 
-  async cleanQuery(key: string, val: string | boolean) {
+  async cleanQuery(key: string) {
     let query = this.route.snapshot.queryParams;
 
-    if(query.hasOwnProperty(key) && query[key] === val) {
-      let { [key]: exclude, ...other } = this.route.snapshot.queryParams;
-      await this.router.navigate([],{queryParams: {}});
+    console.log(query.hasOwnProperty(key))
+
+    if( query.hasOwnProperty(key) ) {
+      let { [key]: exclude, ...other } = query;
+      await this.router.navigate([],{queryParams: other});
     }
   }
 
@@ -76,8 +83,8 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       componentProps: {
         type: 'create',
         onClosePublication: () => {
-          this.createPopover.dismiss();
-          this.cleanQuery('open', 'create');
+          // this.createPopover.dismiss();
+          this.cleanQuery('create');
         }
       },
       cssClass: 'new-publications__create',
@@ -94,8 +101,8 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       componentProps: {
         type: 'create',
         onClosePublication: () => {
-          this.additionPopover.dismiss();
-          this.cleanQuery('open', 'addition');
+          // this.additionPopover.dismiss();
+          this.cleanQuery('addition');
         }
       },
       cssClass: 'new-publications__create',
@@ -111,8 +118,8 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       animated: false,
       componentProps: {
         closeEvent: () => {
-          this.popoverEvent.dismiss();
-          this.cleanQuery('edit', true);
+          // this.popoverEvent.dismiss();
+          this.cleanQuery('edit');
           // let { event, ...other } = this.route.snapshot.queryParams;
           // this.router.navigate([window.location.pathname], { queryParams: other });
         },
