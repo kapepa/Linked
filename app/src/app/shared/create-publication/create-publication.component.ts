@@ -251,6 +251,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   get getQuery(){
-    return (!!this.edit) ? { edit: true, index: this.index } : { ...this.queryParam, addition: true }
+    return (!!this.edit) ? { ...this.queryParam, edit: true, index: this.index } : { ...this.queryParam, addition: true }
   }
 }
