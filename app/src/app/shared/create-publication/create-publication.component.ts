@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../core/service/post.service";
 import {PostInterface} from "../../core/interface/post.interface";
 import {AuthService} from "../../core/service/auth.service";
-import {from, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {UserJwtDto} from "../../core/dto/user-jwt.dto";
 import {PopoverController} from "@ionic/angular";
 import {VideoReaderComponent} from "../video-reader/video-reader.component";
@@ -41,11 +41,10 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   @ViewChild('inputVideo') inputVideo: ElementRef<HTMLInputElement>;
   @ViewChild('selectOptions') selectOptions: ElementRef<HTMLIonSelectElement>
 
-  @Input() onClosePublication: () => void;
+  @Input() onClosePublication: (query: {[key: string]: string | boolean | number}) => void;
   @Input() post?: PostInterface;
   @Input() index?: number;
   @Input() type?: string;
-  @Input() queryParam?: {[key: string]: string | boolean};
 
   postForm: FormGroup;
 
@@ -79,7 +78,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     if ( this.type === 'create' ) this.postService.setCreatedPost = this.saveChangePost();
     if ( this.type === 'edit' ) this.postService.setEditPost = this.saveChangePost();
 
-    this.onClosePublication()
+    this.onClosePublication( (this.type === 'create') ? { create: false } : { edit: false })
   }
 
   ngAfterViewInit() {}
@@ -119,7 +118,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   onClose(e: Event) {
-    this.onClosePublication();
+    e.stopPropagation();
+    e.preventDefault();
+    this.onClosePublication( (this.type === 'create') ? { create: false } : { edit: false })
   }
 
   onSubmit(e: Event) {
@@ -132,7 +133,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         ...(!!this.getAccess.value && this.post?.access !== this.getAccess.value) ? { access: this.getAccess.value } : undefined,
       })
         .subscribe((post: PostInterface) => {
-          this.onClosePublication();
+          this.onClosePublication( (this.type === 'create') ? { create: false } : { edit: false })
           this.postForm.reset();
         })
     } else {
@@ -143,7 +144,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         access: this.getAccess.value,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
-        this.onClosePublication();
+        this.onClosePublication( (this.type === 'create') ? { create: false } : { edit: false })
         this.postForm.reset();
       })
     }
@@ -218,6 +219,12 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     await popover.present();
   }
 
+  onAddition(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.onClosePublication(this.getQuery);
+  }
+
   get body () {
     return this.postForm.get('body');
   }
@@ -251,6 +258,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   get getQuery(){
-    return (!!this.edit) ? { ...this.queryParam, edit: true, index: this.index } : { ...this.queryParam, addition: true }
+    return (!!this.edit) ? { edit: true, index: this.index } : { addition: true }
   }
 }
