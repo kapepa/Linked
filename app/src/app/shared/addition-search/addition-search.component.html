@@ -61,7 +61,7 @@
     </ion-content>
     <ion-footer class="ion-no-border addition-publication__footer" collapse="fade">
       <ion-router-link [routerLink]="['/home']" [queryParams]="getQuery" >
-        <ion-button shape="round" size="small">Back</ion-button>
+        <ion-button (click)="onBack($event)" shape="round" size="small">Back</ion-button>
       </ion-router-link>
       <ion-button
         type="submit"
