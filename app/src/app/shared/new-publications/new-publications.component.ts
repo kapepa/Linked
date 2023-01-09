@@ -46,7 +46,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       if( query.hasOwnProperty('addition') && JSON.parse(addition) ) await this.additionPublication();
       if( query.hasOwnProperty('event') && JSON.parse(event) ) await this.openEvent();
 
-      this.setQuery = {...this.query, ...query}
+      this.setQuery = {...this.query, ...query};
     })
   }
 
