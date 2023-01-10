@@ -40,7 +40,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
       if( !!this.createPopover && (create === 'false' || create === false )) this.createPopover.dismiss();
       if( !!this.additionPopover && (addition === 'false' || addition === false )) this.additionPopover.dismiss();
-      if( !!this.popoverEvent && event == 'true' ) this.popoverEvent.dismiss();
+      if( !!this.popoverEvent && event == 'true' || event === false ) this.popoverEvent.dismiss();
 
       if( query.hasOwnProperty('create') && JSON.parse(create) ) await this.createPublication();
       if( query.hasOwnProperty('addition') && JSON.parse(addition) ) await this.additionPublication();
