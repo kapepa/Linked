@@ -56,7 +56,6 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy() {
     this.userAvatarSubscription.unsubscribe();
-
   }
 
   async cleanQuery(query: {[key: string]: string | boolean | number}, val: string) {
