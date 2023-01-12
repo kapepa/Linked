@@ -219,7 +219,7 @@ export class PostService {
             this.setEditPost = post;
             this.setEditAddition = post.addition;
             return of(true);
-          }
+          };
           return of(false);
         })
       )
