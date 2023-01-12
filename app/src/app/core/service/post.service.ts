@@ -174,7 +174,7 @@ export class PostService {
         },
         complete: () => this.setPostLoad = !this.postLoad,
       }),
-      catchError(this.httpService.handleError)
+      catchError(this.httpService.handleError),
     )
   }
 
