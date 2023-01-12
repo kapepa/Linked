@@ -133,8 +133,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         ...(!!this.getAccess.value && this.post?.access !== this.getAccess.value) ? { access: this.getAccess.value } : undefined,
       })
         .subscribe((post: PostInterface) => {
-          this.onClosePublication();
           this.postForm.reset();
+          this.onClosePublication();
         })
     } else {
       this.postService.createPost({
@@ -144,8 +144,8 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
         access: this.getAccess.value,
         body: this.body.value,
       }).subscribe((post: PostInterface) => {
-        this.onClosePublication();
         this.postForm.reset();
+        this.onClosePublication();
       })
     }
   }

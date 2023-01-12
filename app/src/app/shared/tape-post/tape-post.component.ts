@@ -63,6 +63,9 @@ export class TapePostComponent implements OnInit, OnDestroy {
         } else {
           await this.router.navigate([],{queryParams: {}})
         }
+      } else {
+        if( this.editPopover ) this.editPopover.dismiss();
+        if( this.additionPopover ) this.additionPopover.dismiss();
       }
     })
   }
