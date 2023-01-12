@@ -18,8 +18,8 @@ export class PopupEventComponent implements OnInit, OnDestroy {
 
   }
 
-  async ngOnDestroy() {
-    this.closeEvent();
+  ngOnDestroy() {
+
   }
 
   onClose(e: Event) {

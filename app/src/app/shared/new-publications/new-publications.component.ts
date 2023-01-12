@@ -38,9 +38,9 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
     this.route.queryParams.subscribe( async (query: Params) => {
       let { create, addition, event } = query;
 
-      if( !!this.createPopover && (create === 'false' || create === false )) this.createPopover.dismiss();
-      if( !!this.additionPopover && (addition === 'false' || addition === false )) this.additionPopover.dismiss();
-      if( !!this.popoverEvent && event == 'true' || event === false ) this.popoverEvent.dismiss();
+      if( !!this.createPopover ) this.createPopover.dismiss();
+      if( !!this.additionPopover ) this.additionPopover.dismiss();
+      if( !!this.popoverEvent ) this.popoverEvent.dismiss();
 
       if( query.hasOwnProperty('create') && JSON.parse(create) ) await this.createPublication();
       if( query.hasOwnProperty('addition') && JSON.parse(addition) ) await this.additionPublication();
@@ -58,15 +58,8 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
     this.userAvatarSubscription.unsubscribe();
   }
 
-  async cleanQuery(query: {[key: string]: string | boolean | number}, val: string) {
-    let {[val]: current, ...other } = this.query;
-    let queryHaveVal = Object.values(other);
-
-    if(!queryHaveVal.includes('true') || !queryHaveVal.includes(true)){
-      let setValFalse = Object.keys(other).reduce((accum, key) => accum[key] = false, {});
-      this.setQuery = {...setValFalse, ...query};
-      await this.router.navigate([],{ queryParams: query });
-    }
+  async cleanQuery() {
+    await this.router.navigate([],{ queryParams: {} });
   }
 
   async createPublication () {
@@ -76,13 +69,14 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       animated: false,
       componentProps: {
         type: 'create',
-        onClosePublication: (query: {[key: string]: string | boolean | number }) => {
-          this.cleanQuery(query, 'create')
-        },
+        onClosePublication: () => this.cleanQuery(),
       },
       cssClass: 'new-publications__create',
     });
 
+    this.createPopover.onDidDismiss().then((arg) => {
+      if(arg.role === 'backdrop')  this.router.navigate([],{ queryParams: {} });
+    })
     return await this.createPopover.present();
   }
 
@@ -93,13 +87,14 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       animated: false,
       componentProps: {
         type: 'create',
-        onClosePublication: (query: {[key: string]: string | boolean | number }) => {
-          this.cleanQuery(query, 'addition')
-        }
+        onClosePublication: () => this.cleanQuery(),
       },
       cssClass: 'new-publications__create',
     });
 
+    this.additionPopover.onDidDismiss().then((arg) => {
+      if(arg.role === 'backdrop')  this.router.navigate([],{ queryParams: {} })
+    })
     return await this.additionPopover.present();
   }
 
@@ -109,13 +104,14 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       size: "cover",
       animated: false,
       componentProps: {
-        closeEvent: (query: {[key: string]: string | boolean}) => {
-          this.cleanQuery(query, 'event')
-        },
+        closeEvent: () => this.cleanQuery(),
       },
       cssClass: 'new-publications__create',
     });
 
+    this.popoverEvent.onDidDismiss().then((arg) => {
+      if(arg.role === 'backdrop')  this.router.navigate([],{ queryParams: {} })
+    })
     await this.popoverEvent.present();
   }
 
