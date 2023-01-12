@@ -48,11 +48,11 @@ export class TapePostComponent implements OnInit, OnDestroy {
     this.postsSub = this.postService.getPostsAll.subscribe((posts: PostInterface[]) => this.posts = posts);
 
     this.route.queryParams.subscribe(async (params: Params) => {
-      if(params.hasOwnProperty('edit')) {
-        let { edit, index } = params;
+      if(params.hasOwnProperty('edit') || params.hasOwnProperty('redact')) {
+        let { edit, redact, index } = params;
         let order = Number(index);
 
-        if( edit === 'addition'){
+        if( !edit && !!redact ){
           if(!!this.editPopover) this.editPopover.dismiss();
           return await this.additionPublication({ index: order, id: this.posts[order].id });
         }
@@ -63,6 +63,9 @@ export class TapePostComponent implements OnInit, OnDestroy {
         } else {
           await this.router.navigate([],{queryParams: {}})
         }
+      } else {
+        if( this.editPopover ) this.editPopover.dismiss();
+        if( this.additionPopover ) this.additionPopover.dismiss();
       }
     })
   }
@@ -102,9 +105,13 @@ export class TapePostComponent implements OnInit, OnDestroy {
         type: 'edit',
         index: index,
         post: post,
-        onClosePublication: () => this.editPopover.dismiss(),
+        onClosePublication: () => this.cleanQuery(),
       }
     });
+
+    this.editPopover.onDidDismiss().then((arg) => {
+      if(arg.role === 'backdrop')  this.router.navigate([],{ queryParams: {} });
+    })
 
     await this.editPopover.present();
   }
@@ -119,14 +126,19 @@ export class TapePostComponent implements OnInit, OnDestroy {
         type: 'edit',
         query: id,
         index: index,
-        onClosePublication: () => {
-          this.additionPopover.dismiss();
-          this.router.navigate([window.location.pathname], {queryParams: {}});
-        }
+        onClosePublication: () => this.cleanQuery(),
       },
       cssClass: 'new-publications__create',
     });
 
+    this.additionPopover.onDidDismiss().then((arg) => {
+      if(arg.role === 'backdrop')  this.router.navigate([],{ queryParams: {} });
+    })
+
     return await this.additionPopover.present();
+  }
+
+  async cleanQuery() {
+    await this.router.navigate([],{ queryParams: {} });
   }
 }

@@ -16,7 +16,7 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   @Input() type: string;
   @Input() query?: string;
   @Input() index?: number;
-  @Input() onClosePublication: (query: {[key: string]: string | boolean | number }) => void;
+  @Input() onClosePublication: () => void;
 
   additionForm = this.fb.group({
     id: [''],
@@ -51,8 +51,6 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
 
     if (this.type === 'create') this.postService.setCreateAddition = this.createAddition();
     if (this.type === 'edit') this.postService.setEditAddition = this.createAddition();
-
-    this.onClosePublication(this.type === 'create' ? { create: false } : { edit: false, index: this.index });
   }
 
   createForm(addition: AdditionDto) {
@@ -76,20 +74,12 @@ export class AdditionSearchComponent implements OnInit, OnDestroy {
   }
 
   onClose(e: Event) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.onClosePublication(this.type === 'create' ? { create: false } : { edit: false, index: this.index });
+    this.onClosePublication();
   }
 
   async onSubmit(e: Event) {
     this.postService.setCreateAddition = this.additionForm.value;
     await this.router.navigate(['/home'], { queryParams: this.getQuery });
-  }
-
-  onBack(e: Event) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.onClosePublication(this.getQuery);
   }
 
   get getJob() {

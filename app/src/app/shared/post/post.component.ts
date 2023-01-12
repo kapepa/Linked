@@ -49,22 +49,8 @@ export class PostComponent implements OnInit, OnDestroy {
     e.stopPropagation();
 
     this.editPost.emit({index: this.index, post: this.post})
-    // await this.popoverEdit();
   }
 
-  // async popoverEdit() {
-  //   const popover = await this.popoverController.create({
-  //     component: CreatePublicationComponent,
-  //     cssClass: 'new-publications__create',
-  //     componentProps: {
-  //       onClosePublication: () => popover.dismiss(),
-  //       index: this.index,
-  //       post: this.post,
-  //     }
-  //   });
-  //
-  //   await popover.present();
-  // }
 
   onDelete(e: Event) {
     e.preventDefault();
