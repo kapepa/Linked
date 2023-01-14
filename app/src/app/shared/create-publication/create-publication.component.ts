@@ -106,7 +106,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   handleChange(e: Event) {
     let target = (e.target as HTMLIonSelectElement).value;
     this.getAccess.patchValue(target);
-
   }
 
   compareWith(o1, o2) {

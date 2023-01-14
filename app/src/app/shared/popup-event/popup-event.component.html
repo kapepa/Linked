@@ -1,8 +1,41 @@
-<ion-content class="popup-event">
-  <ion-item class="popup-event__header">
-    <ion-label class="popup-event__label">Create event</ion-label>
+<ion-card class="popup-event">
+  <ion-card-header class="popup-event__header">
+    <ion-card-title class="popup-event__title">Create event</ion-card-title>
     <ion-button id="close" class="popup-event__close ion-no-padding" fill="clear" color="medium" shape="round" (click)="onClose($event)">
       <ion-icon class="popup-event__x-close" name="close-outline" ></ion-icon>
     </ion-button>
-  </ion-item>
-</ion-content>
+  </ion-card-header>
+  <ion-card-content>
+    <form [formGroup]="eventForm">
+      <div class="popup-event__picture">
+        <input (change)="onChange($event)"
+          #inputFile
+          name="picture"
+          type="file"
+          class="popup-event__file"
+        />
+        <div *ngIf="!getImg.value; else fileReader" class="popup-event__empty" (click)="onEmpty($event)">
+          <ion-icon name="camera" class="popup-event__camera"></ion-icon>
+          <ion-text>Upload main image</ion-text>
+        </div>
+        <ng-template #fileReader>
+          <app-file-reader class="popup-event__file-reader" [img]="getImg.value" [alt]="'picture'" [class]="''"></app-file-reader>
+        </ng-template>
+      </div>
+      <div class="popup-event__node popup-event__type">
+        <ion-card-title class="popup-event__sub-title">Type event</ion-card-title>
+        <div class="popup-event__checkbox-area">
+          <app-radio
+            [selected]="'online'"
+            [list]="[{name: 'Online', val: 'online'}, {name: 'Personally', val: 'personally'}]"
+            (onRadioChange)="onRadioChange($event)"
+          ></app-radio>
+        </div>
+      </div>
+      <div class="popup-event__node">
+        <ion-card-title class="popup-event__sub-title">Event title</ion-card-title>
+        <ion-input class="popup-event__input" type="text"></ion-input>
+      </div>
+    </form>
+  </ion-card-content>
+</ion-card>

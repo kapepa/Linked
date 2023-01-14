@@ -28,15 +28,19 @@ import { DocReaderModule } from "./shared/doc-reader/doc-reader.module";
 import { AdditionSearchModule } from "./shared/addition-search/addition-search.module";
 import { GroupSideBarModule } from "./shared/group-side-bar/group-side-bar.module";
 import { PopupEventModule } from "./shared/popup-event/popup-event.module";
+import { CheckboxModule } from "./shared/checkbox/checkbox.module";
+import { RadioModule } from "./shared/radio/radio.module";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     PipeModule,
+    RadioModule,
     CommonModule,
     BrowserModule,
     PopoverModule,
     CommentModule,
+    CheckboxModule,
     BasementModule,
     DocReaderModule,
     DirectiveModule,
