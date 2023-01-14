@@ -10,7 +10,7 @@ import { IonicModule } from "@ionic/angular";
   ],
   imports: [
     IonicModule,
-    CommonModule
+    CommonModule,
   ],
   exports: [
     RadioComponent,
