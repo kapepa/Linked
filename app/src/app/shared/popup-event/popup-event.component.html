@@ -21,6 +21,9 @@
         <ng-template #fileReader>
           <app-file-reader class="popup-event__file-reader" [img]="getImg.value" [alt]="'picture'" [class]="''"></app-file-reader>
         </ng-template>
+        <div class="popup-event__invalid" *ngIf="getImg.invalid && (getImg.dirty || getImg.touched)">
+          <ion-note *ngIf="getImg.errors?.['required']" color="danger">Description is required.</ion-note>
+        </div>
       </div>
       <div class="popup-event__node popup-event__type">
         <ion-card-title class="popup-event__sub-title">Type event</ion-card-title>
@@ -34,7 +37,17 @@
       </div>
       <div class="popup-event__node">
         <ion-card-title class="popup-event__sub-title">Event title</ion-card-title>
-        <ion-input class="popup-event__input" name="title" type="text"></ion-input>
+        <ion-input
+          formControlName="title"
+          class="popup-event__input"
+          name="title"
+          type="text"
+          [ngClass]="{'popup-event__input--danger': getTitle.invalid && (getTitle.dirty || getTitle.touched)}"
+        ></ion-input>
+        <div class="popup-event__invalid" *ngIf="getTitle.invalid && (getTitle.dirty || getTitle.touched)">
+          <ion-note *ngIf="getTitle.errors?.['required']" color="danger">Title is required.</ion-note>
+          <ion-note *ngIf="getTitle.errors?.['minlength']" color="danger">Title must be at least 10 characters long.</ion-note>
+        </div>
       </div>
       <div class="popup-event__node popup-event__begin">
         <div class="popup-event__item popup-event__item--width">
@@ -44,7 +57,11 @@
               type="date"
               class="popup-event__input"
               formControlName="date"
+              [ngClass]="{'popup-event__input--danger':getDate.invalid && (getDate.dirty || getDate.touched)}"
             ></ion-input>
+          </div>
+          <div class="popup-event__invalid" *ngIf="getDate.invalid && (getDate.dirty || getDate.touched)">
+            <ion-note *ngIf="getDate.errors?.['required']" color="danger">Date is required.</ion-note>
           </div>
         </div>
         <div class="popup-event__item popup-event__item--width">
@@ -54,7 +71,11 @@
               type="time"
               class="popup-event__input"
               formControlName="time"
+              [ngClass]="{'popup-event__input--danger': getTime.invalid && (getTime.dirty || getTime.touched)}"
             ></ion-input>
+          </div>
+          <div class="popup-event__invalid" *ngIf="getTime.invalid && (getTime.dirty || getTime.touched)">
+            <ion-note *ngIf="getTime.errors?.['required']" color="danger">Time is required.</ion-note>
           </div>
         </div>
       </div>
@@ -73,7 +94,12 @@
           name="description"
           class="popup-event__textarea"
           formControlName="description"
+          [ngClass]="{'popup-event__textarea--danger':getDescription.invalid && (getDescription.dirty || getDescription.touched)}"
         ></ion-textarea>
+        <div class="popup-event__invalid" *ngIf="getDescription.invalid && (getDescription.dirty || getDescription.touched)" >
+          <ion-note *ngIf="getDescription.errors?.['required']" color="danger">Description is required.</ion-note>
+          <ion-note *ngIf="getDescription.errors?.['minlength']" color="danger">Description must be at least 10 characters long.</ion-note>
+        </div>
       </div>
       <div class="popup-event__node popup-event__node--footer">
         <ion-button
