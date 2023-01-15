@@ -5,8 +5,8 @@
       <ion-icon class="popup-event__x-close" name="close-outline" ></ion-icon>
     </ion-button>
   </ion-card-header>
-  <ion-card-content>
-    <form [formGroup]="eventForm">
+  <ion-card-content class="popup-event__content">
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit($event)">
       <div class="popup-event__picture">
         <input (change)="onChange($event)"
           #inputFile
@@ -34,8 +34,56 @@
       </div>
       <div class="popup-event__node">
         <ion-card-title class="popup-event__sub-title">Event title</ion-card-title>
-        <ion-input class="popup-event__input" type="text"></ion-input>
+        <ion-input class="popup-event__input" name="title" type="text"></ion-input>
+      </div>
+      <div class="popup-event__node popup-event__begin">
+        <div class="popup-event__item popup-event__item--width">
+          <div class="popup-event__inner">
+            <ion-label class="popup-event__label">Date begin</ion-label>
+            <ion-input
+              type="date"
+              class="popup-event__input"
+              formControlName="date"
+            ></ion-input>
+          </div>
+        </div>
+        <div class="popup-event__item popup-event__item--width">
+          <div class="popup-event__inner">
+            <ion-label class="popup-event__label">Start time</ion-label>
+            <ion-input
+              type="time"
+              class="popup-event__input"
+              formControlName="time"
+            ></ion-input>
+          </div>
+        </div>
+      </div>
+      <div class="popup-event__node">
+        <ion-card-title class="popup-event__sub-title">External link to the event</ion-card-title>
+        <ion-input
+          type="text"
+          class="popup-event__input"
+          formControlName="link"
+        ></ion-input>
+      </div>
+      <div class="popup-event__node">
+        <ion-card-title class="popup-event__sub-title">Description</ion-card-title>
+        <ion-textarea
+          [autoGrow]="true"
+          name="description"
+          class="popup-event__textarea"
+          formControlName="description"
+        ></ion-textarea>
+      </div>
+      <div class="popup-event__node popup-event__node--footer">
+        <ion-button
+          type="submit"
+          [disabled]="!eventForm.valid"
+          color="medium"
+          shape="round"
+        >Further</ion-button>
       </div>
     </form>
   </ion-card-content>
 </ion-card>
+

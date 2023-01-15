@@ -16,6 +16,11 @@ export class PopupEventComponent implements OnInit, OnDestroy {
   eventForm: FormGroup = this.fb.group({
     img: new FormControl<File | string>('', [Validators.required] ),
     type: new FormControl<string>('', [Validators.required]),
+    title: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+    date: new FormControl<Date>(null,[Validators.required]),
+    time: new FormControl<Date>(null,[Validators.required]),
+    link: new FormControl<string>('', [Validators.required]),
+    description: new FormControl<string>('', [Validators.required, Validators.minLength(10)]),
   });
 
   constructor(
@@ -41,6 +46,10 @@ export class PopupEventComponent implements OnInit, OnDestroy {
     this.inputFile.nativeElement.click();
   }
 
+  onSubmit(e: Event) {
+
+  }
+
   onChange(e: Event) {
     let file = (e.target as HTMLInputElement).files[0];
     this.getImg.setValue(file);
@@ -56,5 +65,25 @@ export class PopupEventComponent implements OnInit, OnDestroy {
 
   get getType() {
     return this.eventForm.get('type');
+  }
+
+  get getTitle() {
+    return this.eventForm.get('title')
+  }
+
+  get getDate() {
+    return this.eventForm.get('date');
+  }
+
+  get getTime() {
+    return this.eventForm.get('time');
+  }
+
+  get getLink() {
+    return this.eventForm.get('link');
+  }
+
+  get getDescription() {
+    return this.eventForm.get('description');
   }
 }

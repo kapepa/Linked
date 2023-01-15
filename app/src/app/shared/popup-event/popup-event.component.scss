@@ -1,7 +1,11 @@
 .popup-event{
   margin: 0;
+  position: relative;
   &__header{
     position: relative;
+  }
+  &__content{
+    padding-bottom: 85px;
   }
   &__title{
     font-size: 20px;
@@ -59,6 +63,19 @@
   }
   &__node{
     padding-top: 24px;
+    &--footer{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: end;
+    }
+  }
+  &__begin{
+    display: flex;
+    column-gap: 10px;
   }
   &__type{
 
@@ -69,6 +86,27 @@
   &__input{
     border: 1px solid gray;
     border-radius: 5px;
+    padding: 6px 8px;
+    height: 32px;
+  }
+  &__textarea{
+    border: 1px solid grey;
+    border-radius: 5px;
+  }
+  &__item{
+    display: flex;
+    flex-direction: column;
+    --border-color: transparent;
+    --inner-padding-start: 20px;
+    &--width{
+      flex-grow: 1;
+    }
+  }
+  &__inner{
+
+  }
+  &__data{
+    border: 1px solid gray;
     padding: 6px 8px;
     height: 32px;
   }
