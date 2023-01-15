@@ -63,6 +63,7 @@
   }
   &__node{
     padding-top: 24px;
+    position: relative;
     &--footer{
       position: absolute;
       left: 0;
@@ -72,6 +73,12 @@
       display: flex;
       justify-content: end;
     }
+  }
+  &__invalid{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
   }
   &__begin{
     display: flex;
@@ -88,14 +95,21 @@
     border-radius: 5px;
     padding: 6px 8px;
     height: 32px;
+    &--danger{
+      border-color: #eb445a;
+    }
   }
   &__textarea{
     border: 1px solid grey;
     border-radius: 5px;
+    &--danger{
+      border-color: #eb445a;
+    }
   }
   &__item{
     display: flex;
     flex-direction: column;
+    position: relative;
     --border-color: transparent;
     --inner-padding-start: 20px;
     &--width{
