@@ -189,8 +189,6 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     await popover.present();
   }
 
-
-
   async onFile(e: Event) {
     this.inputFile.nativeElement.click();
   }
