@@ -21,6 +21,7 @@ import { MessageEntity } from "./chat/message.entity";
 import { AppGateway } from "./app.gateway.spec";
 import { CommentEntity } from "./feet/comment.entity";
 import { AdditionEntity } from "./feet/addition.entity";
+import { EventModule } from './event/event.module';
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ dotenv.config();
     FriendsModule,
     ConfigModule,
     ChatModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppGateway, AppService],

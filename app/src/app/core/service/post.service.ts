@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import {BehaviorSubject, from, Observable, of} from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { PostInterface } from "../interface/post.interface";
 import { PostQueryDto } from "../dto/post-query.dto";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
@@ -9,8 +9,8 @@ import { HttpService } from "./http.service";
 import { CommentInterface } from "../interface/comment.interface";
 import { AdditionDto } from "../dto/addition.dto";
 import { PostDto } from "../dto/post.dto";
-import {AdditionInterface} from "../interface/addition.interface";
-import {AuthService} from "./auth.service";
+import { AdditionInterface } from "../interface/addition.interface";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: 'root'

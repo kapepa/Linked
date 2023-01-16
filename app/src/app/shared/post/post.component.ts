@@ -68,17 +68,21 @@ export class PostComponent implements OnInit, OnDestroy {
     this.postService.likeTapePost(this.post.id, this.index).subscribe();
   }
 
-  async onComment(e: Event) {
+  onComment(e: Event) {
     e.preventDefault();
     e.stopPropagation();
+    let postServiceSub = this.postService.getOnePost(this.post.id).subscribe({
+      next: async () => {
+        const popover = await this.popoverController.create({
+          component: PopupCommentComponent,
+          cssClass: 'post__popup-comment',
+          componentProps: { closePopup: async () => { await popover.dismiss() } }
+        });
 
-    const popover = await this.popoverController.create({
-      component: PopupCommentComponent,
-      cssClass: 'post__popup-comment',
-      componentProps: { closePopup: async () => { await popover.dismiss() } }
-    });
-
-    await popover.present();
+        await popover.present();
+      },
+      complete: () => postServiceSub.unsubscribe(),
+    })
   }
 
   get avatar () {

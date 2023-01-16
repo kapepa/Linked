@@ -1,6 +1,7 @@
 import {PostInterface} from "./post.interface";
 import {FriendsInterface} from "./friends.interface";
 import {CommentInterface} from "./comment.interface";
+import {EventInterface} from "./event.interface";
 
 export type Role = 'user' | 'admin' | 'ghost';
 
@@ -18,5 +19,6 @@ export interface UserInterface {
   comment: CommentInterface[]
   role: Role;
   feet?: PostInterface[];
+  event?: EventInterface;
   created_at?: Date;
 }

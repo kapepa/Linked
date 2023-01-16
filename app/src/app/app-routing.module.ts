@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: 'person', loadChildren: () => import('./modules/person/person.module').then(m => m.PersonModule) },
   { path: 'feet', loadChildren: () => import('./modules/feet/feet.module').then(m => m.FeetModule), data: { preload: true } },
   { path: 'events', loadChildren: () => import('./modules/event/event.module').then(m => m.EventModule), data: { preload: true} },
+  { path: 'new', loadChildren: () => import('./modules/new/new.module').then(m => m.NewModule), data: {preload: true} },
   { path: '', redirectTo: '/home', pathMatch: 'full' }
   // { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
 ];

@@ -15,7 +15,7 @@ export class PopupEventComponent implements OnInit, OnDestroy {
 
   eventForm: FormGroup = this.fb.group({
     img: new FormControl<File | string>('', [Validators.required] ),
-    type: new FormControl<string>('', [Validators.required]),
+    type: new FormControl<string>('online', [Validators.required]),
     title: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
     date: new FormControl<Date>(null,[Validators.required]),
     time: new FormControl<Date>(null,[Validators.required]),
@@ -30,13 +30,9 @@ export class PopupEventComponent implements OnInit, OnDestroy {
     private eventService: EventService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {}
 
-  }
-
-  ngOnDestroy() {
-
-  }
+  ngOnDestroy() {}
 
   onClose(e: Event) {
     this.closeEvent();
@@ -47,7 +43,9 @@ export class PopupEventComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(e: Event) {
-
+    this.eventService.createEvent(this.eventForm.value).subscribe({
+      next: () => this.closeEvent(),
+    });
   }
 
   onChange(e: Event) {
