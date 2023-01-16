@@ -6,6 +6,7 @@ import { AuthService } from "../../core/service/auth.service";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { AdditionSearchComponent } from "../addition-search/addition-search.component";
 import { PopupEventComponent } from "../popup-event/popup-event.component";
+import { PostService } from "../../core/service/post.service";
 
 @Component({
   selector: 'app-new-publications',
@@ -23,13 +24,15 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   query: {[key: string]: string | boolean | number};
   query$: BehaviorSubject<{[key: string]: string | boolean | number}> = new BehaviorSubject<{[key: string]: string | boolean | number}>({});
 
-  @ViewChild('post') post: ElementRef;
-  @ViewChild('photoFile') photoFile: ElementRef<HTMLInputElement>
+  @ViewChild('post') post: ElementRef<HTMLInputElement>;
+  @ViewChild('photoFile') photoFile: ElementRef<HTMLInputElement>;
+  @ViewChild('videoFile') videoFile: ElementRef<HTMLInputElement>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private postService: PostService,
     private popoverController: PopoverController,
   ) { }
 
@@ -122,7 +125,16 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   changePhoto(e: Event) {
     let file = (e.target as HTMLInputElement).files[0];
-    console.log(file)
+    this.postService.installPostField({ img: file });
+  }
+
+  onVideo(e: Event) {
+    this.videoFile.nativeElement.click();
+  }
+
+  changeVideo(e: Event) {
+    let file = (e.target as HTMLInputElement).files[0];
+    this.postService.installPostField({ video: file });
   }
 
   set setQuery(query: {[key: string]: string | boolean | number}) {

@@ -6,9 +6,9 @@ import {AdditionInterface} from "./addition.interface";
 export interface PostInterface {
   id?: string,
   img?: string | File,
-  video?: string,
+  video?: string | File,
   file?: string,
-  body: string,
+  body?: string,
   access?: AccessEnum,
   addition?: AdditionInterface,
   author?: UserInterface,

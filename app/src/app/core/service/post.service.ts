@@ -225,6 +225,10 @@ export class PostService {
       )
   }
 
+  installPostField(post: PostDto){
+    this.setCreatedPost = {...this.post, ...post} as PostDto;
+  }
+
   set setPost(post: PostInterface) {
     this.post = post;
     this.post$.next(this.post);
