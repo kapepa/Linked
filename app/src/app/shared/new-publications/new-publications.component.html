@@ -24,9 +24,11 @@
         <ion-icon slot="start" name="calendar"></ion-icon>Event
       </ion-button>
     </ion-router-link>
-    <ion-button class="new-publications__button" size="default" color="danger" fill="clear">
-      <ion-icon slot="start" name="document-text"></ion-icon>Write article
-    </ion-button>
+    <ion-router-link [routerLink]="['/new']" >
+      <ion-button class="new-publications__button" size="default" color="danger" fill="clear">
+        <ion-icon slot="start" name="document-text"></ion-icon>Write article
+      </ion-button>
+    </ion-router-link>
   </ion-card-content>
   <input (change)="changePhoto($event)" accept="image/*" class="new-publications__display-none" type="file" name="photo" #photoFile/>
   <input (change)="changeVideo($event)" accept="video/mp4," class="new-publications__display-none" type="file" name="video" #videoFile/>

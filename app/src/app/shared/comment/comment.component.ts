@@ -13,7 +13,10 @@ import { UserInterface } from "../../core/interface/user.interface";
   styleUrls: ['./comment.component.scss'],
 })
 export class CommentComponent implements OnInit, OnDestroy {
-  commentForm: FormGroup;
+  commentForm: FormGroup = this.fb.group({
+    id: ['', Validators.required],
+    comment: [[], Validators.required],
+  });
   postSub: Subscription;
 
   comments: CommentInterface[];
@@ -34,7 +37,7 @@ export class CommentComponent implements OnInit, OnDestroy {
     this.postSub = this.postService.getPost.subscribe(( post: PostInterface ) => {
       this.commentForm = this.fb.group({
         id: [post.id, Validators.required],
-        comment: ['', Validators.required],
+        comment: [[], Validators.required],
       });
     })
   }
