@@ -5,10 +5,10 @@ import {AdditionDto} from "./addition.dto";
 
 export class PostDto {
   id?: string
-  img?: string
-  video?: string
+  img?: string | File
+  video?: string | File
   file?: string | File
-  body: string
+  body?: string
   access?: AccessEnum
   addition?: AdditionDto
   author?: UserDto
