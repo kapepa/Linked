@@ -24,6 +24,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   query$: BehaviorSubject<{[key: string]: string | boolean | number}> = new BehaviorSubject<{[key: string]: string | boolean | number}>({});
 
   @ViewChild('post') post: ElementRef;
+  @ViewChild('photoFile') photoFile: ElementRef<HTMLInputElement>
 
   constructor(
     private router: Router,
@@ -113,6 +114,15 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
       if(arg.role === 'backdrop')  this.router.navigate([],{ queryParams: {} })
     })
     await this.popoverEvent.present();
+  }
+
+  onPhoto(e: Event) {
+    this.photoFile.nativeElement.click();
+  }
+
+  changePhoto(e: Event) {
+    let file = (e.target as HTMLInputElement).files[0];
+    console.log(file)
   }
 
   set setQuery(query: {[key: string]: string | boolean | number}) {
