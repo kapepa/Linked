@@ -23,6 +23,6 @@ export class UsersInterface {
   messages?: MessageInterface[]
   my_like?: FeetInterface[]
   comment?: CommentInterface[]
-  event?: EventInterface
+  event?: EventInterface[]
   created_at?: Date;
 }

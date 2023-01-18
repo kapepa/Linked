@@ -32,7 +32,7 @@ export class UsersDto{
   avatar?: string
 
   @ApiProperty({ type: () => FriendsDto })
-  request?: FriendsDto[]
+  request?: FriendsDto[];
 
   @ApiProperty({ type: () => FriendsDto })
   suggest?: FriendsDto[];
@@ -59,7 +59,7 @@ export class UsersDto{
   comment?: CommentDto[]
 
   @ApiProperty({ type: () => EventDto })
-  event?: EventDto
+  event?: EventDto[]
 
   @ApiProperty()
   created_at?: Date;
