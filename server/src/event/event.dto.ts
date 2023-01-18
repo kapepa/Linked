@@ -13,7 +13,7 @@ export class EventDto {
   date?: Date
 
   @ApiProperty()
-  img?: File | string
+  img?: string
 
   @ApiProperty()
   link?: string

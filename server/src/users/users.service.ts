@@ -40,7 +40,7 @@ export class UsersService {
     return from(this.usersRepository.find({...options}));
   }
   
-  updateUser(key: string, val: string, data: UsersInterface ): Observable<UpdateResult> {
+  updateUser(key: string, val: string, data: UsersDto | UsersInterface ): Observable<UpdateResult> {
     return from(this.usersRepository.update({[key]: val}, data));
   }
 
