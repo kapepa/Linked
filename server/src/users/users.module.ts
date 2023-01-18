@@ -7,13 +7,13 @@ import { FileModule } from "../file/file.module";
 import { AuthModule } from "../auth/auth.module";
 
 @Module({
+  controllers: [UsersController],
+  providers: [UsersService],
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule),
     FileModule,
   ],
-  controllers: [UsersController],
   exports: [UsersService],
-  providers: [UsersService],
 })
 export class UsersModule {}

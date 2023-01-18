@@ -1,7 +1,7 @@
 import {
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, JoinColumn,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -14,6 +14,7 @@ import { Chat } from "../chat/chat.entity";
 import { MessageEntity } from "../chat/message.entity";
 import { CommentEntity } from "../feet/comment.entity";
 import { UsersInterface } from "./users.interface";
+import { EventEntity } from "../event/event.entity";
 
 @Entity()
 export class User implements UsersInterface{
@@ -63,6 +64,9 @@ export class User implements UsersInterface{
 
   @OneToMany(() => MessageEntity, (message) => message.owner)
   messages: MessageEntity[];
+
+  @OneToMany(() => EventEntity, (event) => event.user)
+  event: EventEntity[];
 
   @CreateDateColumn({ select: false, name: 'created_at'})
   created_at: Date;

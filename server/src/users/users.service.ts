@@ -40,7 +40,7 @@ export class UsersService {
     return from(this.usersRepository.find({...options}));
   }
   
-  updateUser(key: string, val: string, data: UsersDto): Observable<UpdateResult> {
+  updateUser(key: string, val: string, data: UsersInterface ): Observable<UpdateResult> {
     return from(this.usersRepository.update({[key]: val}, data));
   }
 
@@ -50,8 +50,8 @@ export class UsersService {
     );
   }
 
-  saveUser(data: UsersDto | UsersInterface ): Observable<(UsersInterface | UsersDto)>{
-    return from(this.usersRepository.save(data));
+  saveUser(user: UsersDto | UsersInterface ): Observable<UsersInterface | UsersDto>{
+    return from(this.usersRepository.save(user));
   }
 
   person(personID: string, user: UsersDto): Observable<any> {

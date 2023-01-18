@@ -6,10 +6,18 @@ import {multerOption} from "../file/file.service";
 import {Observable, of} from "rxjs";
 import {EventInterface} from "./event.interface";
 import {EventDto} from "./event.dto";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {EventEntity} from "./event.entity";
 
 @ApiTags('event')
 @Controller('event')
 export class EventController {
+
+  constructor(
+    @InjectRepository(EventEntity)
+    private eventRepository: Repository<EventEntity>,
+  ) {}
 
   @Post('/create')
   @UseGuards(JwtAuthGuard)
