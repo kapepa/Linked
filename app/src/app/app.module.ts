@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {ActivatedRoute, RouteReuseStrategy} from '@angular/router';
-
+import { RouteReuseStrategy} from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
@@ -30,12 +28,15 @@ import { GroupSideBarModule } from "./shared/group-side-bar/group-side-bar.modul
 import { PopupEventModule } from "./shared/popup-event/popup-event.module";
 import { CheckboxModule } from "./shared/checkbox/checkbox.module";
 import { RadioModule } from "./shared/radio/radio.module";
+import { PopupsModule } from "./core/layer/popups/popups.module";
+import { BoardEventsModule } from "./shared/board-events/board-events.module";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     PipeModule,
     RadioModule,
+    PopupsModule,
     CommonModule,
     BrowserModule,
     PopoverModule,
@@ -48,6 +49,7 @@ import { RadioModule } from "./shared/radio/radio.module";
     HttpClientModule,
     FileReaderModule,
     PopupEventModule,
+    BoardEventsModule,
     PostEditionModule,
     VideoReaderModule,
     GroupSideBarModule,

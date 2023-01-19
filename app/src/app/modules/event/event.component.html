@@ -1,3 +1,21 @@
-<p>
-  event works!
-</p>
+<app-popups></app-popups>
+<ion-router-outlet></ion-router-outlet>
+<app-header></app-header>
+
+<ion-content>
+  <div class="container">
+    <div class="event">
+      <div class="event__head">
+        <ion-title class="event__title">Event</ion-title>
+        <ion-router-link [routerLink]="[]" [queryParams]="{event: true}">
+          <ion-button size="small" shape="round" fill="outline">Create event</ion-button>
+        </ion-router-link>
+      </div>
+      <div class="event__board">
+        <app-board-events title="Popular events" [events]="events"></app-board-events>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<app-basement></app-basement>

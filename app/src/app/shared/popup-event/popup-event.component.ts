@@ -46,7 +46,7 @@ export class PopupEventComponent implements OnInit, OnDestroy {
     this.eventService.createEvent(this.eventForm.value).subscribe({
       next: () => this.closeEvent(),
     });
-  }
+  };
 
   onChange(e: Event) {
     let file = (e.target as HTMLInputElement).files[0];

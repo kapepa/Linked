@@ -4,8 +4,9 @@ import { TapePostComponent } from "./tape-post.component";
 import { PostModule } from "../post/post.module";
 import { IonicModule } from "@ionic/angular";
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import {PipeModule} from "../../core/pipe/pipe.module";
-import {RouterModule} from "@angular/router";
+import { PipeModule } from "../../core/pipe/pipe.module";
+import { RouterModule } from "@angular/router";
+import { DirectiveModule } from "../../core/directive/directive.module";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,9 @@ import {RouterModule} from "@angular/router";
     IonicModule,
     CommonModule,
     RouterModule,
-    ScrollingModule
+    ScrollingModule,
+    DirectiveModule,
+
   ]
 })
 export class TapePostModule { }
