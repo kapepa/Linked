@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UrlPipe } from "./url.pipe";
+import { ScrollPipe } from './scroll.pipe';
 
 
 
 @NgModule({
   declarations: [
-    UrlPipe
+    UrlPipe,
+    ScrollPipe,
   ],
   exports: [
     UrlPipe,
+    ScrollPipe,
     CommonModule,
   ],
   imports: [

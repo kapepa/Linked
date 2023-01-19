@@ -11,6 +11,9 @@ export class EventEntity implements EventInterface{
   @ManyToOne( () => User, (user) => user.event )
   user: User;
 
+  @Column({ type: 'date', default: () => 'NOW()', })
+  date: Date
+
   @Column()
   img: string;
 

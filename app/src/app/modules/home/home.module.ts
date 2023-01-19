@@ -11,6 +11,7 @@ import { NewPublicationsModule } from "../../shared/new-publications/new-publica
 import { TapePostModule } from "../../shared/tape-post/tape-post.module";
 import { BasementModule } from "../../shared/basement/basement.module";
 import { GroupSideBarModule } from "../../shared/group-side-bar/group-side-bar.module";
+import { PopupsModule } from "../../core/layer/popups/popups.module";
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { GroupSideBarModule } from "../../shared/group-side-bar/group-side-bar.m
     FormsModule,
     HeaderModule,
     CommonModule,
+    PopupsModule,
     TapePostModule,
     BasementModule,
     HomeRoutingModule,
