@@ -40,4 +40,21 @@ export class EventDetailedComponent implements OnInit, OnDestroy {
   get getDateMeeting() {
     return `${this.getDate.getDate()} ${this.monthNames[this.getDate.getMonth()]} ${this.getDate.getFullYear()}`
   }
+
+  get eventWill() {
+    let dateNow = new Date(Date.now());
+    let today = new Date(`${dateNow.getMonth() + 1},${dateNow.getDate()},${dateNow.getFullYear()}`).getTime();
+    let eventDay = new Date(`${this.getDate.getMonth() + 1},${this.getDate.getDate()},${this.getDate.getFullYear()}`).getTime();
+    let dayMilliseconds = 1000 * 60 * 60 * 24;
+
+    switch (eventDay) {
+      case today: console.log('today')
+        break;
+      case today - dayMilliseconds: console.log('yesterday')
+        break;
+    }
+
+    console.log(dayMilliseconds)
+    return 'today'
+  }
 }
