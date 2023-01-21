@@ -1,0 +1,43 @@
+.aside-event{
+  &__aside{
+    grid-area: aside;
+    row-gap: 18px;
+    display: flex;
+    flex-direction: column;
+  }
+  &__cap{
+    border-radius: 10px;
+    background-color: white;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 18px;
+  }
+  &__calendar{
+    width: 48px;
+    height: 48px;
+  }
+  &__create{
+    display: flex;
+    flex-direction: column;
+  }
+  &__desc{
+    padding-bottom: 15px;
+  }
+  &__event{
+    align-self: flex-end;
+  }
+  &__other{
+    border-radius: 10px;
+    background-color: white;
+    padding: 24px;
+  }
+  &__h5{
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+  }
+  &__tape{
+    padding-top: 10px;
+  }
+}
