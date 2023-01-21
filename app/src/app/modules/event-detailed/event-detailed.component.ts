@@ -38,6 +38,6 @@ export class EventDetailedComponent implements OnInit, OnDestroy {
   }
 
   get getDateMeeting() {
-    return `${this.getDate.getDate()} ${this.monthNames[this.getDate.getMonth()]} ${}`
+    return `${this.getDate.getDate()} ${this.monthNames[this.getDate.getMonth()]} ${this.getDate.getFullYear()}`
   }
 }
