@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
 import {ApiBody, ApiConsumes, ApiForbiddenResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {FileInterceptor} from "@nestjs/platform-express";
@@ -25,6 +25,14 @@ export class EventController {
     let toEvent = JSON.parse(JSON.stringify(body));
     return this.eventService.createEvent({...toEvent, img: img.filename, user: req.user});
   };
+
+  @Get('one/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({description: 'get one event on id', type: EventInterface})
+  @ApiForbiddenResponse({ description: 'Forbidden.'})
+  oneEvent(@Param() param, @Req() req):any {
+    return this.eventService.findOneEvent({ where: { id: param.id }})
+  }
 
   @Get('list')
   @UseGuards(JwtAuthGuard)
