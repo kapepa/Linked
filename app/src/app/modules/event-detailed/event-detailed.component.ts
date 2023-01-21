@@ -52,6 +52,7 @@ export class EventDetailedComponent implements OnInit, OnDestroy {
         break;
       case today - dayMilliseconds: console.log('yesterday')
         break;
+      default: console.log('event is end')
     }
 
     console.log(dayMilliseconds)
