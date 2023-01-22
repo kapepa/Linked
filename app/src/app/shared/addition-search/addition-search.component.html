@@ -1,0 +1,74 @@
+<ion-content class="addition-publication" >
+  <form [formGroup]="additionForm" (ngSubmit)="onSubmit($event)">
+    <ion-header class="addition-publication__header">
+      <ion-label class="addition-publication__label">Tell us what kind of specialists you are looking for</ion-label>
+      <ion-button id="close" class="addition-publication__close ion-no-padding" fill="clear" color="medium" shape="round" (click)="onClose($event)">
+        <ion-icon class="addition-publication__x-close" name="close-outline" ></ion-icon>
+      </ion-button>
+    </ion-header>
+    <ion-content scroll-y="false" class="addition-publication__content">
+      <ion-list class="addition-publication__list">
+        <ion-item class="addition-publication__item">
+          <ion-label position="floating">Job title</ion-label>
+          <ion-input formControlName="jobTitle" name="job_title" class="addition-publication__input"
+          ></ion-input>
+          <ng-template [ngIf]="getJob.invalid && (getJob.dirty || getJob.touched)">
+            <ion-note slot="error" *ngIf="getJob.errors?.['required']">
+              Job title is required.
+            </ion-note>
+            <ion-note slot="error" *ngIf="getJob.errors?.['minlength']">
+              Job title must be at least 4 characters long.
+            </ion-note>
+          </ng-template>
+        </ion-item>
+        <ion-item class="addition-publication__item">
+          <ion-label position="floating">Company</ion-label>
+          <ion-input formControlName="company" name="company" class="addition-publication__input"></ion-input>
+          <ng-template [ngIf]="getCompany.invalid && (getCompany.dirty || getCompany.touched)">
+            <ion-note slot="error" *ngIf="getCompany.errors?.['required']">
+              Сompany is required.
+            </ion-note>
+            <ion-note slot="error" *ngIf="getCompany.errors?.['minlength']">
+              Сompany must be at least 4 characters long.
+            </ion-note>
+          </ng-template>
+        </ion-item>
+        <ion-item class="addition-publication__item">
+          <ion-label position="floating">Place of work</ion-label>
+          <ion-input formControlName="placesWork" name="place_of_work" class="addition-publication__input"></ion-input>
+          <ng-template [ngIf]="getPlace.invalid && (getPlace.dirty || getPlace.touched)">
+            <ion-note slot="error" *ngIf="getPlace.errors?.['required']">
+              Place of work is required.
+            </ion-note>
+            <ion-note slot="error" *ngIf="getPlace.errors?.['minlength']">
+              Place of work must be at least 4 characters long.
+            </ion-note>
+          </ng-template>
+        </ion-item>
+        <ion-item class="addition-publication__item">
+          <ion-label position="floating">Region</ion-label>
+          <ion-input formControlName="region" name="region" class="addition-publication__input"></ion-input>
+          <ng-template [ngIf]="getRegion.invalid && (getRegion.dirty || getRegion.touched)">
+            <ion-note slot="error" *ngIf="getPlace.errors?.['required']">
+              Place of work is required.
+            </ion-note>
+            <ion-note slot="error" *ngIf="getRegion.errors?.['minlength']">
+              Place of work must be at least 4 characters long.
+            </ion-note>
+          </ng-template>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+    <ion-footer class="ion-no-border addition-publication__footer" collapse="fade">
+      <ion-router-link [routerLink]="['/home']" [queryParams]="getQuery" >
+        <ion-button shape="round" size="small">Back</ion-button>
+      </ion-router-link>
+      <ion-button
+        type="submit"
+        shape="round"
+        size="small"
+        [disabled]="!additionForm.valid"
+      >Ahead</ion-button>
+    </ion-footer>
+  </form>
+</ion-content>

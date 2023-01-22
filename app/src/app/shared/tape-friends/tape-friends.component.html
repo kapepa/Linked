@@ -1,0 +1,30 @@
+<ion-content class="tape-friends">
+
+  <ion-list *ngIf="friends.length; else noFriends" class="tape-friends__list" >
+    <ng-container *ngFor="let friend of friends; index as i">
+      <div class="tape-friends__item" [ngClass]="{'tape-friends__item--active': friend.id === activeConversation}" (click)="onFriends(friend.id, i)">
+        <div class="tape-friends__avatar">
+          <img *ngIf="friend.avatar; else avatarIco" class="tape-friends__avatar" alt="avatar" src="{{friend.avatar | url}}" />
+          <ng-template #avatarIco>
+            <ion-icon  class="tape-friends__avatar" name="person-outline"></ion-icon>
+          </ng-template>
+        </div>
+        <div class="tape-friends__naming">
+          <div class="tape-friends__name">{{friend.firstName}}</div>
+          <div class="tape-friends__name">{{friend.lastName}}</div>
+        </div>
+        <div *ngIf="noRead.includes(friend.id)" class="tape-friends__no-read"></div>
+      </div>
+    </ng-container>
+  </ion-list>
+
+  <ng-template #noFriends>
+    <ion-text class="tape-friends__text">
+      <span class="tape-friends__span">You don't have friends</span>
+    </ion-text>
+  </ng-template>
+
+  <ion-infinite-scroll [disabled]="false" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

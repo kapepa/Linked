@@ -1,0 +1,32 @@
+<app-popups></app-popups>
+<ion-router-outlet></ion-router-outlet>
+<app-header></app-header>
+
+<ion-content [fullscreen]="true" class="home__content" >
+  <ion-grid class="container home__container">
+    <aside class="home__profile">
+      <app-tape-profile></app-tape-profile>
+      <app-group-side-bar></app-group-side-bar>
+    </aside>
+    <main class="home__main">
+      <app-new-publications></app-new-publications>
+      <div class="home__tape-post">
+        <app-tape-post></app-tape-post>
+      </div>
+    </main>
+    <aside class="home__add">
+      <app-recommended [recommended]="recommended"></app-recommended>
+    </aside>
+  </ion-grid>
+</ion-content>
+
+<app-basement></app-basement>
+
+
+
+
+
+
+
+
+

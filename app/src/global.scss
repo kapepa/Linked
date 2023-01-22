@@ -1,0 +1,120 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+//body{
+//  background-color: #F3F2EF;
+//}
+
+ion-app{
+  min-width: 320px;
+  --ion-background-color: #F3F2EF;
+}
+.container{
+  max-width: 1220px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  --padding-start: auto;
+  --padding-end: auto;
+}
+
+.NgxEditor{
+  min-height: 300px;
+}
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+}
+
+.form{
+  padding: 24px;
+  width: 100%;
+  min-width: 320px;
+  &__shape{
+
+  }
+  &__submit{
+    margin-top: 20px;
+  }
+  &__cell{
+    position: relative;
+    padding-bottom: 18px;
+  }
+  &__item{
+    position: relative;
+  }
+  &__frame{
+    position: relative;
+    margin-bottom: 25px;
+    background-color: #2dd36f;
+  }
+  &__alert{
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    color: #eb445a;
+  }
+}
+
+.new-publications__create{
+  --min-width: 320px;
+  --max-width: 520px;
+  --width: 100%;
+  border-radius: 20px;
+}
+
+.popup-notification__popover {
+  --min-width: 320px;
+  --max-width: 440px;
+  --width: 100%;
+}
+
+.post__popup-comment{
+  --min-width: 320px;
+  --max-width: 440px;
+  --width: 100%;
+}
+
+
+
+@media screen and (max-width: 992px){
+  .container{
+    max-width: 700px;
+  }
+}
+
+@media screen and (max-width: 760px){
+  .new-publications__create{
+    --width: 90%;
+  }
+}
+
+@media screen and (max-width: 576px){
+
+}

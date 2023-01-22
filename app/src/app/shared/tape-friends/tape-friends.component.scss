@@ -1,0 +1,42 @@
+.tape-friends{
+  &__list{
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 6px;
+  }
+  &__item{
+    display: flex;
+    column-gap: 8px;
+    align-items: center;
+    cursor: pointer;
+    padding: 6px;
+    position: relative;
+    &--active{
+      background-color: rgba(0,0,0, .1);
+      cursor: default;
+      border-radius: 10px;
+    }
+  }
+  &__avatar{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  &__name{
+    font-size: 15px;
+  }
+  &__span{
+    padding-top: 8px;
+    display: inline-block;
+  }
+  &__no-read{
+    background-color: rgba(255, 143, 143, 1);
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    border-radius: 50%;
+    top: 5px;
+    right: 5px;
+  }
+}

@@ -1,0 +1,61 @@
+<ion-card class="post">
+  <ion-router-link class="post__link" [routerLink]="'/feet/' + post.id" >
+    <ion-card-header class="post__header">
+      <ion-router-link
+        [routerLink]="userID === post?.author?.id ? null :['/person', post?.author?.id]"
+        class="post__header-left"
+        (click)="onAuthor($event)"
+      >
+        <ion-row style="display: flex; align-items: center">
+          <ion-avatar class="post__avatar">
+            <ng-container *ngIf="!!avatar; else avatarIco">
+              <img class="post__img" alt="avatar" src="{{ avatar | url }}" />
+            </ng-container>
+            <ng-template #avatarIco>
+              <ion-icon  class="post__img" name="person-outline"></ion-icon>
+            </ng-template>
+          </ion-avatar>
+          <div class="post__header-name">
+            <ion-card-subtitle class="post__subtitle">{{ post?.author?.firstName }} {{ post?.author?.lastName }}</ion-card-subtitle>
+            <ion-card-subtitle class="post__subtitle">Full Stack Developer</ion-card-subtitle>
+          </div>
+        </ion-row>
+      </ion-router-link>
+      <div class="post__header-right">
+        <ng-container *ngIf="userID === post?.author?.id">
+          <ion-button id="edit" (click)="onEdit($event)" class="post__btn-icon" title="Edit" fill="clear">
+            <ion-icon class="post__icon" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button id="del" (click)="onDelete($event)" class="post__btn-icon" title="Delete" fill="clear">
+            <ion-icon class="post__icon" color="danger" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+      </div>
+    </ion-card-header>
+
+    <ion-card-content class="post__header__content">{{post?.body}}</ion-card-content>
+
+    <ion-card-content class="post__footer">
+      <ion-button [disabled]="!postLoad" (click)="onLike($event)" class="post__btn-action" fill="clear" color="medium">
+        <ion-icon *ngIf="!post.like.length; else haveLike" slot="start" name="thumbs-up-outline"></ion-icon>
+        <ng-template #haveLike>
+          <ion-icon slot="start" name="thumbs-up"></ion-icon>
+        </ng-template>
+        Like
+      </ion-button>
+      <ion-button (click)="onComment($event)" class="post__btn-action" fill="clear" color="medium">
+        <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
+        Comment
+      </ion-button>
+      <ion-button class="post__btn-action" fill="clear" color="medium">
+        <ion-icon slot="start" name="arrow-redo"></ion-icon>
+        Shared
+      </ion-button>
+      <ion-button class="post__btn-action" fill="clear" color="medium">
+        <ion-icon slot="start" name="paper-plane-outline"></ion-icon>
+        Send
+      </ion-button>
+    </ion-card-content>
+  </ion-router-link>
+</ion-card>
+

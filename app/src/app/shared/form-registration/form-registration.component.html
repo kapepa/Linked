@@ -1,0 +1,66 @@
+<div class="form">
+  <form id="form" [formGroup]="regForm" (ngSubmit)="onSubmit()" class="form__shape form-registration">
+
+    <div class="form__cell">
+      <ion-item class="form__item">
+        <ion-label for="first-name" position="floating">First Name</ion-label>
+        <ion-input id="first-name" type="text" formControlName="firstName"></ion-input>
+      </ion-item>
+      <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="form__alert">
+        <div *ngIf="firstName.errors?.['required'] && firstName.touched">
+          First name is required.
+        </div>
+        <div *ngIf="firstName.errors?.['minlength'] && firstName.touched">
+          First name be at least 3 characters long.
+        </div>
+      </div>
+    </div>
+
+    <div class="form__cell">
+      <ion-item class="form__item">
+        <ion-label for="last-name" position="floating">Last Name</ion-label>
+        <ion-input id="last-name" type="text" formControlName="lastName"></ion-input>
+      </ion-item>
+      <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="form__alert">
+        <div *ngIf="lastName.errors?.['required'] && lastName.touched">
+          Last name is required.
+        </div>
+        <div *ngIf="lastName.errors?.['minlength'] && lastName.touched">
+          Last name be at least 3 characters long.
+        </div>
+      </div>
+    </div>
+
+    <div class="form__cell">
+      <ion-item class="form__item">
+        <ion-label for="email" position="floating">Email</ion-label>
+        <ion-input id="email" type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <div *ngIf="email.invalid && (email.dirty || email.touched)" class="form__alert">
+        <div *ngIf="email.errors?.['required'] && email.touched">
+          Email name is required.
+        </div>
+        <div *ngIf="email.errors?.['minlength'] && email.touched">
+          Email must be filled out correctly
+        </div>
+      </div>
+    </div>
+
+    <div class="form__cell">
+      <ion-item class="form__item">
+        <ion-label for="password" position="floating">Password</ion-label>
+        <ion-input id="password" type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="form__alert">
+        <div *ngIf="password.errors?.['required'] && password.touched">
+          Password name is required.
+        </div>
+        <div *ngIf="password.errors?.['minlength'] && password.touched">
+          Password must be min length five sing.
+        </div>
+      </div>
+    </div>
+
+    <ion-button [disabled]="regForm.invalid" type="submit" class="form__submit" expand="block" shape="round">Accept and join</ion-button>
+  </form>
+</div>
