@@ -11,7 +11,6 @@
   <div class="aside-event__other">
     <h5 class="aside-event__h5">Other events</h5>
     <div class="aside-event__tape">
-<<<<<<< HEAD
       <div *ngIf="!!tapeEvent.length ; else noEvent" >
         <ion-router-link class="event-tape" *ngFor="let event of tapeEvent" [routerLink]="['/event', event.id]" >
           <div class="event-tape__grid">
@@ -26,9 +25,6 @@
       <ng-template #noEvent>
         <div>No event</div>
       </ng-template>
-=======
-      this tape event
->>>>>>> 2f2490c84c31548508b2502ba84af8ad11d1431e
     </div>
   </div>
 </aside>
