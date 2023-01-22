@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {UserInterface} from "../../core/interface/user.interface";
 
-
 @Component({
   selector: 'app-recommended',
   templateUrl: './recommended.component.html',
@@ -13,5 +12,4 @@ export class RecommendedComponent implements OnInit {
   constructor() { }
 
   ngOnInit() { console.log(this.recommended) }
-
 }

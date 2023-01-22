@@ -15,8 +15,11 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     width: 100%;
+<<<<<<< HEAD
     column-gap: 6px;
     row-gap: 6px;
+=======
+>>>>>>> origin
   }
 }
 
@@ -25,11 +28,16 @@
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
+<<<<<<< HEAD
   display: flex;
   flex-direction: column;
   &__header{
     max-height: 225px;
     flex-grow: 1;
+=======
+  &__header{
+
+>>>>>>> origin
   }
   &__content{
     padding: 4px 12px;
@@ -40,7 +48,10 @@
   &__img{
     object-fit: cover;
     width: 100%;
+<<<<<<< HEAD
     height: 100%;
+=======
+>>>>>>> origin
   }
   &__time{
     padding: 8px 0 4px 0;
@@ -72,6 +83,7 @@
     --color: #000;
   }
 }
+<<<<<<< HEAD
 
 @media screen and (max-width: 768px) {
   .board-events{
@@ -89,3 +101,5 @@
     }
   }
 }
+=======
+>>>>>>> origin

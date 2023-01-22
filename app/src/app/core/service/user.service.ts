@@ -22,7 +22,6 @@ export class UserService {
   recommended: UserInterface[] = [] as UserInterface[];
   recommended$: BehaviorSubject<UserInterface[]> = new BehaviorSubject<UserInterface[]>(this.recommended);
 
-
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
