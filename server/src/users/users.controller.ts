@@ -54,6 +54,7 @@ export class UsersController {
     return this.usersService.person(id, req.user);
   }
 
+<<<<<<< HEAD
   @Get('recommended')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Find all user for recommended', type: UsersInterface})
@@ -62,6 +63,8 @@ export class UsersController {
     return this.usersService.findUsers();
   }
 
+=======
+>>>>>>> 2f2490c84c31548508b2502ba84af8ad11d1431e
   @Patch('update')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Update own data'})

@@ -8,6 +8,7 @@ import {Subscription} from "rxjs";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
+
 export class HomeComponent implements OnInit, OnDestroy {
   recommended: UserInterface[];
   recommendedSub: Subscription;
@@ -23,5 +24,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.recommendedSub.unsubscribe();
   }
+
 
 }

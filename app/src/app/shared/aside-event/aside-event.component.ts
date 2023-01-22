@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import {Component, Input, OnInit} from '@angular/core';
 import {EventInterface} from "../../core/interface/event.interface";
+=======
+import { Component, OnInit } from '@angular/core';
+>>>>>>> 2f2490c84c31548508b2502ba84af8ad11d1431e
 
 @Component({
   selector: 'app-aside-event',
@@ -7,6 +11,7 @@ import {EventInterface} from "../../core/interface/event.interface";
   styleUrls: ['./aside-event.component.scss'],
 })
 export class AsideEventComponent implements OnInit {
+<<<<<<< HEAD
   @Input('tapeEvent') tapeEvent: EventInterface[];
   monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
 
@@ -31,4 +36,11 @@ export class AsideEventComponent implements OnInit {
       default: return `event is end`;
     }
   }
+=======
+
+  constructor() { }
+
+  ngOnInit() {}
+
+>>>>>>> 2f2490c84c31548508b2502ba84af8ad11d1431e
 }

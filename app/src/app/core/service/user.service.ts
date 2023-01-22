@@ -22,6 +22,7 @@ export class UserService {
   recommended: UserInterface[] = [] as UserInterface[];
   recommended$: BehaviorSubject<UserInterface[]> = new BehaviorSubject<UserInterface[]>(this.recommended);
 
+
   constructor(
     private http: HttpClient,
     private httpService: HttpService,
@@ -96,6 +97,6 @@ export class UserService {
 
   set setUserLoader(bool: boolean) {
     this.userLoader = bool;
-    this.userLoader$.next(this.userLoader)
+    this.userLoader$.next(this.userLoader);
   }
 }
