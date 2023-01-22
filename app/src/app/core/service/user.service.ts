@@ -96,6 +96,6 @@ export class UserService {
 
   set setUserLoader(bool: boolean) {
     this.userLoader = bool;
-    this.userLoader$.next(this.userLoader);
+    this.userLoader$.next(this.userLoader)
   }
 }
