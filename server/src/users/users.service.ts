@@ -104,7 +104,7 @@ export class UsersService {
     )
   }
 
-  recommendedUsers(user: UsersDto) {
+  recommendedUsers(user: UsersDto): Observable<UsersInterface[]> {
     return from(this.usersRepository.find({where: {id: Not(user.id)}}));
   }
 
