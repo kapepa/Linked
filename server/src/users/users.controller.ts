@@ -54,6 +54,14 @@ export class UsersController {
     return this.usersService.person(id, req.user);
   }
 
+  @Get('recommended')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Find all user for recommended', type: UsersInterface})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with recommended'})
+  recommended(@Req() req): Observable<UsersInterface[]> {
+    return this.usersService.recommendedUsers(req.user);
+  }
+
   @Patch('update')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Update own data'})

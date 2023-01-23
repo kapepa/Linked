@@ -20,11 +20,13 @@
     padding-left: 8px;
   }
   &__action{
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
   &__button{
     flex-grow: 1;
+    text-align: center;
+    width: 100%;
     &--event{
       --color: #855050;
     }
@@ -37,11 +39,14 @@
   }
 }
 
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 1024px) {
+
+}
+
+@media screen and (max-width: 768px) {
   .new-publications{
     &__action{
-      display: flex;
-      flex-wrap: wrap;
+      grid-template-columns: 1fr 1fr;
     }
   }
 }
@@ -49,8 +54,6 @@
 @media screen and (max-width: 576px) {
   .new-publications{
     &__action{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
     }
     &__button{
       font-size: 12px;

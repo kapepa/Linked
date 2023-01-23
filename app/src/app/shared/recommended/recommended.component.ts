@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {UserInterface} from "../../core/interface/user.interface";
 
 @Component({
   selector: 'app-recommended',
@@ -6,9 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./recommended.component.scss'],
 })
 export class RecommendedComponent implements OnInit {
+  @Input('recommended') recommended: UserInterface[];
 
   constructor() { }
 
-  ngOnInit() {}
-
+  ngOnInit() { }
 }

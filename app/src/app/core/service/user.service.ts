@@ -12,8 +12,15 @@ import { FriendsInterface } from "../interface/friends.interface";
 })
 export class UserService {
   configUrl = environment.configUrl;
+
   user: UserInterface;
   user$: BehaviorSubject<UserInterface> = new BehaviorSubject<UserInterface>(null);
+
+  userLoader: boolean = false;
+  userLoader$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.userLoader);
+
+  recommended: UserInterface[] = [] as UserInterface[];
+  recommended$: BehaviorSubject<UserInterface[]> = new BehaviorSubject<UserInterface[]>(this.recommended);
 
   constructor(
     private http: HttpClient,
@@ -21,22 +28,43 @@ export class UserService {
   ) { }
 
   getOwnProfile(): Observable<UserInterface> {
+    this.setUserLoader = !this.userLoader;
     return this.http.get<UserInterface>(`${this.configUrl}/api/users`).pipe(
-      tap((user: UserInterface) => {
-        this.user = user;
-        this.user$.next(this.user);
+      tap({
+        next: (user: UserInterface) => {
+          this.user = user;
+          this.user$.next(this.user);
+        },
+        complete: () => this.setUserLoader = !this.userLoader,
       }),
       catchError(this.httpService.handleError),
     )
   }
 
+  receiveRecommended(): Observable<UserInterface[]> {
+    this.setUserLoader = !this.userLoader;
+    return this.http.get<UserInterface[]>(`${this.configUrl}/api/users/recommended`).pipe(
+      take(1),
+      tap({
+        next: (users: UserInterface[]) => {this.setRecommended = users },
+        complete: () => this.setUserLoader = !this.userLoader,
+      }),
+      catchError(this.httpService.handleError)
+    )
+  }
+
   exceptRequest (index: number) {
+    this.setUserLoader = !this.userLoader;
     return this.getUser.pipe(
       take(1),
-      tap((user: UserInterface) => {
-        this.user.suggest.splice(index,1);
-        this.user$.next(this.user);
-      })
+      tap({
+        next: (user: UserInterface) => {
+          this.user.suggest.splice(index,1);
+          this.user$.next(this.user);
+        },
+        complete: () => this.setUserLoader = !this.userLoader,
+      }),
+      catchError(this.httpService.handleError),
     )
   }
 
@@ -46,5 +74,28 @@ export class UserService {
 
   get getUser(): Observable<UserInterface> {
     return this.user$.asObservable();
+  }
+
+  get getUserLoader(): Observable<boolean> {
+    return this.userLoader$.asObservable();
+  }
+
+  get getRecommended(): Observable<UserInterface[]> {
+    return this.recommended$.asObservable();
+  }
+
+  set setRecommended(users: UserInterface[]) {
+    this.recommended = users;
+    this.recommended$.next(this.recommended);
+  }
+
+  set setUser(user: UserInterface) {
+    this.user = user;
+    this.user$.next(this.user);
+  }
+
+  set setUserLoader(bool: boolean) {
+    this.userLoader = bool;
+    this.userLoader$.next(this.userLoader);
   }
 }

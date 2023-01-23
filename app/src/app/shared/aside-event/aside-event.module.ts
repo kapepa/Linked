@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {AsideEventComponent} from "./aside-event.component";
 import {IonicModule} from "@ionic/angular";
 import {RouterModule} from "@angular/router";
+import {DirectiveModule} from "../../core/directive/directive.module";
 
 
 
@@ -14,6 +15,7 @@ import {RouterModule} from "@angular/router";
     IonicModule,
     RouterModule,
     CommonModule,
+    DirectiveModule,
   ],
   exports: [
     AsideEventComponent,

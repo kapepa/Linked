@@ -18,8 +18,13 @@ export class EventsResolver implements Resolve<boolean> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return  this.eventService.listEvent({take: 6, skip: 0}).pipe(
-      switchMap((events: EventInterface[]) => of(true)),
-    );
+    return this.eventService.getEvents.pipe(
+      switchMap((events: EventInterface[]) => {
+        if(!!events.length) return of(true);
+        return this.eventService.listEvent({take: 6, skip: 0}).pipe(
+          switchMap((events: EventInterface[]) => of(true)),
+        );
+      })
+    )
   }
 }

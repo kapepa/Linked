@@ -15,14 +15,17 @@ export class EventDetailedComponent implements OnInit, OnDestroy {
   event: EventInterface;
   eventSub: Subscription;
 
+
+  events: EventInterface[];
+  eventsSub: Subscription;
+
   constructor(
     private eventService: EventService,
   ) { }
 
   ngOnInit() {
     this.eventSub = this.eventService.getEvent.subscribe((event: EventInterface) => this.event = event);
-
-    console.log(new Date(this.event.date).getMonth())
+    this.eventsSub = this.eventService.getEvents.subscribe((events: EventInterface[]) => this.events = events);
   }
 
   ngOnDestroy() {
@@ -47,15 +50,16 @@ export class EventDetailedComponent implements OnInit, OnDestroy {
     let eventDay = new Date(`${this.getDate.getMonth() + 1},${this.getDate.getDate()},${this.getDate.getFullYear()}`).getTime();
     let dayMilliseconds = 1000 * 60 * 60 * 24;
 
-    switch (eventDay) {
-      case today: console.log('today')
-        break;
-      case today - dayMilliseconds: console.log('yesterday')
-        break;
-      default: console.log('event is end')
+    switch (true) {
+      case today === eventDay : return  'today';
+      case (today + dayMilliseconds) === eventDay :  return 'tomorrow';
+      case today < eventDay : return 'soon';
+      case today > (today - dayMilliseconds) : return  'is over';
+      default: return 'event is end';
     }
+  }
 
-    console.log(dayMilliseconds)
-    return 'today'
+  get getTapeEvent() {
+    return this.events.filter((event: EventInterface) => event.id !== this.event.id).slice(0,5);
   }
 }

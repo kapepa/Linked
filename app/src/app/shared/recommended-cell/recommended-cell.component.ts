@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {UserInterface} from "../../core/interface/user.interface";
 
 @Component({
   selector: 'app-recommended-cell',
@@ -6,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./recommended-cell.component.scss'],
 })
 export class RecommendedCellComponent implements OnInit {
+  @Input('user') user: UserInterface;
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.user)
+  }
 
 }
