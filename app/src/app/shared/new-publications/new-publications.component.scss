@@ -20,7 +20,6 @@
     padding-left: 8px;
   }
   &__action{
-<<<<<<< HEAD
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
@@ -28,13 +27,6 @@
     flex-grow: 1;
     text-align: center;
     width: 100%;
-=======
-    display: flex;
-    flex-wrap: wrap;
-  }
-  &__button{
-    flex-grow: 1;
->>>>>>> origin
     &--event{
       --color: #855050;
     }
@@ -47,7 +39,6 @@
   }
 }
 
-<<<<<<< HEAD
 @media screen and (max-width: 1024px) {
 
 }
@@ -56,13 +47,6 @@
   .new-publications{
     &__action{
       grid-template-columns: 1fr 1fr;
-=======
-@media screen and (max-width: 760px) {
-  .new-publications{
-    &__action{
-      display: flex;
-      flex-wrap: wrap;
->>>>>>> origin
     }
   }
 }
@@ -70,12 +54,6 @@
 @media screen and (max-width: 576px) {
   .new-publications{
     &__action{
-<<<<<<< HEAD
-
-=======
-      display: grid;
-      grid-template-columns: 1fr 1fr;
->>>>>>> origin
     }
     &__button{
       font-size: 12px;

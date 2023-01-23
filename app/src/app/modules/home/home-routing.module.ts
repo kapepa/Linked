@@ -4,10 +4,7 @@ import { HomeComponent } from "./home.component";
 import { AuthGuard } from "../../core/guard/auth.guard";
 import { PostsResolver } from "../../core/resolver/posts.resolver";
 import { UserResolver } from "../../core/resolver/user.resolver";
-<<<<<<< HEAD
 import { RecommendedResolver } from "../../core/resolver/recommended.resolver";
-=======
->>>>>>> origin
 
 const routes: Routes = [
   {
@@ -17,10 +14,7 @@ const routes: Routes = [
     resolve: {
       user: UserResolver,
       posts: PostsResolver,
-<<<<<<< HEAD
       recommended: RecommendedResolver,
-=======
->>>>>>> origin
     }
   }
 ];

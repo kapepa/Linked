@@ -11,5 +11,5 @@ export class RecommendedComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() { console.log(this.recommended) }
+  ngOnInit() { }
 }

@@ -4,11 +4,7 @@ import {UserResolver} from "../../core/resolver/user.resolver";
 import {NgModule} from "@angular/core";
 import {EventDetailedComponent} from "./event-detailed.component";
 import {EventResolver} from "../../core/resolver/event.resolver";
-<<<<<<< HEAD
 import {EventsResolver} from "../../core/resolver/events.resolver";
-
-=======
->>>>>>> origin
 
 export const routes: Routes = [
   {
@@ -18,10 +14,7 @@ export const routes: Routes = [
     resolve: {
       user: UserResolver,
       event: EventResolver,
-<<<<<<< HEAD
       events: EventsResolver,
-=======
->>>>>>> origin
     }
   },
 ];
