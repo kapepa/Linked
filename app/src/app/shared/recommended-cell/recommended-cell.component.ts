@@ -11,8 +11,5 @@ export class RecommendedCellComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    console.log(this.user)
-  }
-
+  ngOnInit() {}
 }
