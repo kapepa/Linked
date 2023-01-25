@@ -1,1 +1,13 @@
-
+.feet{
+  --padding-top: 24px;
+  --padding-bottom: 24px;
+  &__container{
+    display: grid;
+    grid-template-columns: minmax(320px, 3fr) minmax(200px, 1fr);
+    column-gap: 24px;
+  }
+  &__main{
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -3,18 +3,15 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
   Output,
   EventEmitter
 } from '@angular/core';
 import { PostInterface } from "../../core/interface/post.interface";
 import { PopoverController } from "@ionic/angular";
-import { CreatePublicationComponent } from "../create-publication/create-publication.component";
 import { PostService } from "../../core/service/post.service";
 import { Subscription } from "rxjs";
 import { PopupCommentComponent } from "../popup-comment/popup-comment.component";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: 'app-post',
@@ -32,6 +29,8 @@ export class PostComponent implements OnInit, OnDestroy {
   postLoadSub: Subscription;
 
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private postService: PostService,
     private popoverController: PopoverController,
   ) { }
@@ -58,8 +57,9 @@ export class PostComponent implements OnInit, OnDestroy {
     this.postService.deletePost(this.index, this.post.id).subscribe(() => {})
   }
 
-  onAuthor(e: Event) {
+  async onAuthor(e: Event) {
     e.stopPropagation();
+    await this.router.navigate(['/person', this.post.author.id])
   }
 
   onLike(e: Event) {

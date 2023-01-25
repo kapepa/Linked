@@ -1,7 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {PostService} from "../../core/service/post.service";
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {PostInterface} from "../../core/interface/post.interface";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-post-edition',
@@ -9,19 +7,16 @@ import {Subscription} from "rxjs";
   styleUrls: ['./post-edition.component.scss'],
 })
 export class PostEditionComponent implements OnInit, OnDestroy {
-  post: PostInterface;
-  postSub: Subscription;
+  @Input('post') post: PostInterface;
 
-  constructor(
-    private postService: PostService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.postSub = this.postService.getPost.subscribe((post: PostInterface) => this.post = post);
+    console.log(this.post)
   }
 
   ngOnDestroy() {
-    this.postSub.unsubscribe();
+
   }
 
 }
