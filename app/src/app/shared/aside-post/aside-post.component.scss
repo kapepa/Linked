@@ -1,0 +1,18 @@
+.aside-post{
+  background-color: white;
+  border-radius: 10px;
+  padding: 14px;
+  &__h5{
+    font-size: 16px;
+    margin: 0;
+  }
+  &__column{
+    display: flex;
+    flex-direction: column;
+  }
+  &__row{
+    //display: grid;
+    //grid-template-columns: 1fr 1fr;
+
+  }
+}

@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AsidePostComponent} from "./aside-post.component";
+import {DirectiveModule} from "../../core/directive/directive.module";
 
 
 
@@ -10,6 +11,7 @@ import {AsidePostComponent} from "./aside-post.component";
   ],
   imports: [
     CommonModule,
+    DirectiveModule,
   ],
   exports: [
     AsidePostComponent,
