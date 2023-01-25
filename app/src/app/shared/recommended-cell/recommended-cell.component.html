@@ -9,7 +9,9 @@
   <ion-card-content class="ion-no-padding recommended-cell__content">
     <ion-card-title class="recommended-cell__title">{{user.lastName}} {{user.lastName}}</ion-card-title>
     <ion-card-subtitle class="recommended-cell__subtitle">Card Subtitle</ion-card-subtitle>
-    <ion-button class="recommended-cell__button" size="small" color="medium" shape="round" fill="outline">Tracked</ion-button>
+    <ion-router-link [routerLink]="['/person', user.id]">
+      <ion-button class="recommended-cell__button" size="small" color="medium" shape="round" fill="outline">Tracked</ion-button>
+    </ion-router-link>
   </ion-card-content>
 
 </ion-card>

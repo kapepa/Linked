@@ -98,6 +98,9 @@
 
 @media screen and (max-width: 576px){
   .person{
+    &__sheet{
+      width: auto;
+    }
     &__basement{
       justify-content: flex-start;
       column-gap: 5px;

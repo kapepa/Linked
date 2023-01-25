@@ -8,6 +8,7 @@ import { BasementModule } from "../../shared/basement/basement.module";
 import { FeetRoutingModule } from "./feet-routing.module";
 import { PostModule } from "../../shared/post/post.module";
 import { PostEditionModule } from "../../shared/post-edition/post-edition.module";
+import { AsidePostModule } from "../../shared/aside-post/aside-post.module";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { PostEditionModule } from "../../shared/post-edition/post-edition.module
     HeaderModule,
     CommentModule,
     BasementModule,
+    AsidePostModule,
     PostEditionModule,
     FeetRoutingModule,
   ]

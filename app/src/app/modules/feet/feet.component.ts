@@ -24,4 +24,8 @@ export class FeetComponent implements OnInit, OnDestroy {
     this.postSub.unsubscribe();
   }
 
+  get getPost (): PostInterface {
+    return this.post;
+  }
+
 }

@@ -2,13 +2,14 @@
 
 <app-header></app-header>
 
-<main class="feet">
-  <div class="container">
-    <app-post-edition></app-post-edition>
+<ion-content class="feet">
+  <div class="container feet__container">
+    <main class="feet__main">
+      <app-post-edition [post]="getPost" ></app-post-edition>
+      <app-comment></app-comment>
+    </main>
+    <app-aside-post></app-aside-post>
   </div>
-  <div class="container">
-    <app-comment></app-comment>
-  </div>
-</main>
+</ion-content>
 
 <app-basement></app-basement>
