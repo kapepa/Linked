@@ -3,6 +3,8 @@
   max-height: 510px;
   background-color: #fff;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
   &__header{
     max-height: 195px;
     position: relative;
@@ -29,5 +31,20 @@
     padding: 12px 24px 12px 24px;
     font-size: 24px;
     font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    flex-grow: 1;
+  }
+  &__addition{
+    display: block;
+    font-size: 16px;
+  }
+  &__span{
+    display: block;
+    font-weight: normal;
+  }
+  &__footer{
+    padding: 0 12px 24px 12px;
   }
 }

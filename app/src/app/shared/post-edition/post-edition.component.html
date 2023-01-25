@@ -5,6 +5,10 @@
   </div>
   <div class="post-edition__middle">
     <div class="post-edition__name">{{post.author.firstName}} {{post.author.firstName}}</div>
-    <span></span>
+    <span class="post-edition__addition">{{post.addition.company}} | {{post.addition.jobTitle}} | {{post.addition.placesWork}}</span>
+    <span class="post-edition__span">{{post.body}}</span>
+  </div>
+  <div class="post-edition__footer">
+    <ion-button shape="around">Tracking</ion-button>
   </div>
 </div>
