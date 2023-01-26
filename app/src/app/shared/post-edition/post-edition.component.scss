@@ -48,3 +48,36 @@
     padding: 0 12px 24px 12px;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .post-edition{
+    max-height: 410px;
+    &__header{
+      max-height: 155px;
+    }
+    &__bg{
+      max-height: 145px;
+    }
+    &__avatar {
+      max-height: 140px;
+      max-width: 140px;
+    }
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .post-edition{
+    max-height: 380px;
+    &__header{
+      max-height: 125px;
+      margin-bottom: 50px;
+    }
+    &__bg{
+      max-height: 115px;
+    }
+    &__avatar {
+      max-height: 110px;
+      max-width: 110px;
+    }
+  }
+}

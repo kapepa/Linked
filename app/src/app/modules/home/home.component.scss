@@ -4,7 +4,7 @@
   }
   &__container{
     display: grid;
-    grid-template-columns: minmax(180px, 225px) minmax(432px, auto) minmax(180px, 315px);
+    grid-template-columns: minmax(180px, 225px) minmax(520px, auto) minmax(180px, 315px);
     grid-gap: 15px;
     grid-template-areas: 'profile main recommended';
     height: 100%;

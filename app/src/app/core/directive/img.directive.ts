@@ -1,6 +1,5 @@
 import {Directive, ElementRef, OnInit} from '@angular/core';
 import {environment} from "../../../environments/environment";
-// import FakeImg  from "../../../assets/images/facke.png";
 
 @Directive({
   selector: '[appImg]'

@@ -13,19 +13,19 @@
     </div>
   </ion-card-header>
   <ion-card-content class="new-publications__action" >
-    <ion-button (click)="onPhoto($event)" class="new-publications__button" size="default" fill="clear">
+    <ion-button (click)="onPhoto($event)" class="new-publications__button" size="small" fill="clear">
       <ion-icon slot="start" name="image"></ion-icon>Photo
     </ion-button>
-    <ion-button (click)="onVideo($event)" class="new-publications__button" size="default" color="success" fill="clear">
+    <ion-button (click)="onVideo($event)" class="new-publications__button" size="small" color="success" fill="clear">
       <ion-icon slot="start" name="logo-youtube"></ion-icon>Video
     </ion-button>
     <ion-router-link [routerLink]="[]" [queryParams]="{event: true}">
-      <ion-button class="new-publications__button new-publications__button--event" size="default" fill="clear">
+      <ion-button class="new-publications__button new-publications__button--event" size="small" fill="clear">
         <ion-icon slot="start" name="calendar"></ion-icon>Event
       </ion-button>
     </ion-router-link>
     <ion-router-link [routerLink]="['/new']" >
-      <ion-button class="new-publications__button" size="default" color="danger" fill="clear">
+      <ion-button class="new-publications__button" size="small" color="danger" fill="clear">
         <ion-icon slot="start" name="document-text"></ion-icon>Write article
       </ion-button>
     </ion-router-link>
