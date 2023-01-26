@@ -1,0 +1,10 @@
+.group-side{
+  &__card{
+    margin: 0;
+    padding: 10px;
+    --background: white;
+  }
+  &__link{
+    cursor: pointer;
+  }
+}

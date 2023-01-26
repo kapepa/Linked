@@ -1,0 +1,127 @@
+<ion-content class="create-publication">
+  <form id="form" [formGroup]="postForm" (ngSubmit)="onSubmit($event)">
+    <ion-item class="create-publication__header">
+      <ion-label class="create-publication__label">{{ edit ? 'Edit a post' : 'Create a post' }}</ion-label>
+      <ion-button id="close" class="create-publication__close ion-no-padding" fill="clear" color="medium" shape="round" (click)="onClose($event)">
+        <ion-icon class="create-publication__x-close" name="close-outline" ></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-content scroll-y="false" class="create-publication__content">
+      <div class="create-publication__grid">
+        <div class="create-publication__avatar-g">
+          <ion-avatar>
+            <img *ngIf="user.avatar; else avatarIco" alt="Silhouette of a person's head" src="{{ user.avatar | url }}" />
+            <ng-template #avatarIco>
+              <ion-icon  class="create-publication__ico" name="person-outline"></ion-icon>
+            </ng-template>
+          </ion-avatar>
+        </div>
+        <div class="create-publication__name-g">
+          <ion-title class="ion-no-padding create-publication__title">{{ user.firstName }} {{user.lastName}}</ion-title>
+        </div>
+        <div class="create-publication__anyone-g">
+          <ion-chip class="ion-no-margin create-publication__chip" [outline]="true">
+            <ion-list>
+              <ion-item>
+                <ion-select
+                  interface="popover"
+                  (ionChange)="handleChange($event)"
+                  [selectedText]="select[getAccess.value]?.name"
+                  [compareWith]="compareWith"
+                  placeholder="Select"
+                  #selectOptions
+                >
+                  <ion-select-option
+                    *ngFor="let options of getSelectKey"
+                    [value]=select[options].value
+                  >{{select[options].name}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-list>
+          </ion-chip>
+        </div>
+      </div>
+      <div class="create-publication__textarea-area">
+        <ion-textarea
+          placeholder="What do you want to talk about?"
+          rows="6"
+          auto-grow="true"
+          formControlName="body"
+        >
+        </ion-textarea>
+      </div>
+    </ion-content>
+    <ion-footer class="ion-no-border" collapse="fade">
+      <div class="create-publication__footer">
+        <div class="create-publication__shape_btn">
+          <ion-fab-button
+            (click)="onImg($event)"
+            class="create-publication__fab create-publication__fab--warning"
+            [ngClass]="{'create-publication__fab--warning': img.invalid }"
+            color="light"
+          >
+            <ion-icon *ngIf="!img.value" name="image"></ion-icon>
+            <app-file-reader
+              class="create-publication__file-reader"
+              *ngIf="!!img.value"
+              [img]="img.value"
+              [alt]="'picture'"
+              [class]="''"
+            >
+            </app-file-reader>
+            <input
+              #inputImg
+              type="file"
+              name="img"
+              class="create-publication__input-img"
+              (change)="onChangeImg($event)"
+            />
+          </ion-fab-button>
+          <ion-fab-button
+            (click)="onVideo($event)"
+            class="create-publication__fab create-publication__fab--green"
+            [color]="!!video.value ? 'success' : 'light'"
+          >
+            <ion-icon name="logo-youtube"></ion-icon>
+            <input
+              #inputVideo
+              type="file"
+              name="video"
+              class="create-publication__input-video"
+              (change)="onChangeVideo($event)"
+              accept="video/mp4, video/mov"
+            >
+          </ion-fab-button>
+          <ion-fab-button
+            (click)="onFile($event)"
+            class="create-publication__fab"
+            [color]="!!file.value ? 'success' : 'light'"
+          >
+            <ion-icon name="document-text"></ion-icon>
+            <input
+              #inputFile
+              type="file"
+              name="file"
+              class="create-publication__input-file"
+              (change)="onChangeFile($event)"
+              accept="application/pdf"
+            />
+          </ion-fab-button>
+          <ion-router-link [routerLink]="[]" [queryParams]=" getQuery " >
+            <ion-fab-button (click)="onAddition($event)"  class="create-publication__fab" color="light">
+              <ion-icon name="briefcase"></ion-icon>
+            </ion-fab-button>
+          </ion-router-link>
+          <ion-router-link [routerLink]="[]" [queryParams]="{event: true}" >
+            <ion-fab-button class="create-publication__fab" color="light">
+              <ion-icon name="magnet"></ion-icon>
+            </ion-fab-button>
+          </ion-router-link>
+        </div>
+        <div class="create-publication__post_shape">
+          <ion-button [disabled]="!postForm.valid" type="submit" shape="round">{{ edit ? 'Edit' : 'Post'}}</ion-button>
+        </div>
+      </div>
+    </ion-footer>
+  </form>
+</ion-content>

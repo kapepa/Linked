@@ -1,0 +1,15 @@
+<ion-card class="recommended">
+  <ion-card-header class="recommended__header">
+    <ion-card-title class="recommended__title">Today most viewed courses</ion-card-title>
+    <ion-icon class="recommended__info" name="information-circle"></ion-icon>
+  </ion-card-header>
+
+  <ion-card-content class="recommended__content">
+    <app-recommended-cell *ngFor="let user of recommended" [user]="user" ></app-recommended-cell>
+  </ion-card-content>
+
+  <ion-card-content class="recommended__footer">
+    <ion-card-subtitle>View all recommended</ion-card-subtitle>
+    <ion-icon class="recommended__arrow-foot" name="arrow-redo"></ion-icon>
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,31 @@
+.popup-friend{
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  &__not-request{
+    text-align: center;
+    display: inline-block;
+  }
+  &__item{
+    padding-bottom: 12px;
+  }
+  &__label{
+    font-size: 15px;
+    padding-left: 10px;
+  }
+  &__cap{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  &__basement{
+    display: flex;
+  }
+  &__img, &__avatar{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: grey;
+  }
+}

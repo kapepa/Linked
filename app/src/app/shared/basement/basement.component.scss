@@ -1,0 +1,16 @@
+.basement{
+  &__tab{
+    display: none;
+  }
+  &__tab-btn{
+    font-size: 11px;
+  }
+}
+
+@media screen and ( max-width: 576px){
+  .basement{
+    &__tab{
+      display: flex;
+    }
+  }
+}

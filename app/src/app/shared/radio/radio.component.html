@@ -1,0 +1,11 @@
+<ion-radio-group class="radio" [value]=selected>
+  <ion-item *ngFor="let item of list" class="radio__item no-click" (click)="onRadio(item.val)">
+    <ion-label class="radio__label">{{item.name}}</ion-label>
+    <ion-radio
+      color="success"
+      class="radio__radio"
+      slot="start"
+      [value]=item.val
+    ></ion-radio>
+  </ion-item>
+</ion-radio-group>

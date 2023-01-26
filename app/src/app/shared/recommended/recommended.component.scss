@@ -1,0 +1,25 @@
+.recommended{
+  --ion-background-color: #fff;
+  margin: auto 0;
+  &__header{
+    display: flex;
+    justify-content: space-between;
+  }
+  &__title{
+    font-size: 16px;
+  }
+  &__info{
+    font-size: 20px;
+  }
+  &__content{
+    display: flex;
+    flex-direction: column;
+  }
+  &__footer{
+    display: flex;
+  }
+  &__arrow-foot{
+    padding-left: 5px;
+    transform: translateY(2px);
+  }
+}

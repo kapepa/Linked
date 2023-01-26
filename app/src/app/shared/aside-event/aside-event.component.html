@@ -1,0 +1,34 @@
+<aside class="aside-event__aside">
+  <div class="aside-event__cap">
+    <ion-icon class="aside-event__calendar" name="calendar-outline"></ion-icon>
+    <div class="aside-event__create">
+      <div class="aside-event__desc">Organize an event on LinkedIn and invite your rivals</div>
+      <ion-router-link class="aside-event__event" [routerLink]="[]" [queryParams]="{event: true}">
+        <ion-button shape="round" fill="outline" color="medium">Create event</ion-button>
+      </ion-router-link>
+    </div>
+  </div>
+  <div class="aside-event__other">
+    <h5 class="aside-event__h5">Other events</h5>
+    <div class="aside-event__tape">
+<<<<<<< HEAD
+      <div *ngIf="!!tapeEvent.length ; else noEvent" >
+        <ion-router-link class="event-tape" *ngFor="let event of tapeEvent" [routerLink]="['/event', event.id]" >
+          <div class="event-tape__grid">
+            <img appImg [src]="event.img" class="event-tape__img" alt="event img">
+            <div class="event-tape__desc">
+              <div class="event-tape__date">{{eventWill(event.date, event.time)}}</div>
+              <div class="event-tape__title">{{event.title}}</div>
+            </div>
+          </div>
+        </ion-router-link>
+      </div>
+      <ng-template #noEvent>
+        <div>No event</div>
+      </ng-template>
+=======
+      this tape event
+>>>>>>> origin
+    </div>
+  </div>
+</aside>

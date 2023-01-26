@@ -1,0 +1,50 @@
+<ion-router-outlet></ion-router-outlet>
+<app-popups></app-popups>
+<app-header></app-header>
+
+<ion-content>
+  <div class="container">
+    <div class="event-detailed">
+
+      <main class="event-detailed__main">
+
+        <div class="event-detailed__banner">
+          <div class="event-detailed__head">
+            <img class="event-detailed__img" appImg [src]="event.img" alt="event img" />
+          </div>
+          <div class="event-detailed__content">
+            <div class="event-detailed__live">{{eventWill}}</div>
+            <div class="event-detailed__title">{{event.title}}</div>
+            <div class="event-detailed__date">{{getDateMeeting}}</div>
+          </div>
+          <div class="event-detailed__activity">
+            <ion-button shape="round">Participate</ion-button>
+          </div>
+          <div class="event-detailed__basement">
+            <div
+              (click)="onAddition('common')"
+              class="event-detailed__addition"
+              [ngClass]="{'event-detailed__addition--active': addition === 'common'}"
+            >Common</div>
+            <div
+              (click)="onAddition('comment')"
+              class="event-detailed__addition"
+              [ngClass]="{'event-detailed__addition--active': addition === 'comment'}"
+            >Comment</div>
+          </div>
+        </div>
+
+        <div class="event-detailed__common" [ngSwitch]="addition">
+          <ng-template [ngSwitchCase]="'common'">{{event.description}}</ng-template>
+          <ng-template [ngSwitchCase]="'comment'">this need add comment</ng-template>
+        </div>
+
+      </main>
+
+      <app-aside-event [tapeEvent]="getTapeEvent"></app-aside-event>
+
+    </div>
+  </div>
+</ion-content>
+
+<app-basement></app-basement>

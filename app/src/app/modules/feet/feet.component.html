@@ -1,0 +1,15 @@
+<ion-router-outlet></ion-router-outlet>
+
+<app-header></app-header>
+
+<ion-content class="feet">
+  <div class="container feet__container">
+    <main class="feet__main">
+      <app-post-edition [post]="getPost" ></app-post-edition>
+      <app-comment></app-comment>
+    </main>
+    <app-aside-post [posts]="posts"></app-aside-post>
+  </div>
+</ion-content>
+
+<app-basement></app-basement>

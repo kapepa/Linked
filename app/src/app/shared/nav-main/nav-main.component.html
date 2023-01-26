@@ -1,0 +1,59 @@
+<ion-grid class="nav-main" >
+  <ion-row>
+    <ion-row class="nav-main__actions">
+      <ion-col class="nav-main__cell" size="auto">
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="home" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Home</div>
+          </div>
+        </ion-router-link>
+      </ion-col>
+      <ion-col class="nav-main__cell" size="auto">
+        <ion-router-link id="friend" #popupFriends (click)="onFriends($event)" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-badge *ngIf="user?.suggest.length" class="nav-main__badge" slot="start">{{user?.suggest.length}}</ion-badge>
+            <ion-icon name="people" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Network</div>
+          </div>
+        </ion-router-link>
+      </ion-col>
+      <ion-col class="nav-main__cell" size="auto">
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="briefcase" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Jobs</div>
+          </div>
+        </ion-router-link>
+      </ion-col>
+      <ion-col class="nav-main__cell" size="auto">
+        <ion-router-link routerLink="/chat" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="chatbox-ellipses" class="nav-main__ico"></ion-icon>
+            <div *ngIf="noRead" class="nav-main__attention" slot="start"></div>
+            <div class="nav-main__text">Chat</div>
+          </div>
+        </ion-router-link>
+      </ion-col>
+      <ion-col class="nav-main__cell" size="auto">
+        <ion-router-link [routerLink]="['/']" color="medium" class="nav-main__link">
+          <div class="nav-main__link-col">
+            <ion-icon name="notifications" class="nav-main__ico"></ion-icon>
+            <div class="nav-main__text">Notification</div>
+          </div>
+        </ion-router-link>
+      </ion-col>
+    </ion-row>
+    <ion-col id="settings" class="nav-main__cell" size="auto" #popupAnchor (click)="presentPopover($event)">
+      <ion-avatar class="nav-main__avatar_wrapper">
+        <img *ngIf="userAvatar; else avatarIco" class="nav-main__avatar" alt="avatar" src="{{userAvatar | url}}" />
+        <ng-template #avatarIco>
+          <ion-icon  class="nav-main__avatar" name="person-outline"></ion-icon>
+        </ng-template>
+      </ion-avatar>
+<!--      <ion-icon name="person" class="nav-main__ico"></ion-icon>-->
+      <div class="nav-main__text nav-main__text__center">Me <ion-icon name="chevron-down-outline"></ion-icon></div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+

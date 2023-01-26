@@ -1,0 +1,94 @@
+.event-detailed {
+  display: grid;
+  grid-template-columns: minmax(0, 17fr) minmax(300px, 7fr);
+  grid-template-areas: "main aside";
+  column-gap: 18px;
+  padding-top: 20px;
+  &__head{
+
+  }
+  &__main{
+    grid-area: main;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
+    margin-bottom: 20px;
+  }
+  &__banner{
+    border-radius: 10px;
+    background-color: white;
+    overflow: hidden;
+  }
+  &__img{
+    width: 100%;
+    object-fit: cover;
+  }
+  &__content{
+    padding: 24px;
+  }
+  &__title{
+    font-weight: bold;
+    font-size: 24px;
+    padding: 8px 0;
+  }
+  &__activity{
+    padding: 0 24px;
+  }
+  &__basement{
+    padding: 12px 24px 0 24px;
+  }
+  &__addition{
+    padding: 12px 8px 16px;
+    color: grey;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    &--active{
+      color: #057642;
+      &::before{
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background-color: #057642;
+      }
+    }
+  }
+  &__common{
+    border-radius: 10px;
+    background-color: white;
+    padding: 24px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+
+}
+
+@media screen and (max-width: 768px){
+  .event-detailed {
+    grid-template-columns: 1fr;
+    grid-template-areas: "main" "aside";
+  }
+}
+
+@media screen and (max-width: 425px){
+  .event-detailed{
+    &__content{
+      padding: 12px;
+    }
+    &__activity{
+      padding: 0 12px;
+    }
+    &__basement{
+      padding: 6px 12px 0 12px;
+    }
+    &__common{
+      padding: 12px;
+    }
+  }
+}
+
