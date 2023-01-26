@@ -7,7 +7,8 @@ import { HeaderModule } from "../../shared/header/header.module";
 import { BasementModule } from "../../shared/basement/basement.module";
 import { HttpClientModule } from "@angular/common/http";
 import { NgxEditorModule } from "ngx-editor";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     FormsModule,
     HeaderModule,
     CommonModule,
+    RouterModule,
     BasementModule,
     NgxEditorModule,
     HttpClientModule,
