@@ -18,3 +18,14 @@
     row-gap: 10px;
   }
 }
+
+@media screen and (max-width: 425px){
+  .event{
+    &__title{
+      font-size: 18px;
+    }
+    &__head{
+      padding: 12px 18px;
+    }
+  }
+}

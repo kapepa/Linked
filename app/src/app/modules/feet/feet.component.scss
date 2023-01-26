@@ -11,3 +11,14 @@
     flex-direction: column;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .feet{
+    &__container{
+      grid-template-columns: 1fr;
+    }
+    &__aside{
+      margin: 0 auto;
+    }
+  }
+}
