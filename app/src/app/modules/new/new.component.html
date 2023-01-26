@@ -2,9 +2,9 @@
 <app-header></app-header>
 
 <ion-content>
-  <div class="container" >
-    <form [formGroup]="form" >
-      <div class="editor" >
+  <div class="container new" >
+    <form class="new__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="new__editor" >
         <ngx-editor-menu
           [editor]="editor"
           [toolbar]="toolbar"
@@ -17,6 +17,9 @@
           formControlName="editorContent"
         >
         </ngx-editor>
+      </div>
+      <div class="new__basement" >
+        <ion-button type="submit">Send</ion-button>
       </div>
     </form>
   </div>

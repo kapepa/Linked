@@ -36,4 +36,8 @@ export class NewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.editor.destroy();
   }
+
+  onSubmit() {
+    console.log('submit')
+  }
 }
