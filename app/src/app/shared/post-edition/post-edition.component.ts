@@ -12,10 +12,14 @@ export class PostEditionComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.post)
+
   }
 
   ngOnDestroy() {
+
+  }
+
+  onTrack(e: Event) {
 
   }
 
