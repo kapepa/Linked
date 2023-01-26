@@ -2,6 +2,8 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AsidePostComponent} from "./aside-post.component";
 import {DirectiveModule} from "../../core/directive/directive.module";
+import {RouterModule} from "@angular/router";
+import {IonicModule} from "@ionic/angular";
 
 
 
@@ -10,7 +12,9 @@ import {DirectiveModule} from "../../core/directive/directive.module";
     AsidePostComponent,
   ],
   imports: [
+    IonicModule,
     CommonModule,
+    RouterModule,
     DirectiveModule,
   ],
   exports: [

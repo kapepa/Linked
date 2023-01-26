@@ -21,7 +21,7 @@ export class FeetComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.postSub = this.postService.getPost.subscribe((post: PostInterface) => this.post = post);
-    this.postsSub = this.postService.getPostsAll.subscribe((posts: PostInterface[]) => this.posts = posts.filter(post => post != this.post));
+    this.postsSub = this.postService.getPostsAll.subscribe((posts: PostInterface[]) => this.posts = posts.filter(post => post.id !== this.post.id));
   }
 
   ngOnDestroy() {

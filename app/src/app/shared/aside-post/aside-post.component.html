@@ -1,9 +1,11 @@
 <aside class="aside-post">
   <h5 class="aside-post__h5">LEARNING</h5>
   <div class="aside-post__column">
-    <div class="aside-post__row" *ngFor="let post of posts">
-      <img class="aside-post__img" alt="img post" appImg [src]="post.img">
-      <div class="aside-post__title">{{post.body}}</div>
-    </div>
+    <ion-router-link class="aside-post__link" *ngFor="let post of posts" [routerLink]="['/feet', post.id]" >
+      <div class="aside-post__row">
+        <img class="aside-post__img" alt="img post" appImg [src]="post.img">
+        <div class="aside-post__title">{{post.body}}</div>
+      </div>
+    </ion-router-link>
   </div>
 </aside>

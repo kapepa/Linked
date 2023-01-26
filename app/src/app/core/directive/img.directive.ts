@@ -9,15 +9,10 @@ export class ImgDirective implements OnInit{
   constructor(private el: ElementRef) {}
 
   ngOnInit() {
-    let img = new Image();
-    img.src = `${environment.configUrl}/${this.el.nativeElement.src.split("/").pop()}`
-
-    img.onload = (data) => {
-      // this.el.nativeElement.src = `${environment.configUrl}/${this.el.nativeElement.src.split("/").pop()}`
-      this.el.nativeElement.src = data.isTrusted
-        ? `${environment.configUrl}/${this.el.nativeElement.src.split("/").pop()}`
-        : 'assets/images/fake.png';
-    }
+    this.el.nativeElement.src =
+      this.el.nativeElement.src === 'http://localhost:4200/'
+        ? 'assets/images/fake.png'
+        :`${environment.configUrl}/${this.el.nativeElement.src.split("/").pop()}`;
   }
 
 }
