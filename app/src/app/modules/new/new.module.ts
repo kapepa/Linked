@@ -9,6 +9,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgxEditorModule } from "ngx-editor";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { FileReaderModule } from "../../shared/file-reader/file-reader.module";
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { RouterModule } from "@angular/router";
     RouterModule,
     BasementModule,
     NgxEditorModule,
+    FileReaderModule,
     HttpClientModule,
     ReactiveFormsModule,
     NewCenterRoutingModule,
