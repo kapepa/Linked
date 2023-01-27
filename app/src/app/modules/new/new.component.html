@@ -5,21 +5,80 @@
   <div class="container new" >
     <form class="new__form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="new__editor" >
-        <ngx-editor-menu
-          [editor]="editor"
-          [toolbar]="toolbar"
-        >
-        </ngx-editor-menu>
-        <ngx-editor
-          class="new__editor"
-          placeholder="Write here!"
-          [editor]="editor"
-          formControlName="editorContent"
-        >
-        </ngx-editor>
-      </div>
-      <div class="new__basement" >
-        <ion-button type="submit">Send</ion-button>
+        <div class="new__toolbar">
+          <ngx-editor-menu
+            [editor]="editor"
+            [toolbar]="toolbar"
+          >
+          </ngx-editor-menu>
+          <ion-button [disabled]="!form.valid" type="submit">Send</ion-button>
+        </div>
+        <div class="new__header">
+          <div class="new__node">
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              class="new__title-input"
+              formControlName="title"
+              [ngClass]="{'new__title-input--attention': getTitle.invalid && (getTitle.dirty || getTitle.touched)}"
+            />
+            <div *ngIf="getTitle.invalid && (getTitle.dirty || getTitle.touched)" class="new__alert new__alert--top alert">
+              <div *ngIf="getTitle.errors?.['required']">
+                Title is required.
+              </div>
+              <div *ngIf="getTitle.touched && getTitle.errors?.['minlength']">
+                Title must be at least 6 characters long.
+              </div>
+            </div>
+          </div>
+          <div class="new__node">
+            <div class="new__load-img">
+              <div class="new__load-cleaning" (click)="onCleaningImg($event)"></div>
+              <div
+                *ngIf="!getImg.value; else haveImg"
+                class="loader-img"
+                (click)="onClickImg($event)"
+                [ngClass]="{'loader-img--attention': getImg.invalid && (getImg.dirty || getImg.touched)}"
+              >
+                <ion-icon class="loader-img__icon" name="image"></ion-icon>
+                <span class="loader-img__title">Images not loaded</span>
+                <span class="loader-img__text">add images to attract attention to article</span>
+                <input
+                  #fileInput
+                  (change)="onChangeFile($event)"
+                  type="file"
+                  name="img"
+                  class="loader-img__input-file"
+                  accept="image/png, image/jpeg"
+                >
+              </div>
+              <ng-template #haveImg>
+                <app-file-reader [img]="getImg.value" [alt]="'new'"></app-file-reader>
+              </ng-template>
+            </div>
+            <div *ngIf="getTitle.invalid && (getTitle.dirty || getTitle.touched)" class="new__alert new__alert--bottom alert">
+              <div *ngIf="getTitle.errors?.['required']">
+                Img is required.
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="new__node" [ngClass]="{'new__node--attention': doc.invalid && (doc.dirty || doc.touched)}">
+          <ngx-editor
+            class="new__editor"
+            placeholder="Write here!"
+            [editor]="editor"
+            formControlName="editorContent"
+          >
+          </ngx-editor>
+          <div *ngIf="doc.invalid && (doc.dirty || doc.touched)" class="new__alert new__alert--bottom alert">
+            <div *ngIf="doc.errors?.['required']">
+              Text is required.
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </div>

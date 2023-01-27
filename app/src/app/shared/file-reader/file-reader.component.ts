@@ -1,6 +1,5 @@
 import {Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core';
 import {environment} from "../../../environments/environment";
-import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-file-reader',

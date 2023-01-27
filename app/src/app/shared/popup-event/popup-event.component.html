@@ -8,7 +8,8 @@
   <ion-card-content class="popup-event__content">
     <form [formGroup]="eventForm" (ngSubmit)="onSubmit($event)">
       <div class="popup-event__picture">
-        <input (change)="onChange($event)"
+        <input
+          (change)="onChange($event)"
           #inputFile
           name="picture"
           type="file"
