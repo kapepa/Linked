@@ -7,6 +7,7 @@ import {CommentDto} from "../feet/comment.dto";
 import {ChatDto} from "../chat/chat.dto";
 import {MessageDto} from "../chat/message.dto";
 import {EventDto} from "../event/event.dto";
+import {NewsDto} from "../news/news.dto";
 
 export class UsersDto{
   @ApiProperty()
@@ -60,6 +61,9 @@ export class UsersDto{
 
   @ApiProperty({ type: () => EventDto })
   event?: EventDto[]
+
+  @ApiProperty({ type: () => NewsDto })
+  news?: NewsDto[]
 
   @ApiProperty()
   created_at?: Date;

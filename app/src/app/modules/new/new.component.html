@@ -36,7 +36,7 @@
             <div class="new__load-img">
               <div class="new__load-cleaning" (click)="onCleaningImg($event)"></div>
               <div
-                *ngIf="!getImg.value; else haveImg"
+                *ngIf="!getImg.value?.name; else haveImg"
                 class="loader-img"
                 (click)="onClickImg($event)"
                 [ngClass]="{'loader-img--attention': getImg.invalid && (getImg.dirty || getImg.touched)}"
@@ -44,6 +44,12 @@
                 <ion-icon class="loader-img__icon" name="image"></ion-icon>
                 <span class="loader-img__title">Images not loaded</span>
                 <span class="loader-img__text">add images to attract attention to article</span>
+                <input
+                  #fileInput
+                  (change)="onChangeFile($event)"
+                  type="file"
+                  class="loader-img__input-file"
+                >
                 <input
                   #fileInput
                   (change)="onChangeFile($event)"
@@ -70,7 +76,7 @@
             class="new__editor"
             placeholder="Write here!"
             [editor]="editor"
-            formControlName="editorContent"
+            formControlName="content"
           >
           </ngx-editor>
           <div *ngIf="doc.invalid && (doc.dirty || doc.touched)" class="new__alert new__alert--bottom alert">

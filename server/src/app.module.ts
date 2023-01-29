@@ -23,6 +23,8 @@ import { CommentEntity } from "./feet/comment.entity";
 import { AdditionEntity } from "./feet/addition.entity";
 import { EventModule } from './event/event.module';
 import { EventEntity } from "./event/event.entity";
+import { NewsModule } from './news/news.module';
+import { NewsEntity } from "./news/news.entity";
 
 dotenv.config();
 
@@ -38,7 +40,7 @@ dotenv.config();
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [ User, Feet, FriendsEntity, Chat, MessageEntity, CommentEntity, AdditionEntity, EventEntity ],
+      entities: [ User, Feet, FriendsEntity, Chat, MessageEntity, CommentEntity, AdditionEntity, EventEntity, NewsEntity ],
       synchronize: true,
     }),
     ServeStaticModule.forRoot({
@@ -53,6 +55,7 @@ dotenv.config();
     ConfigModule,
     ChatModule,
     EventModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [AppGateway, AppService],

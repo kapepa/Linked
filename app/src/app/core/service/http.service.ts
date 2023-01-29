@@ -45,4 +45,11 @@ export class HttpService {
 
     await popover.present();
   }
+
+  toForm(obj: {[key: string]: any}) {
+    return Object.keys(obj).reduce((accum: FormData, key: string) => {
+      accum.append(key, obj[key]);
+      return accum;
+    }, new FormData())
+  }
 }

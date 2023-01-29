@@ -3,6 +3,7 @@ import { PostDto } from "./post.dto";
 import { ChatDto } from "./chat.dto";
 import {CommentDto} from "./comment.dto";
 import {EventDto} from "./event.dto";
+import {NewsDto} from "./news.dto";
 
 export type Role = 'admin' | 'ghost' | 'user';
 
@@ -19,6 +20,7 @@ export class UserDto {
   chat?: ChatDto[]
   comment?: CommentDto[]
   event?: EventDto
+  news?: NewsDto[]
   exp?: number
   iat?: number
 }
