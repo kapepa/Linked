@@ -15,6 +15,7 @@ import { MessageEntity } from "../chat/message.entity";
 import { CommentEntity } from "../feet/comment.entity";
 import { UsersInterface } from "./users.interface";
 import { EventEntity } from "../event/event.entity";
+import {NewsEntity} from "../news/news.entity";
 
 @Entity()
 export class User implements UsersInterface{
@@ -67,6 +68,9 @@ export class User implements UsersInterface{
 
   @OneToMany(() => EventEntity, (event) => event.user)
   event: EventEntity[];
+
+  @OneToMany(() => NewsEntity, (news) => news.author)
+  news: NewsEntity[];
 
   @CreateDateColumn({ select: false, name: 'created_at'})
   created_at: Date;

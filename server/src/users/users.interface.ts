@@ -5,6 +5,7 @@ import { ChatInterface } from "../chat/chat.interface";
 import { MessageInterface } from "../chat/message.interface";
 import { CommentInterface } from "../feet/comment.interface";
 import { EventInterface } from "../event/event.interface";
+import { NewsInterface } from "../news/news.interface";
 
 export class UsersInterface {
   id?: string;
@@ -24,5 +25,6 @@ export class UsersInterface {
   my_like?: FeetInterface[]
   comment?: CommentInterface[]
   event?: EventInterface[]
+  news?: NewsInterface[]
   created_at?: Date;
 }

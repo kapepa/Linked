@@ -1,7 +1,8 @@
 import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import {Editor, Toolbar, Validators} from "ngx-editor";
-import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import jsonDoc from './doc';
+import {NewsService} from "../../core/service/news.service";
 
 @Component({
   selector: 'app-new',
@@ -26,11 +27,16 @@ export class NewComponent implements OnInit, OnDestroy {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  form = new FormGroup({
-    title: new FormControl<string>({ value: '', disabled: false }, [Validators.required(), Validators.minLength(6)]),
-    img: new FormControl<null | File>({ value: null, disabled: true}, Validators.required()),
-    editorContent: new FormControl<string>({ value: '', disabled: false }, Validators.required()),
+  form = this.fb.group({
+    title: [ 'Event Title', [Validators.required(), Validators.minLength(6)] ],
+    img: [ null, [Validators.required] ],
+    content: [ 'Event Title', [Validators.required] ],
   });
+
+  constructor(
+    private newsService: NewsService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -53,18 +59,18 @@ export class NewComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.form.valid)
+    this.newsService.createNews(this.form.value).subscribe()
   }
 
   get doc(): AbstractControl {
-    return this.form.get('editorContent');
+    return this.form.get('content');
   }
 
   get getTitle() {
     return this.form.get('title');
   }
-
-  get getImg() {
-    return this.form.get('img');
+ 
+  get getImg(): FormControl {
+    return this.form.get('img') as FormControl;
   }
 }
