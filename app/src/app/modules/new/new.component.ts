@@ -66,10 +66,10 @@ export class NewComponent implements OnInit, OnDestroy {
     return this.form.get('content');
   }
 
-  get getTitle() {
-    return this.form.get('title');
+  get getTitle(): FormControl {
+    return this.form.get('title') as FormControl;
   }
- 
+
   get getImg(): FormControl {
     return this.form.get('img') as FormControl;
   }
