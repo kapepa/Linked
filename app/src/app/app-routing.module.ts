@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'events', loadChildren: () => import('./modules/event/event.module').then(m => m.EventModule), data: { preload: true} },
   { path: 'new', loadChildren: () => import('./modules/new/new.module').then(m => m.NewModule), data: {preload: true} },
   { path: 'event', loadChildren: () => import('./modules/event-detailed/event-detailed.module').then(m => m.EventDetailedModule), data: {preload: true} },
+  { path: 'news', loadChildren: () => import('./modules/news/news.module').then(m => m.NewsModule), data: { preload: true } },
   { path: '', redirectTo: '/home', pathMatch: 'full' }
   // { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
 ];

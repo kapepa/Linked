@@ -16,4 +16,7 @@ export class NewsDto {
 
   @ApiProperty()
   content?: string;
+
+  @ApiProperty()
+  created_at?: Date;
 }

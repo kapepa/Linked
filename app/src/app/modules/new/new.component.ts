@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import {Editor, Toolbar, Validators} from "ngx-editor";
-import {AbstractControl, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl} from "@angular/forms";
 import jsonDoc from './doc';
 import {NewsService} from "../../core/service/news.service";
 

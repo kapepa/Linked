@@ -6,4 +6,5 @@ export interface NewsInterface {
   title?: string;
   img?: string;
   content?: string;
+  created_at?: Date;
 }
