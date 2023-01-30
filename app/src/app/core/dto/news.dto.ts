@@ -6,4 +6,5 @@ export class NewsDto {
   title?: string;
   img?: string;
   content?: string;
+  created_at?: Date;
 }

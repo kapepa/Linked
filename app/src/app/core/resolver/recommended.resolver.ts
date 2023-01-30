@@ -5,7 +5,7 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {UserService} from "../service/user.service";
+import {NewsService} from "../service/news.service";
 import {switchMap} from "rxjs/operators";
 
 @Injectable({
@@ -13,12 +13,12 @@ import {switchMap} from "rxjs/operators";
 })
 export class RecommendedResolver implements Resolve<boolean> {
   constructor(
-    private userService: UserService,
+    private newsService: NewsService,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.userService.receiveRecommended().pipe(
-      switchMap(() => of(true))
-    );
+    return this.newsService.findEvents({take: 4, skip: 0}).pipe(
+      switchMap(() => of(true)),
+    )
   }
 }

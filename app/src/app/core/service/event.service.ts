@@ -2,10 +2,10 @@ import { environment } from "../../../environments/environment";
 import { Injectable } from '@angular/core';
 import { HttpService } from "./http.service";
 import { HttpClient } from "@angular/common/http";
-import {BehaviorSubject, from, Observable} from "rxjs";
+import { BehaviorSubject, from, Observable } from "rxjs";
 import { EventDto } from "../dto/event.dto";
 import { catchError, take, tap } from "rxjs/operators";
-import {EventInterface} from "../interface/event.interface";
+import { EventInterface } from "../interface/event.interface";
 
 @Injectable({
   providedIn: 'root'

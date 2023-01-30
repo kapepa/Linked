@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {UserService} from "../../core/service/user.service";
-import {UserInterface} from "../../core/interface/user.interface";
 import {Subscription} from "rxjs";
+import {NewsInterface} from "../../core/interface/news.interface";
+import {NewsService} from "../../core/service/news.service";
 
 @Component({
   selector: 'app-home',
@@ -10,18 +10,18 @@ import {Subscription} from "rxjs";
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
-  recommended: UserInterface[];
-  recommendedSub: Subscription;
+  news: NewsInterface[];
+  newsSub: Subscription;
 
   constructor(
-    private userService: UserService
+    private newsService: NewsService,
   ) { }
 
   ngOnInit() {
-    this.recommendedSub = this.userService.getRecommended.subscribe((recommended: UserInterface[]) => this.recommended = recommended);
+    this.newsSub = this.newsService.getNews.subscribe((news: NewsInterface[]) => this.news = news);
   }
 
   ngOnDestroy() {
-    this.recommendedSub.unsubscribe();
+    this.newsSub.unsubscribe();
   }
 }
