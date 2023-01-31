@@ -1,0 +1,16 @@
+<aside class="aside-news">
+  <h5 class="aside-news__h5">LEARNING</h5>
+  <div class="aside-news__column">
+    <ng-container *ngIf="!!tidings.length; else emptyList ">
+      <ion-router-link class="aside-news__link" *ngFor="let news of tidings" [routerLink]="['/news', news.id]">
+        <div class="aside-news__row">
+          <img class="aside-news__img" alt="img post" appImg [src]="news.img">
+          <div class="aside-news__title">{{getDOMContent(news.content)}}</div>
+        </div>
+      </ion-router-link>
+    </ng-container>
+    <ng-template #emptyList>
+      <div> is Empty </div>
+    </ng-template>
+  </div>
+</aside>

@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
 import {NewsService} from "./news.service";
 import {ApiBody, ApiConsumes, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -39,6 +39,14 @@ export class NewsController {
       order: { created_at: "ASC" },
       relations: ['author'],
     })
+  }
+
+  @Get('/one/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({description: 'Get one news on param id'})
+  @ApiResponse({ status: 200, description: 'return one news'})
+  oneNews(@Param() param,  @Req() req): Observable<NewsInterface> {
+    return this.newsService.getNewsOne({ where: { id: param.id }, relations: ['author'] });
   }
 
 }

@@ -5,7 +5,7 @@
   </ion-card-header>
 
   <ion-card-content class="recommended__content">
-    <app-recommended-cell *ngFor="let news of recommended" [news]="news" ></app-recommended-cell>
+    <app-recommended-cell *ngFor="let news of recommended" [news]="news" [user]="user"></app-recommended-cell>
   </ion-card-content>
 
   <ion-card-content class="recommended__footer">

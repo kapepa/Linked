@@ -1,14 +1,12 @@
 <ion-card class="ion-no-margin recommended-cell">
 
-  <ion-router-link [routerLink]="['/person', news.author.id]">
+  <ion-router-link [routerLink]="news.author.id === user.id ? [] : ['/person', news.author.id]">
     <ion-card-header class="ion-no-padding recommended-cell__header">
       <ion-avatar>
         <img appImg class="recommended-cell__img" alt="channel" [src]="news.author.avatar" />
       </ion-avatar>
-      <div></div>
     </ion-card-header>
   </ion-router-link>
-
 
   <ion-card-content class="ion-no-padding recommended-cell__content">
     <ion-card-title class="recommended-cell__title">{{news.title}}</ion-card-title>

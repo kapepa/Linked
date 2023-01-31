@@ -1,0 +1,41 @@
+.popup-post{
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  width: 100%;
+  position: relative;
+  &__close{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    transition: background-color .25s linear;
+    border-radius: 50%;
+    cursor: pointer;
+    &:hover{
+      background-color: rgba(0,0,0,0.08);
+    }
+    &::before, &::after{
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 25px;
+      width: 2px;
+      background-color: #333;
+    }
+    &::before {
+      transform: translateY(-50%) rotate(45deg);
+    }
+    &::after {
+      transform: translateY(-50%) rotate(-45deg);
+    }
+  }
+  &__gallery{
+
+  }
+  &__side{
+
+  }
+}

@@ -63,8 +63,8 @@
                 <app-file-reader [img]="getImg.value" [alt]="'new'"></app-file-reader>
               </ng-template>
             </div>
-            <div *ngIf="getTitle.invalid && (getTitle.dirty || getTitle.touched)" class="new__alert new__alert--bottom alert">
-              <div *ngIf="getTitle.errors?.['required']">
+            <div *ngIf="getImg.invalid && (getImg.dirty || getImg.touched)" class="new__alert new__alert--bottom alert">
+              <div *ngIf="getImg.errors?.['required']">
                 Img is required.
               </div>
             </div>

@@ -3,6 +3,8 @@ import {Editor, Toolbar, Validators} from "ngx-editor";
 import {AbstractControl, FormBuilder, FormControl} from "@angular/forms";
 import jsonDoc from './doc';
 import {NewsService} from "../../core/service/news.service";
+import {Router} from "@angular/router";
+import {NewsInterface} from "../../core/interface/news.interface";
 
 @Component({
   selector: 'app-new',
@@ -28,12 +30,13 @@ export class NewComponent implements OnInit, OnDestroy {
   ];
 
   form = this.fb.group({
-    title: [ 'Event Title', [Validators.required(), Validators.minLength(6)] ],
+    title: [ '', [Validators.required(), Validators.minLength(6)] ],
     img: [ null, [Validators.required] ],
-    content: [ 'Event Title', [Validators.required] ],
+    content: [ '', [Validators.required] ],
   });
 
   constructor(
+    private router: Router,
     private newsService: NewsService,
     private fb: FormBuilder
   ) {}
@@ -59,7 +62,9 @@ export class NewComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.newsService.createNews(this.form.value).subscribe()
+    this.newsService.createNews(this.form.value).subscribe((news: NewsInterface) => {
+      this.router.navigate(['/news', news.id]);
+    })
   }
 
   get doc(): AbstractControl {

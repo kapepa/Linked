@@ -18,7 +18,10 @@ export class NewsService {
     return this.saveNews(event);
   }
 
-  getNewsOne(event: { where?: { [key: string]: string | {[key: string]: string} }, relations?: string[] }): Observable<NewsInterface>{
+  getNewsOne(event: {
+    where?: { [key: string]: string | {[key: string]: string} },
+    relations?: string[]
+  }): Observable<NewsInterface>{
     return from(this.newsRepository.findOne(event));
   }
 
