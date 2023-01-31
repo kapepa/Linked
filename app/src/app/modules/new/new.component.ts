@@ -38,7 +38,7 @@ export class NewComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private newsService: NewsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
