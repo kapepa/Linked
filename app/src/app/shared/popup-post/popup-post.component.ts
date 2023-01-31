@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {PostInterface} from "../../core/interface/post.interface";
 
 @Component({
@@ -6,7 +6,7 @@ import {PostInterface} from "../../core/interface/post.interface";
   templateUrl: './popup-post.component.html',
   styleUrls: ['./popup-post.component.scss'],
 })
-export class PopupPostComponent implements OnInit {
+export class PopupPostComponent implements OnInit, OnDestroy{
   @Input('post') post: PostInterface;
   @Input('closePost') closePost: () => {};
 
@@ -14,6 +14,9 @@ export class PopupPostComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.post)
+  }
+
+  ngOnDestroy() {
   }
 
   onClose(e: Event) {
