@@ -12,7 +12,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: white;
+    //background-color: white;
+  }
+  &__menu{
+    --background: #F3F2EF;
   }
   &__header{
     margin: 32px 0 32px 0;
