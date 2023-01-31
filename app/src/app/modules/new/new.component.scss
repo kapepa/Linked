@@ -9,13 +9,15 @@
     margin: 0 auto;
   }
   &__toolbar{
+
+  }
+  &__line{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    //background-color: white;
   }
   &__menu{
-    --background: #F3F2EF;
+
   }
   &__header{
     margin: 32px 0 32px 0;

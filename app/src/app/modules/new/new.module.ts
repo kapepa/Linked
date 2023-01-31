@@ -23,7 +23,17 @@ import { FileReaderModule } from "../../shared/file-reader/file-reader.module";
     CommonModule,
     RouterModule,
     BasementModule,
-    NgxEditorModule,
+    NgxEditorModule.forRoot(
+      {
+        locals: {
+          bold: 'Bold',
+          italic: 'Italic',
+          code: 'Code',
+          underline: 'Underline',
+          // ...
+        },
+      }
+    ),
     FileReaderModule,
     HttpClientModule,
     ReactiveFormsModule,

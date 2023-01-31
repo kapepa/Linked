@@ -44,7 +44,11 @@ ion-app{
 
 .NgxEditor{
   min-height: 300px;
+  &__MenuBar{
+    background-color: transparent!important;
+  }
 }
+
 
 cdk-virtual-scroll-viewport {
   height: 100%;

@@ -5,15 +5,17 @@
   <div class="container new" >
     <form class="new__form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="new__editor" >
-        <div class="new__toolbar">
-          <ngx-editor-menu
-            class="new__menu"
-            [editor]="editor"
-            [toolbar]="toolbar"
-          >
-          </ngx-editor-menu>
-          <ion-button [disabled]="!form.valid" type="submit">Send</ion-button>
-        </div>
+        <ion-toolbar class="new__toolbar">
+          <div class="new__line">
+            <ngx-editor-menu
+              class="new__menu"
+              [editor]="editor"
+              [toolbar]="toolbar"
+            >
+            </ngx-editor-menu>
+            <ion-button [disabled]="!form.valid" type="submit">Send</ion-button>
+          </div>
+        </ion-toolbar>
         <div class="new__header">
           <div class="new__node">
             <input
