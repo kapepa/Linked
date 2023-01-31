@@ -59,7 +59,7 @@ export class PostComponent implements OnInit, OnDestroy {
 
   async onAuthor(e: Event) {
     e.stopPropagation();
-    await this.router.navigate(['/person', this.post.author.id])
+    if(this.userID !== this.post?.author?.id) await this.router.navigate(['/person', this.post.author.id]);
   }
 
   onLike(e: Event) {

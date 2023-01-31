@@ -1,0 +1,14 @@
+<div class="main-news">
+  <div class="main-news__header">
+    <img class="main-news__bg" appImg [src]="news.img" alt="bg img">
+    <img class="main-news__avatar" appImg [src]="news.author.avatar" alt="bg avatar">
+  </div>
+  <div class="main-news__middle">
+    <div class="main-news__name">{{news.author.firstName}} {{news.author.firstName}}</div>
+    <span class="main-news__addition">{{news.title}}</span>
+    <span class="main-news__span">{{getDOMContent}}</span>
+  </div>
+  <div class="main-news__footer">
+    <ion-button shape="around"  (click)="onTrack($event)">Tracking</ion-button>
+  </div>
+</div>

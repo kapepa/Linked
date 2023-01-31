@@ -8,9 +8,10 @@ import {NewsInterface} from "../../core/interface/news.interface";
   styleUrls: ['./recommended.component.scss'],
 })
 export class RecommendedComponent implements OnInit {
+  @Input('user') user: UserInterface;
   @Input('recommended') recommended: NewsInterface[];
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {  }
 }
