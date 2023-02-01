@@ -1,6 +1,9 @@
 .post{
   margin: 10px auto;
-  --background: white;
+  //--background: white;
+  &__toolbar{
+
+  }
   &__header{
     display: flex;
     align-items: center;

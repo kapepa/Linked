@@ -36,7 +36,7 @@
   <ng-template #chatEmpty>
     <ion-text>You not have conversation!</ion-text>
   </ng-template>
-  <div class="conversation__interaction">
+  <div class="conversation__interaction" >
     <form [formGroup]="textarea" (ngSubmit)="onSubmit()" class="conversation__form">
       <ion-textarea formControlName="message" class="conversation__textarea" placeholder="Entering a new message"></ion-textarea>
       <ion-button [disabled]="!textarea.valid" type="submit">Send</ion-button>

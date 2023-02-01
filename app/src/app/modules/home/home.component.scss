@@ -19,6 +19,8 @@
     grid-area: main;
     display: flex;
     flex-direction: column;
+    row-gap: 10px;
+    padding-top: 10px;
   }
   &__add{
     grid-area: recommended;
