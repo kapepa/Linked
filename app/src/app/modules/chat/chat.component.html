@@ -5,13 +5,13 @@
 <ion-content class="chat">
   <ion-toolbar class="chat__toolbar">
     <div class="container chat__container">
-      <div class="chat__back" (click)="onBack($event)"></div>
+      <div class="chat__back" *ngIf="view" (click)="onBack($event)"></div>
       <ion-toolbar>
         <div class="chat__board">
-          <div class="chat__friends" [ngClass]="{'chat__friends--none': view === 'friend'}">
+          <div class="chat__friends" [ngClass]="{'chat__friends--none': view }">
             <app-tape-friends></app-tape-friends>
           </div>
-          <div class="chat__area" [ngClass]="{'chat__area--none': view === 'chat'}">
+          <div class="chat__area" [ngClass]="{'chat__area--none': !view }">
             <app-conversation class="chat__conversation"></app-conversation>
           </div>
         </div>
