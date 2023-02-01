@@ -9,7 +9,7 @@ import {Subscription} from "rxjs";
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy{
-  view: 'friend' | 'chat' = 'friend';
+  view: boolean = true;
 
   chat: ChatInterface;
   chatSub: Subscription;
@@ -21,7 +21,7 @@ export class ChatComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.chatSub = this.chatService.getChat.subscribe((chat: ChatInterface) => {
       this.chat = chat;
-      this.view = 'chat';
+      this.view = true;
     });
   }
 
@@ -30,7 +30,7 @@ export class ChatComponent implements OnInit, OnDestroy{
   }
 
   onBack(e: Event) {
-    this.view = 'chat';
+    this.view = !this.view
   }
 
   get getView () {
