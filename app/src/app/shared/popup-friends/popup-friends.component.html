@@ -1,4 +1,4 @@
-<ion-content class="popup-friend">
+<ion-toolbar class="popup-friend">
   <ng-container *ngIf="getSuggest; else listRequest">
     <ion-content *ngFor="let request of this.user.suggest; let i = index" class="popup-friend__item">
       <div class="popup-friend__cap">
@@ -21,4 +21,4 @@
       You don't have any friend requests
     </ion-text>
   </ng-template>
-</ion-content>
+</ion-toolbar>

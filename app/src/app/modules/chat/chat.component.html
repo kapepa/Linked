@@ -2,17 +2,23 @@
 
 <app-header></app-header>
 
-<ion-content >
-  <div class="container chat__container">
-    <div class="chat">
-      <div class="chat__friends" >
-        <app-tape-friends></app-tape-friends>
-      </div>
-      <div class="chat__area">
-        <app-conversation class="chat__conversation"></app-conversation>
-      </div>
+<ion-content class="chat">
+  <ion-toolbar class="chat__toolbar">
+    <div class="container chat__container">
+      <div class="chat__back" (click)="onBack($event)"></div>
+      <ion-toolbar>
+        <div class="chat__board">
+          <div class="chat__friends" [ngClass]="{'chat__friends--none': view === 'friend'}">
+            <app-tape-friends></app-tape-friends>
+          </div>
+          <div class="chat__area" [ngClass]="{'chat__area--none': view === 'chat'}">
+            <app-conversation class="chat__conversation"></app-conversation>
+          </div>
+        </div>
+      </ion-toolbar>
+
     </div>
-  </div>
+  </ion-toolbar>
 </ion-content>
 
 <app-basement></app-basement>
