@@ -7,7 +7,6 @@ import {PopoverController} from "@ionic/angular";
 import {PopupPostComponent} from "../../../shared/popup-post/popup-post.component";
 import {PostService} from "../../service/post.service";
 import {PostInterface} from "../../interface/post.interface";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-popups',
@@ -52,7 +51,7 @@ export class PopupsComponent implements OnInit {
         type: 'create',
         onClosePublication: () => this.cleanQuery(),
       },
-      cssClass: 'new-publications__create',
+      cssClass: 'popover-public',
     });
 
     this.createPopover.onDidDismiss().then((arg) => {
@@ -70,7 +69,7 @@ export class PopupsComponent implements OnInit {
         type: 'create',
         onClosePublication: () => this.cleanQuery(),
       },
-      cssClass: 'new-publications__create',
+      cssClass: 'popover-public',
     });
 
     this.additionPopover.onDidDismiss().then((arg) => {
@@ -87,7 +86,7 @@ export class PopupsComponent implements OnInit {
       componentProps: {
         closeEvent: () => this.cleanQuery(),
       },
-      cssClass: 'new-publications__create',
+      cssClass: 'popover-public',
     });
 
     this.popoverEvent.onDidDismiss().then((arg) => {

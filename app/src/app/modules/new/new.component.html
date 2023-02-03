@@ -1,7 +1,7 @@
 <ion-router-link></ion-router-link>
 <app-header></app-header>
 
-<ion-content>
+<ion-content class="new__content" [scrollY]="true" style="--background: #2dd36f">
   <div class="container new" >
     <form class="new__form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="new__editor" >
