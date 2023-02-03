@@ -2,10 +2,12 @@
   height: 100%;
   max-width: 700px;
   margin: 0 auto;
+  background-color: #1f1f1f;
   &__content{
     height: 100vh;
     max-height: 510px;
     --padding-end: 10px;
+    --background: #1f1f1f;
   }
   &__conversation{
     padding-top: 20px;
