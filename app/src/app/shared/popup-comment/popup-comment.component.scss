@@ -3,6 +3,8 @@
   --padding-start: 15px;
   --padding-top: 15px;
   --padding-bottom: 15px;
+  --background: #1f1f1f;
+  border-radius: 10px;
   &__h3{
     text-align: center;
     padding: 0;
@@ -14,7 +16,7 @@
     top: 0;
     width: 24px;
     height: 24px;
-    opacity: 0.3;
+    opacity: 0.5;
     cursor: pointer;
     z-index: 10;
     &:hover {
