@@ -3,4 +3,14 @@
   grid-template-columns: 3fr 1fr;
   column-gap: 24px;
   padding: 24px 0;
+  &__toolbar{
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 768px){
+  .news{
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
 }

@@ -1,9 +1,13 @@
 .event{
-  padding-top: 18px;
+  &__toolbar{
+    height: 100%;
+  }
+  &__area{
+    padding-top: 18px;
+  }
   &__head{
     display: flex;
     padding: 24px;
-    background-color: white;
     border-radius: 20px;
     border: 1px solid gray;
   }

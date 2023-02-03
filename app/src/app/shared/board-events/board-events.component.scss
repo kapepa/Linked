@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   padding: 24px;
-  background-color: white;
   border-radius: 20px;
   border: 1px solid gray;
   width: 100%;
@@ -69,7 +68,7 @@
     }
   }
   &__link{
-    --color: #000;
+    //--color: #000;
   }
 }
 

@@ -3,57 +3,59 @@
 <app-header></app-header>
 
 <ion-content [fullscreen]="true">
-  <div class="container person">
-    <div class="person__sheet">
-      <div class="person__bg-header"></div>
-      <div class="person__content">
-        <div class="person__avatar">
-          <ng-container *ngIf="!!person?.avatar; else avatarIco">
-            <img class="person__img" alt="avatar" src="{{ person.avatar | url }}" />
-          </ng-container>
-          <ng-template #avatarIco>
-            <ion-icon  class="person__img" name="person-outline"></ion-icon>
-          </ng-template>
-        </div>
-        <div class="person__basement">
-          <div class="person__information">
-            <ion-text>
-              <h5 class="person__h">{{person?.firstName}} {{person?.lastName}}</h5>
-              <span class="person__span">Full stack developer</span>
-            </ion-text>
+  <ion-toolbar class="person__toolbar">
+    <div class="container person">
+      <div class="person__sheet">
+        <div class="person__bg-header"></div>
+        <div class="person__content">
+          <div class="person__avatar">
+            <ng-container *ngIf="!!person?.avatar; else avatarIco">
+              <img class="person__img" alt="avatar" src="{{ person.avatar | url }}" />
+            </ng-container>
+            <ng-template #avatarIco>
+              <ion-icon  class="person__img" name="person-outline"></ion-icon>
+            </ng-template>
           </div>
-          <div class="person__information" style="padding-top: 10px">
-            <ion-text>Interaction with user</ion-text>
-          </div>
-          <div class="person__cooperation">
-            <ng-template [ngIf]="getBtn === 'ADD'">
-              <ion-button id="connect" (click)="onFriends()" class="person__btn" shape="round">Add</ion-button>
-            </ng-template>
-            <ng-template [ngIf]="getBtn === 'CONFIRM'">
-              <ion-button id="confirm" (click)="onConfirm()" class="person__btn" shape="round">Confirm</ion-button>
-            </ng-template>
-            <ng-template [ngIf]="getBtn === 'PENDING'">
-              <ion-button [disabled]="true" class="person__btn" shape="round">Pending</ion-button>
-            </ng-template>
-            <ng-template [ngIf]="getBtn === 'DELETE'">
-              <ion-button id="del" (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
-            </ng-template>
+          <div class="person__basement">
+            <div class="person__information">
+              <ion-text>
+                <h5 class="person__h">{{person?.firstName}} {{person?.lastName}}</h5>
+                <span class="person__span">Full stack developer</span>
+              </ion-text>
+            </div>
+            <div class="person__information" style="padding-top: 10px">
+              <ion-text>Interaction with user</ion-text>
+            </div>
+            <div class="person__cooperation">
+              <ng-template [ngIf]="getBtn === 'ADD'">
+                <ion-button id="connect" (click)="onFriends()" class="person__btn" shape="round">Add</ion-button>
+              </ng-template>
+              <ng-template [ngIf]="getBtn === 'CONFIRM'">
+                <ion-button id="confirm" (click)="onConfirm()" class="person__btn" shape="round">Confirm</ion-button>
+              </ng-template>
+              <ng-template [ngIf]="getBtn === 'PENDING'">
+                <ion-button [disabled]="true" class="person__btn" shape="round">Pending</ion-button>
+              </ng-template>
+              <ng-template [ngIf]="getBtn === 'DELETE'">
+                <ion-button id="del" (click)="onDelete()" class="person__btn" shape="round">Delete</ion-button>
+              </ng-template>
 
-            <ion-button *ngIf="!accessMessage" class="person__btn" fill="outline">
-              <ion-icon slot="start" name="lock-closed"></ion-icon>Message
-            </ion-button>
-            <ion-router-link (click)="onOpenChatPerson($event)" class="person__link"  [routerLink]="['/chat']"  url="/home" *ngIf="accessMessage">
-              <ion-button class="person__btn" >
-                <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
-                Message
+              <ion-button *ngIf="!accessMessage" class="person__btn" fill="outline">
+                <ion-icon slot="start" name="lock-closed"></ion-icon>Message
               </ion-button>
-            </ion-router-link>
-            <ion-button class="person__btn" shape="round">More</ion-button>
+              <ion-router-link (click)="onOpenChatPerson($event)" class="person__link"  [routerLink]="['/chat']"  url="/home" *ngIf="accessMessage">
+                <ion-button class="person__btn" >
+                  <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+                  Message
+                </ion-button>
+              </ion-router-link>
+              <ion-button class="person__btn" shape="round">More</ion-button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </ion-toolbar>
 </ion-content>
 
 <app-basement></app-basement>

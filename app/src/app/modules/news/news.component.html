@@ -2,11 +2,13 @@
 <router-outlet></router-outlet>
 <app-popups></app-popups>
 
-<ion-content>
-  <div class="container news">
-    <app-main-news [news]="news" ></app-main-news>
-    <app-aside-news [user]="user" [tidings]="getTidings" ></app-aside-news>
-  </div>
+<ion-content >
+  <ion-toolbar class="news__toolbar">
+    <div class="container news">
+      <app-main-news [news]="news" ></app-main-news>
+      <app-aside-news [user]="user" [tidings]="getTidings" ></app-aside-news>
+    </div>
+  </ion-toolbar>
 </ion-content>
 
 <app-basement></app-basement>

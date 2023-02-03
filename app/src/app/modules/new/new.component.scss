@@ -1,6 +1,9 @@
 .new{
+  &__content{
+    --background: transparent;
+  }
   &__editor{
-    overflow-y: scroll;
+    //overflow-y: scroll;
     min-height: 250px;
     padding-bottom: 20px;
   }

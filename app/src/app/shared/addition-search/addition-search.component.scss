@@ -1,4 +1,5 @@
 .addition-publication{
+  --background: #1F1F1F;
   &__header{
     position: relative;
     padding: 14px 24px;
@@ -23,6 +24,7 @@
     --padding-bottom: 14px;
     --padding-start: 24px;
     --padding-end: 24px;
+    --background: #1F1F1F;
   }
   &__footer{
     padding: 5px 20px;
