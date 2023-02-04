@@ -3,7 +3,10 @@
 </ng-template>
 
 <ng-template [ngIf]="!!imgList.length" >
-  <div class="file-reader__wrapper">
+  <div
+    class="file-reader__wrapper"
+    [ngClass]="{'file-reader__wrapper--row': order === 'row', 'file-reader__wrapper--column': order === 'column'}"
+  >
     <img *ngFor="let img of imgList" [ngClass]="{class: !!class, 'file-reader': true}" [src]='img' [alt]="alt">
   </div>
 </ng-template>
