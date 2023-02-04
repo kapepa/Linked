@@ -18,8 +18,8 @@ export class Feet {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
-  img: string;
+  @Column({type: 'text', array: true, default: [] })
+  img: string[];
 
   @Column({ default: '' })
   video?: string;

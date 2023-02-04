@@ -39,6 +39,9 @@ export class PostService {
   createAddition: AdditionDto | AdditionInterface;
   createAddition$: BehaviorSubject<AdditionDto | AdditionInterface> = new BehaviorSubject<AdditionDto | AdditionInterface>(null);
 
+  createImg: File[] = [];
+  createImg$: BehaviorSubject<File[]> = new BehaviorSubject<File[]>(this.createImg);
+
   editPost: PostDto | PostInterface;
   editPost$: BehaviorSubject<PostDto | PostInterface> = new BehaviorSubject<PostDto | PostInterface>(null);
 
@@ -272,6 +275,15 @@ export class PostService {
   set setEditPost(post: PostDto | PostInterface) {
     this.editPost = post;
     this.editPost$.next(this.editPost);
+  }
+
+  set setCreateImg(img: File) {
+    this.createImg = this.createImg.concat(img);
+    this.createImg$.next(this.createImg);
+  }
+
+  get getCreateImg() {
+    return this.createImg$.asObservable();
   }
 
   get getComments(): Observable<CommentInterface[]> {

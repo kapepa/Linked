@@ -36,6 +36,10 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   createAddition: AdditionDto;
   createAdditionSub: Subscription;
 
+  createImg: File[];
+  createImgSub: Subscription;
+
+
   @ViewChild('inputImg') inputImg: ElementRef<HTMLInputElement>;
   @ViewChild('inputFile') inputFile: ElementRef<HTMLInputElement>;
   @ViewChild('inputVideo') inputVideo: ElementRef<HTMLInputElement>;
@@ -71,10 +75,12 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     }
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
+    this.createImgSub = this.postService.getCreateImg.subscribe((img: File[]) => this.createImg = img);
   }
 
   async ngOnDestroy() {
     this.userSub.unsubscribe();
+    this.createImgSub.unsubscribe();
     if ( this.type === 'create' ) this.postService.setCreatedPost = this.saveChangePost();
     if ( this.type === 'edit' ) this.postService.setEditPost = this.saveChangePost();
   }
@@ -95,7 +101,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   initForm(post: PostDto | PostInterface) {
     this.postForm = this.fb.group({
       id: [ !!post?.id ? post.id : ''],
-      img: [ !!post?.img ? post?.img : null , Validators.required ],
+      img: [ !!post?.img ? post?.img : [] , Validators.required ],
       video: [ !!post?.video ? post.video : null ],
       file: [ !!post?.file ? post.file : null ],
       body: [ !!post?.body ? post.body : '' , Validators.required],
@@ -155,7 +161,15 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   onChangeImg(e: Event) {
     let file = (e.target as HTMLInputElement).files[0];
-    this.postForm.patchValue({img: file});
+
+    if(this.type === 'create') {
+      this.postService.setCreateImg = file;
+    }
+
+    if(this.type === 'edit') {
+      // need realize edit
+    }
+
   }
 
   async onVideo(e: Event) {
@@ -250,5 +264,9 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   get getQuery(){
     return (!!this.edit) ? { redact: this.post.id, index: this.index } : { addition: true }
+  }
+
+  get getLoadedImg(){
+    return this.type === 'create' ? this.createImg : []
   }
 }

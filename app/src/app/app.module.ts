@@ -30,6 +30,7 @@ import { CheckboxModule } from "./shared/checkbox/checkbox.module";
 import { RadioModule } from "./shared/radio/radio.module";
 import { PopupsModule } from "./core/layer/popups/popups.module";
 import { BoardEventsModule } from "./shared/board-events/board-events.module";
+import { PopupPostModule } from "./shared/popup-post/popup-post.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,6 +46,7 @@ import { BoardEventsModule } from "./shared/board-events/board-events.module";
     BasementModule,
     DocReaderModule,
     DirectiveModule,
+    PopupPostModule,
     AppRoutingModule,
     HttpClientModule,
     FileReaderModule,

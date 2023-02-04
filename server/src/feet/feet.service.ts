@@ -46,7 +46,7 @@ export class FeetService {
       switchMap((post: FeetInterface) => {
         return this.saveFeet({...post, ...other, ...newImg }).pipe(
           tap(async () => {
-            if(!!post.img && !!newImg) await this.fileService.removeFile(post.img);
+            // if(!!post.img && !!newImg) await this.fileService.removeFile(post.img);
             if(!!Object.keys(addition).length) additionChange.subscribe()
           })
         )
@@ -188,7 +188,8 @@ export class FeetService {
       switchMap(( feet: FeetInterface ) => {
         return  from(this.feetRepository.delete({ id })).pipe(
           tap( async () => {
-            if (!!feet.img) await this.fileService.removeFile(feet.img);
+            // if (!!feet.img) await this.fileService.removeFile(feet.img);
+            if (!!feet.img) for await (let img of feet.img) await this.fileService.removeFile(img);
             if (!!feet.video) await this.fileService.removeFile(feet.video);
             if (!!feet.file) await this.fileService.removeFile(feet.file);
           }),

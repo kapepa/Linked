@@ -4,6 +4,7 @@ import { PopoverComponent } from "./popover.component";
 import { IonicModule } from "@ionic/angular";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { BrowserModule } from "@angular/platform-browser";
+import { DirectiveModule } from "../../core/directive/directive.module";
 
 
 
@@ -19,6 +20,7 @@ import { BrowserModule } from "@angular/platform-browser";
     CommonModule,
     IonicModule,
     PipeModule,
+    DirectiveModule,
   ]
 })
 export class PopoverModule { }
