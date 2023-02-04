@@ -12,7 +12,7 @@ export class FileReaderComponent implements OnInit, OnChanges {
   @Input('img') img: File | File[];
   @Input('alt') alt: string;
   @Input('class') class: string;
-  @Input('order') order: 'row' | 'column';
+  @Input('order') order: 'row' | 'column' = 'row';
 
   imgText: string;
   reader = new FileReader();
