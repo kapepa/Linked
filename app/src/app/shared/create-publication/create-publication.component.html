@@ -52,23 +52,31 @@
       </div>
     </ion-content>
     <ion-footer class="ion-no-border" collapse="fade">
+      <div class="create-publication__loading">
+        <div class="create-publication__picture-line">
+          <app-file-reader
+            class="create-publication__file-reader"
+            *ngIf="!!getLoadedImg.length"
+            [img]="getLoadedImg"
+            [alt]="'picture'"
+            [class]="'img-reader'"
+            [order]="'column'"
+          >
+          </app-file-reader>
+        </div>
+        <div>
+<!--          other loading-->
+        </div>
+      </div>
       <div class="create-publication__footer">
         <div class="create-publication__shape_btn">
           <ion-fab-button
             (click)="onImg($event)"
             class="create-publication__fab create-publication__fab--warning"
-            [ngClass]="{'create-publication__fab--warning': img.invalid }"
+            [ngClass]="{'create-publication__fab--warning': img.invalid && !getLoadedImg.length }"
             color="light"
           >
-            <ion-icon *ngIf="!img.value" name="image"></ion-icon>
-            <app-file-reader
-              class="create-publication__file-reader"
-              *ngIf="!!img.value"
-              [img]="img.value"
-              [alt]="'picture'"
-              [class]="''"
-            >
-            </app-file-reader>
+            <ion-icon  name="image"></ion-icon>
             <input
               #inputImg
               type="file"

@@ -36,6 +36,28 @@
 
   }
   &__side{
+    display: flex;
+    flex-direction: column;
+  }
+}
 
+.post_side{
+  &__cap{
+    display: grid;
+    grid-template-columns: minmax(auto, 48px) 1fr;
+    align-items: center;
+    column-gap: 12px;
+    padding: 12px 72px  0 16px;
+    margin-bottom: 8px;
+  }
+  &__full-name{
+    display: flex;
+    column-gap: 8px;
+  }
+  &__first-name, &__last-name{
+    display: inline-block;
+  }
+  &__text{
+    padding: 0 16px;
   }
 }

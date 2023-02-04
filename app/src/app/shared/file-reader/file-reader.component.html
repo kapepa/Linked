@@ -1,1 +1,10 @@
-<img [ngClass]="{class: !!class, 'file-reader': true}" [src]='imgText' [alt]="alt">
+<ng-template [ngIf]="!imgList.length" >
+  <img [ngClass]="{class: !!class, 'file-reader': true}" [src]='imgText' [alt]="alt">
+</ng-template>
+
+<ng-template [ngIf]="!!imgList.length" >
+  <div class="file-reader__wrapper">
+    <img *ngFor="let img of imgList" [ngClass]="{class: !!class, 'file-reader': true}" [src]='img' [alt]="alt">
+  </div>
+</ng-template>
+

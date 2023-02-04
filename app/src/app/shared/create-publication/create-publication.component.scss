@@ -68,6 +68,12 @@
     grid-template-columns: auto 1fr;
     grid-template-areas: 'btn post';
   }
+  &__loading{
+    display: flex;
+  }
+  &__picture-line{
+
+  }
   &__fab{
     width: 40px;
     height: 40px;
@@ -97,6 +103,10 @@
   &__chip{
     padding: 0
   }
+}
+
+.img-reader{
+
 }
 
 @media screen and (max-width: 576px) {

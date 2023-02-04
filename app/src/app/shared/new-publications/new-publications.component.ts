@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy } fr
 import { Subscription } from "rxjs";
 import { AuthService } from "../../core/service/auth.service";
 import { PostService } from "../../core/service/post.service";
+import {PostInterface} from "../../core/interface/post.interface";
 
 @Component({
   selector: 'app-new-publications',
@@ -12,7 +13,9 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   userAvatar: string;
   userAvatarSubscription: Subscription;
 
-  @ViewChild('post') post: ElementRef<HTMLInputElement>;
+  post: PostInterface;
+  postSub: Subscription;
+
   @ViewChild('photoFile') photoFile: ElementRef<HTMLInputElement>;
   @ViewChild('videoFile') videoFile: ElementRef<HTMLInputElement>;
 
@@ -22,7 +25,8 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
   ) { }
 
   ngOnInit() {
-    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar);
+    this.postSub = this.postService.getPost.subscribe((post: PostInterface) => this.post = post );
+    this.userAvatarSubscription = this.authService.userAvatar.subscribe((avatar: string) => this.userAvatar = avatar );
   }
 
   ngAfterViewInit() {
@@ -31,6 +35,7 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy() {
     this.userAvatarSubscription.unsubscribe();
+    this.postSub.unsubscribe();
   }
 
   onPhoto(e: Event) {
@@ -39,7 +44,10 @@ export class NewPublicationsComponent implements OnInit, AfterViewInit, OnDestro
 
   changePhoto(e: Event) {
     let file = (e.target as HTMLInputElement).files[0];
-    this.postService.installPostField({ img: file });
+
+    // Need will add list img
+
+    // this.postService.installPostField({ img: file });
   }
 
   onVideo(e: Event) {

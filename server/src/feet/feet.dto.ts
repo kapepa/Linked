@@ -9,7 +9,7 @@ export class FeetDto {
   id: string
 
   @ApiProperty()
-  img?: string
+  img?: string[]
 
   @ApiProperty()
   video?: string

@@ -5,7 +5,7 @@ import { AdditionInterface } from "./addition.interface";
 
 export interface FeetInterface {
   id?: string,
-  img?: string,
+  img?: string[],
   video?: string,
   file?: string,
   body?: string,

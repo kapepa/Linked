@@ -4,6 +4,13 @@
     gallery
   </div>
   <div class="popup-post__side">
-    side
+    <div class="post_side__cap">
+      <img class="post_side__avatar" appImg [src]='post.author.avatar' alt="author avatar" />
+      <div class="post_side__full-name">
+        <div class="post_side__first-name">{{post.author.firstName}}</div>
+        <div class="post_side__last-name">{{post.author.lastName}}</div>
+      </div>
+    </div>
+    <div class="post_side__text">{{post.body}}</div>
   </div>
 </div>

@@ -5,7 +5,7 @@ import {AdditionDto} from "./addition.dto";
 
 export class PostDto {
   id?: string
-  img?: string | File
+  img?: string[]
   video?: string | File
   file?: string | File
   body?: string

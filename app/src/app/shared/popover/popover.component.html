@@ -4,7 +4,7 @@
       <ion-row>
         <ion-col>
           <ion-avatar >
-            <img class="popover__ico" *ngIf="user.avatar; else avatarIco" alt="avatar" src="{{user.avatar | url}}" />
+            <img class="popover__ico" *ngIf="user.avatar; else avatarIco" alt="avatar" appImg src="{{user.avatar}}" />
             <ng-template #avatarIco>
               <ion-icon class="popover__ico" name="person-outline"></ion-icon>
             </ng-template>

@@ -17,9 +17,16 @@ export class PopupPostComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy() {
+
   }
 
   onClose(e: Event) {
     this.closePost();
   }
+
+  get getAuthorAvatar() {
+    return this.post.author.avatar
+  }
+
+
 }
