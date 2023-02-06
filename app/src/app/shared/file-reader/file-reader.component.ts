@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {from, Observable, ObservedValueOf, of} from "rxjs";
 import {images} from "ionicons/icons";
@@ -11,8 +11,11 @@ import {images} from "ionicons/icons";
 export class FileReaderComponent implements OnInit, OnChanges {
   @Input('img') img: File | File[];
   @Input('alt') alt: string;
-  @Input('class') class: string;
-  @Input('order') order: 'row' | 'column' = 'row';
+  @Input('classImg') classImg: string;
+  @Input('order') order: 'row' | 'column' | 'gallery' = 'row';
+  @Input('width') width: number;
+  @Output('onDelete') onDelete = new EventEmitter<number>();
+
 
   imgText: string;
   reader = new FileReader();
@@ -21,8 +24,12 @@ export class FileReaderComponent implements OnInit, OnChanges {
 
   constructor() { }
 
+  onDeleteImg(index: number) {
+
+  }
+
   ngOnInit() {
-    // this.imgSrc();
+    console.log(this.order)
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -50,4 +57,5 @@ export class FileReaderComponent implements OnInit, OnChanges {
       reader.onload = () => resolve(reader.result as string);
     })
   }
+
 }
