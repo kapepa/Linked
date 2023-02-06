@@ -172,6 +172,10 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
 
   }
 
+  onDeleteImg(index: number) {
+
+  }
+
   async onVideo(e: Event) {
     if(!!this.video.value){
       await this.openVideo();

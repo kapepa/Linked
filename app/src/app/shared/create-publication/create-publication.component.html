@@ -59,13 +59,14 @@
             *ngIf="!!getLoadedImg.length"
             [img]="getLoadedImg"
             [alt]="'picture'"
-            [class]="'img-reader'"
-            [order]="'column'"
+            order='gallery'
+            (onDelete)=onDeleteImg($event)
           >
+
           </app-file-reader>
         </div>
         <div>
-<!--          other loading-->
+<!--          other loading -->
         </div>
       </div>
       <div class="create-publication__footer">
