@@ -25,11 +25,10 @@ export class FileReaderComponent implements OnInit, OnChanges {
   constructor() { }
 
   onDeleteImg(index: number) {
-
+    this.onDelete.emit(index);
   }
 
   ngOnInit() {
-    console.log(this.order)
   }
 
   ngOnChanges(changes: SimpleChanges) {

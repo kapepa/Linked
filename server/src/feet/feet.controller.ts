@@ -38,26 +38,28 @@ export class FeetController {
   @Post('/create')
   @Roles(Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 1 }, { name: 'video', maxCount: 1 },{ name: 'file', maxCount: 1 }], multerOption))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'img', maxCount: 10 }, { name: 'video', maxCount: 1 },{ name: 'file', maxCount: 1 }], multerOption))
   @ApiResponse({ status: 201, description: 'The created has been successfully feet.', type: FeetDto})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(
     @Body() body: any,
-    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
+    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[], file: Express.Multer.File[] },
     @Req() req,
   ): Observable<FeetInterface | FeetDto> {
-    let { img, video, file } = JSON.parse(JSON.stringify(files));
-    return this.feetService.createFeet({
-      ...JSON.parse(JSON.stringify(body)),
-      ...(!!img && !!img?.length) ? { img: img[0]?.filename } : undefined,
-      ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
-      ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
-      author: req.user,
-    }).pipe(
-      tap(() => {
-        if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
-      })
-    )
+    // let { img, video, file } = JSON.parse(JSON.stringify(files));
+    // return this.feetService.createFeet({
+    //   ...JSON.parse(JSON.stringify(body)),
+    //   ...(!!img && !!img?.length) ? { img: img[0]?.filename } : undefined,
+    //   ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
+    //   ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
+    //   author: req.user,
+    // }).pipe(
+    //   tap(() => {
+    //     if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
+    //   })
+    // )
+    console.log(files)
+    return of({} as FeetInterface | FeetDto)
   }
 
   @Patch('/update/:id')

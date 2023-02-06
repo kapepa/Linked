@@ -60,21 +60,17 @@
             [img]="getLoadedImg"
             [alt]="'picture'"
             order='gallery'
-            (onDelete)=onDeleteImg($event)
+            (onDelete)=onDeleteCreateImg($event)
           >
-
           </app-file-reader>
-        </div>
-        <div>
-<!--          other loading -->
         </div>
       </div>
       <div class="create-publication__footer">
         <div class="create-publication__shape_btn">
           <ion-fab-button
             (click)="onImg($event)"
-            class="create-publication__fab create-publication__fab--warning"
-            [ngClass]="{'create-publication__fab--warning': img.invalid && !getLoadedImg.length }"
+            class="create-publication__fab"
+            [ngClass]="{'create-publication__fab--warning': img.invalid }"
             color="light"
           >
             <ion-icon  name="image"></ion-icon>
@@ -84,6 +80,7 @@
               name="img"
               class="create-publication__input-img"
               (change)="onChangeImg($event)"
+              accept="image/png, image/gif, image/jpeg"
             />
           </ion-fab-button>
           <ion-fab-button
