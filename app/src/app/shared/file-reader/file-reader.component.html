@@ -7,9 +7,9 @@
     class="file-reader__group"
     [ngClass]="{'file-reader__group--row': order === 'row', 'file-reader__group--column': order === 'column', 'file-reader__group--gallery': order === 'gallery'}"
   >
-    <div class="file-reader__card">
+    <div class="file-reader__card" *ngFor="let img of imgList;let i = index " (click)="onDeleteImg(i)">
       <div class="file-reader__x-btn"></div>
-      <img *ngFor="let img of imgList;let i = index " [ngClass]="{'file-reader': true}" [src]='img' [alt]="alt" [style.max-width.px]=width />
+      <img [ngClass]="{'file-reader': true}" [src]='img' [alt]="alt" [style.max-width.px]=width />
     </div>
   </div>
 </ng-template>

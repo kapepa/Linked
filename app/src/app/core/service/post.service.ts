@@ -79,17 +79,21 @@ export class PostService {
   createPost(body: PostDto): Observable<PostInterface> {
     this.setPostLoad = !this.postLoad;
     let form = this.toForm({...body, addition: this.createAddition as AdditionDto});
-    return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
-      take(1),
-      tap({
-        next: (post: PostInterface) => {
-          this.posts.unshift(post);
-          this.setPosts = this.posts;
-        },
-        complete: () => this.setPostLoad = !this.postLoad,
-      }),
-      catchError(this.httpService.handleError),
-    )
+    console.log(form.get('img'))
+
+
+    return of({} as PostInterface)
+    // return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
+    //   take(1),
+    //   tap({
+    //     next: (post: PostInterface) => {
+    //       this.posts.unshift(post);
+    //       this.setPosts = this.posts;
+    //     },
+    //     complete: () => this.setPostLoad = !this.postLoad,
+    //   }),
+    //   catchError(this.httpService.handleError),
+    // )
   }
 
   updatePost(index: number, id: string, body: PostInterface | PostDto): Observable<PostInterface> {
@@ -198,11 +202,13 @@ export class PostService {
     );
   }
 
-  toForm(post: PostDto | PostInterface) {
+  toForm(post: PostDto | Omit<PostInterface, 'img'>) {
     let fromData = new FormData();
     for (let key in post) {
       if(key !== 'addition') fromData.append(key, post[key]);
       if(key === 'addition') for (let val in post[key]) fromData.append(`${key}[${val}]`, post[key][val]);
+      if(key === 'img') for ( let i = 0; i <= post[key].length; i++) fromData.append(`${key}[${i}]`, post[key][i]);
+      console.log(key)
     }
     return fromData;
   }
@@ -279,6 +285,11 @@ export class PostService {
 
   set setCreateImg(img: File) {
     this.createImg = this.createImg.concat(img);
+    this.createImg$.next(this.createImg);
+  }
+
+  set setCreateImages(img: File[]) {
+    this.createImg = img;
     this.createImg$.next(this.createImg);
   }
 

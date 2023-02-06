@@ -75,7 +75,10 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
     }
 
     this.userSub = this.authService.getUser.subscribe(( user: UserJwtDto ) => this.user = user);
-    this.createImgSub = this.postService.getCreateImg.subscribe((img: File[]) => this.createImg = img);
+    this.createImgSub = this.postService.getCreateImg.subscribe((img: File[]) => {
+      this.createImg = img;
+      this.img.setValue(img);
+    });
   }
 
   async ngOnDestroy() {
@@ -162,7 +165,7 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
   onChangeImg(e: Event) {
     let file = (e.target as HTMLInputElement).files[0];
 
-    if(this.type === 'create') {
+    if(this.type === 'create' && this.createImg.length < 4) {
       this.postService.setCreateImg = file;
     }
 
@@ -170,10 +173,13 @@ export class CreatePublicationComponent implements OnInit, OnDestroy, AfterViewI
       // need realize edit
     }
 
+    (e.target as HTMLInputElement).value = null;
   }
 
-  onDeleteImg(index: number) {
-
+  onDeleteCreateImg(index: number) {
+    let list = [...this.createImg];
+    list.splice(index, 1);
+    this.postService.setCreateImages = list;
   }
 
   async onVideo(e: Event) {
