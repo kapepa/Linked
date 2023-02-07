@@ -1,4 +1,4 @@
-import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {FeetDto} from "./feet.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {DeleteResult, FindOperator, Repository, UpdateResult} from "typeorm";

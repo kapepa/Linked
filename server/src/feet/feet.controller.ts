@@ -24,7 +24,7 @@ import { RolesGuard } from "../auth/roles.guard";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FounderGuard } from "../auth/founder.guard";
 import { CommentInterface } from "./comment.interface";
-import {FileFieldsInterceptor, FileInterceptor} from "@nestjs/platform-express";
+import {FileFieldsInterceptor, FileInterceptor, FilesInterceptor} from "@nestjs/platform-express";
 import { FileService, multerOption, } from "../file/file.service";
 
 @ApiTags('feet')
@@ -43,23 +43,24 @@ export class FeetController {
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   createFeet(
     @Body() body: any,
-    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[], file: Express.Multer.File[] },
+    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[], file?: Express.Multer.File[] },
     @Req() req,
   ): Observable<FeetInterface | FeetDto> {
-    // let { img, video, file } = JSON.parse(JSON.stringify(files));
-    // return this.feetService.createFeet({
-    //   ...JSON.parse(JSON.stringify(body)),
-    //   ...(!!img && !!img?.length) ? { img: img[0]?.filename } : undefined,
-    //   ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
-    //   ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
-    //   author: req.user,
-    // }).pipe(
-    //   tap(() => {
-    //     if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
-    //   })
-    // )
-    console.log(files)
-    return of({} as FeetInterface | FeetDto)
+    let { img, video, file } = JSON.parse(JSON.stringify(files));
+    let imgFilename = img.map(picture => picture.filename);
+    return this.feetService.createFeet({
+      ...JSON.parse(JSON.stringify(body)),
+      ...(!!img && !!img?.length) ? { img: imgFilename } : undefined,
+      ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
+      ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
+      author: req.user,
+    }).pipe(
+      tap(() => {
+        //need remake size save img
+        // if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
+      })
+    )
+
   }
 
   @Patch('/update/:id')
