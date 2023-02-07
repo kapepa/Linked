@@ -75,14 +75,25 @@ export class PostService {
       catchError(this.httpService.handleError),
     )
   }
-
   createPost(body: PostDto): Observable<PostInterface> {
+  // createPost(body: PostDto): Observable<PostInterface> {
+
     this.setPostLoad = !this.postLoad;
-    let form = this.toForm({...body, addition: this.createAddition as AdditionDto});
-    console.log(form.get('img'))
+    // let form = this.toForm({...body, addition: this.createAddition as AdditionDto});
+
+    let form: any = new FormData();
+    // form.append('access', body.access);
+    // form.append('body', body.body);
+    // form.append('img[]', body.img[0]);
+
+    form.append('img[]', body.img[0]);
+    form.append('img[]', body.img[1]);
+
+    console.log(form.get('img[]'))
 
 
     return of({} as PostInterface)
+
     // return this.http.post<PostInterface>(`${this.configUrl}/api/feet/create`,form).pipe(
     //   take(1),
     //   tap({
@@ -207,7 +218,8 @@ export class PostService {
     for (let key in post) {
       if(key !== 'addition') fromData.append(key, post[key]);
       if(key === 'addition') for (let val in post[key]) fromData.append(`${key}[${val}]`, post[key][val]);
-      if(key === 'img') for ( let i = 0; i <= post[key].length; i++) fromData.append(`${key}[${i}]`, post[key][i]);
+      // if(key === 'img') for ( let i = 0; i <= post[key].length; i++) fromData.append(`${key}[${i}]`, post[key][i]);
+      if(key === 'img') for (let i = 0; i <= post[key].length; i++) fromData.append(`img[]`, post[key][i]);
       console.log(key)
     }
     return fromData;
