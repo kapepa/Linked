@@ -18,7 +18,7 @@ export class FeetDto {
   file?: string
 
   @ApiProperty()
-  body: string
+  body?: string
 
   @ApiProperty()
   access?: AccessEnum
