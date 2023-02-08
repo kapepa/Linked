@@ -89,7 +89,10 @@ export class PostService {
           this.posts.unshift(post);
           this.setPosts = this.posts;
         },
-        complete: () => this.setPostLoad = !this.postLoad,
+        complete: () => {
+          this.setCreateImages = [];
+          this.setPostLoad = !this.postLoad;
+        },
       }),
       catchError(this.httpService.handleError),
     )

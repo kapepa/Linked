@@ -32,8 +32,8 @@ export const multerOption = {
 @Injectable()
 export class FileService {
 
-  formFile( filePath:string ): Observable<boolean> {
-    const existPath = join(__dirname, '..', '..', 'static', filePath);
+  formFile( filename :string ): Observable<boolean> {
+    const existPath = join(__dirname, '..', '..', 'static', filename);
     return from(fromFile(existPath)).pipe(
       switchMap((fileType: FileTypeResult) => {
         return this.sharpFile(existPath).pipe(
@@ -66,14 +66,25 @@ export class FileService {
       );
   };
 
-  async removeFile( filePath:string ): Promise<boolean | HttpException> {
-    try {
-      const existPath = join(__dirname, '..', '..', 'static', filePath);
-
-      await fs.unlinkSync(existPath);
-      return true;
-    } catch (err) {
-      return  new HttpException('I made a mistake while deleting', HttpStatus.BAD_REQUEST);
-    }
+  async removeFile( filePath:string ): Promise<Observable<boolean>> {
+    const existPath = join(__dirname, '..', '..', 'static', filePath);
+    await fs.unlinkSync(existPath);
+    return of(!fs.existsSync(existPath)).pipe(
+      catchError(() => {
+        throw new HttpException('I made a mistake while deleting', HttpStatus.BAD_REQUEST);
+      })
+    )
   }
+
+
+  // async removeFile( filePath:string ): Promise<boolean | HttpException> {
+  //   try {
+  //     const existPath = join(__dirname, '..', '..', 'static', filePath);
+  //
+  //     await fs.unlinkSync(existPath);
+  //     return true;
+  //   } catch (err) {
+  //     return  new HttpException('I made a mistake while deleting', HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 }
