@@ -76,15 +76,4 @@ export class FileService {
     )
   }
 
-
-  // async removeFile( filePath:string ): Promise<boolean | HttpException> {
-  //   try {
-  //     const existPath = join(__dirname, '..', '..', 'static', filePath);
-  //
-  //     await fs.unlinkSync(existPath);
-  //     return true;
-  //   } catch (err) {
-  //     return  new HttpException('I made a mistake while deleting', HttpStatus.BAD_REQUEST);
-  //   }
-  // }
 }
