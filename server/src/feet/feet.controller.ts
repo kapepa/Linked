@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import {from, Observable, of, switchMap, tap, throwError} from "rxjs";
+import {from, map, Observable, of, switchMap, tap, throwError} from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -56,8 +56,9 @@ export class FeetController {
       author: req.user,
     }).pipe(
       tap(() => {
-        //need remake size save img
-        // if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
+        from(imgFilename).pipe(
+          map((name: string) => this.fileService.formFile(name))
+        ).subscribe()
       })
     )
 

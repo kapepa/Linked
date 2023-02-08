@@ -3,7 +3,7 @@ import {FeetDto} from "./feet.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {DeleteResult, FindOperator, Repository, UpdateResult} from "typeorm";
 import {Feet} from "./feet.entity";
-import {catchError, from, Observable, of, switchMap, tap, toArray} from "rxjs";
+import {catchError, from, map, Observable, of, switchMap, tap, toArray} from "rxjs";
 import {FeetInterface} from "./feet.interface";
 import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
@@ -188,8 +188,9 @@ export class FeetService {
       switchMap(( feet: FeetInterface ) => {
         return  from(this.feetRepository.delete({ id })).pipe(
           tap( async () => {
-            // if (!!feet.img) await this.fileService.removeFile(feet.img);
-            if (!!feet.img) for await (let img of feet.img) await this.fileService.removeFile(img);
+            if (!!feet.img) from(feet.img).pipe(
+              map((img: string) => this.fileService.removeFile(img))
+            ).subscribe();
             if (!!feet.video) await this.fileService.removeFile(feet.video);
             if (!!feet.file) await this.fileService.removeFile(feet.file);
           }),
