@@ -13,7 +13,7 @@ export class PopupPostComponent implements OnInit, OnDestroy{
   constructor() { }
 
   ngOnInit() {
-    console.log(this.post)
+    // console.log(this.post)
   }
 
   ngOnDestroy() {
