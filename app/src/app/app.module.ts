@@ -31,7 +31,7 @@ import { RadioModule } from "./shared/radio/radio.module";
 import { PopupsModule } from "./core/layer/popups/popups.module";
 import { BoardEventsModule } from "./shared/board-events/board-events.module";
 import { PopupPostModule } from "./shared/popup-post/popup-post.module";
-import {GalleryModule} from "./shared/gallery/gallery.module";
+import { GalleryModule } from "./shared/gallery/gallery.module";
 
 @NgModule({
   declarations: [AppComponent],
