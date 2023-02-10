@@ -12,4 +12,5 @@ export class GalleryComponent implements OnInit {
 
   ngOnInit() {console.log(this.images)}
 
+
 }

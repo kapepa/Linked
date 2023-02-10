@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {PopupPostComponent} from "./popup-post.component";
 import {IonicModule} from "@ionic/angular";
 import {DirectiveModule} from "../../core/directive/directive.module";
-import {GalleryModule} from "../gallery/gallery.module";
+// import {GalleryModule} from "../gallery/gallery.module";
 
 @NgModule({
   declarations: [
@@ -12,7 +12,7 @@ import {GalleryModule} from "../gallery/gallery.module";
   imports: [
     IonicModule,
     CommonModule,
-    GalleryModule,
+    // GalleryModule,
     DirectiveModule,
   ],
   exports: [
