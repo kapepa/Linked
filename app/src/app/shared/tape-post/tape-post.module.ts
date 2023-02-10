@@ -23,7 +23,6 @@ import { DirectiveModule } from "../../core/directive/directive.module";
     RouterModule,
     ScrollingModule,
     DirectiveModule,
-
   ]
 })
 export class TapePostModule { }
