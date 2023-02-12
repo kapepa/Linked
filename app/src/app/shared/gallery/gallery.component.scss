@@ -1,3 +1,54 @@
 .gallery{
+  height: 100%;
+  width: 100%;
+  position: relative;
+  &__frame{
+    position: absolute;
+    top: 35px;
+    left: 35px;
+    right: 35px;
+    bottom: 35px;
+  }
+  &__carousel{
+    margin: 0 auto;
+  }
+  &__slide{
+    height: 100%;
+    min-height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  &__img{
+    object-fit: contain;
+    width: 700px;
+    height: 680px;
+  }
+}
 
+@media screen and (max-width: 1024px) {
+  .gallery{
+    &__img{
+      object-fit: contain;
+      width: 500px;
+      height: 420px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px){
+  .gallery{
+    height: 470px;
+    margin: 30px 0;
+    &__img{
+      width: 425px;
+    }
+  }
+}
+
+@media screen and (max-width: 425px){
+  .gallery{
+    height: 370px;
+    &__img{
+      height: 300px;
+    }
+  }
 }

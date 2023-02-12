@@ -116,7 +116,13 @@ cdk-virtual-scroll-viewport {
 
 .popover-viewport{
   --height: 100%;
-  height: 100%;
+}
+
+@media screen and (max-width: 1024px) {
+  .post-publications{
+    --max-width: 768px;
+    --max-height: 500px;
+  }
 }
 
 
@@ -126,13 +132,20 @@ cdk-virtual-scroll-viewport {
   }
 }
 
-@media screen and (max-width: 760px){
+@media screen and (max-width: 768px){
   .new-publications__create{
     --width: 90%;
+  }
+  .post-publications{
+    --max-width: 425px;
+    --max-height: 1090px;
   }
 }
 
 @media screen and (max-width: 576px){
-
+  .post-publications{
+    padding: 10px;
+    --max-height: 80%;
+  }
 }
 
