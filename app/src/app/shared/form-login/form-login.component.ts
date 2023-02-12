@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from "@angular/forms";
+import {FormBuilder, NgForm, Validators} from "@angular/forms";
 import { AuthService } from "../../core/service/auth.service";
 import { NavigationEnd, Router } from "@angular/router";
 import { ChatService } from "../../core/service/chat.service";
 import { SocketService } from "../../core/service/socket.service";
+import { ReCaptchaV3Service } from "ng-recaptcha";
 
 @Component({
   selector: 'app-form-login',
@@ -22,6 +23,7 @@ export class FormLoginComponent implements OnInit {
     private authService: AuthService,
     private chatService: ChatService,
     private socketService: SocketService,
+    private recaptchaV3Service: ReCaptchaV3Service,
   ) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd){
@@ -39,11 +41,16 @@ export class FormLoginComponent implements OnInit {
     if(this.loginForm.invalid) return;
     const { email, password } = this.loginForm.value;
 
-    this.authService.login({ email, password }).subscribe(async () => {
-      this.loginForm.reset();
-      await this.socketService.createSocket();
-      await this.router.navigate(['/']);
-    })
+    this.recaptchaV3Service.execute('importantAction')
+      .subscribe((token: string) => {
+        // console.log(`Token [${token}] generated`);
+
+        this.authService.login({ email, password }).subscribe(async () => {
+          this.loginForm.reset();
+          await this.socketService.createSocket();
+          await this.router.navigate(['/']);
+        })
+      });
   }
 
   get email(){

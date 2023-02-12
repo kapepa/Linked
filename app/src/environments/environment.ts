@@ -5,7 +5,10 @@
 export const environment = {
   production: false,
   configUrl: 'http://127.0.0.1:5000',
+  recaptcha: {siteKey: '6LfW4nUkAAAAAEue6_TJwq7fw73FLald0MgTGZ8K'},
 };
+
+// 6LfW4nUkAAAAANz57Mznplqqri8528OuC62dKU4p
 
 /*
  * For easier debugging in development mode, you can import the following file
