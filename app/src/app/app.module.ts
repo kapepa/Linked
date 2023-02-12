@@ -32,11 +32,14 @@ import { PopupsModule } from "./core/layer/popups/popups.module";
 import { BoardEventsModule } from "./shared/board-events/board-events.module";
 import { PopupPostModule } from "./shared/popup-post/popup-post.module";
 import { GalleryModule } from "./shared/gallery/gallery.module";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from "../environments/environment";
 
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    NgbModule,
     PipeModule,
     RadioModule,
     PopupsModule,

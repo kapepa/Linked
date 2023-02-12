@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../core/service/auth.service";
 import {NavigationEnd, Router} from "@angular/router";
+import {ReCaptchaV3Service} from "ng-recaptcha";
 
 @Component({
   selector: 'app-form-registration',
@@ -20,6 +21,7 @@ export class FormRegistrationComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
+    private recaptchaV3Service: ReCaptchaV3Service,
   ) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd){
@@ -37,12 +39,17 @@ export class FormRegistrationComponent implements OnInit {
 
     Object.keys(formValues).forEach( key => from.append(key, formValues[key]));
 
-    this.authService.registration(from).subscribe((bol: boolean) => {
-      if(bol){
-        this.router.navigate(['/auth/login']);
-        this.regForm.reset();
-      }
-    });
+    this.recaptchaV3Service.execute('importantAction')
+      .subscribe((token: string) => {
+        // console.debug(`Token [${token}] generated`);
+
+        this.authService.registration(from).subscribe((bol: boolean) => {
+          if(bol){
+            this.router.navigate(['/auth/login']);
+            this.regForm.reset();
+          }
+        });
+      });
   }
 
   get firstName() {

@@ -75,7 +75,6 @@ cdk-virtual-scroll-viewport {
   &__frame{
     position: relative;
     margin-bottom: 25px;
-    background-color: #2dd36f;
   }
   &__alert{
     position: absolute;
@@ -118,13 +117,18 @@ cdk-virtual-scroll-viewport {
   --height: 100%;
 }
 
+.slick-next.slick-arrow, .slick-prev.slick-arrow{
+  &::before{
+    font-size: 21px;
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .post-publications{
     --max-width: 768px;
     --max-height: 500px;
   }
 }
-
 
 @media screen and (max-width: 992px){
   .container{

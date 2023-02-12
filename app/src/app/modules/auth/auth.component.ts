@@ -10,7 +10,9 @@ import {Subject} from "rxjs";
 export class AuthComponent implements OnInit {
   url$: Subject<string> = new Subject<string>()
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+  ) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) this.url$.next(event.url)
     });
