@@ -21,6 +21,7 @@ export class PopupPostComponent implements OnInit, OnDestroy{
   }
 
   onClose(e: Event) {
+    console.log('close')
     this.closePost();
   }
 
