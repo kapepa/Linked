@@ -11,10 +11,9 @@ dotenv.config();
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'localhost',
-        port: 1025,
-        ignoreTLS: true,
-        secure: false,
+        service: 'gmail',
+        // ignoreTLS: true,
+        // secure: false,
         auth: {
           user: process.env.MAILDEV_INCOMING_USER,
           pass: process.env.MAILDEV_INCOMING_PASS,

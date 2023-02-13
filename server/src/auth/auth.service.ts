@@ -7,6 +7,7 @@ import { UsersInterface } from "../users/users.interface";
 import { JwtService } from "@nestjs/jwt";
 
 import { config } from "dotenv";
+import {MailService} from "../mailer/mailer.service";
 
 config();
 
@@ -16,6 +17,7 @@ export class AuthService {
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   validateUser(email: string, pass: string): Observable<UsersInterface | null> {
@@ -39,7 +41,8 @@ export class AuthService {
         return this.hashPassword(body.password).pipe(
           switchMap((password: string) => {
             return this.usersService.saveUser({...body, password}).pipe(
-              map((user: UsersInterface) => user.id ? !!user.id : false)
+              map((user: UsersInterface) => user.id ? !!user.id : false),
+              tap(() => this.mailService.regUser(body).subscribe()),
             )
           })
         )
