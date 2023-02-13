@@ -9,6 +9,7 @@ import { config } from "dotenv";
 import { JwtStrategy } from "./jwt.strategy";
 import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./roles.guard";
+import { MailService } from "../mailer/mailer.service";
 
 config()
 
@@ -27,6 +28,7 @@ config()
   ],
   providers: [
     AuthService,
+    MailService,
     LocalStrategy,
     JwtStrategy,
     { provide: APP_GUARD, useClass: RolesGuard },
