@@ -24,6 +24,7 @@
     "dev": "concurrently \"npm run app:dev\" \"npm run start:dev\""
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^8.0.0",
@@ -43,6 +44,7 @@
     "file-type": "^16.5.4",
     "mysql2": "^2.3.3",
     "node-fetch": "^2.6.7",
+    "nodemailer": "^6.9.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
