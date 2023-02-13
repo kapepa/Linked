@@ -25,6 +25,7 @@ import { EventModule } from './event/event.module';
 import { EventEntity } from "./event/event.entity";
 import { NewsModule } from './news/news.module';
 import { NewsEntity } from "./news/news.entity";
+import { MailModule } from './mailer/mailer.module';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ dotenv.config();
     ChatModule,
     EventModule,
     NewsModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppGateway, AppService],
