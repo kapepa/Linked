@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Get,
   HttpException, HttpStatus,
   Post,
   Put,
@@ -49,5 +49,10 @@ export class AuthController {
   @Roles(Role.Admin)
   roleAdd(){
     return JSON.stringify(true)
+  }
+
+  @Get('/google/callback')
+  AuthGoogle(@Body() body) {
+    console.log(body)
   }
 }
