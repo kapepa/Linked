@@ -33,6 +33,7 @@
   &__link-inner{
     display: flex;
     justify-content: center;
+    align-items: center;
   }
   &__title{
     font-size: 20px;
@@ -42,7 +43,7 @@
     height: 260px;
   }
   &__registration{
-    height: 410px;
+    height: 450px;
   }
   &__footer{
     display: flex;

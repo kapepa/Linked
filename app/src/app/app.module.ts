@@ -33,7 +33,7 @@ import { BoardEventsModule } from "./shared/board-events/board-events.module";
 import { PopupPostModule } from "./shared/popup-post/popup-post.module";
 import { GalleryModule } from "./shared/gallery/gallery.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { environment } from "../environments/environment";
+import { SocialModule } from "./shared/social/social.module";
 
 
 @NgModule({
@@ -42,6 +42,7 @@ import { environment } from "../environments/environment";
     NgbModule,
     PipeModule,
     RadioModule,
+    SocialModule,
     PopupsModule,
     CommonModule,
     GalleryModule,

@@ -1,0 +1,16 @@
+.social{
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+  &__part{
+    cursor: pointer;
+  }
+  &__icon{
+    width: 30px;
+    height: 30px;
+    transition: color .25s linear;
+    &:hover{
+      color: #fff;
+    }
+  }
+}
