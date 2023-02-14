@@ -5,6 +5,7 @@ import { IonicModule } from "@ionic/angular";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from "ng-recaptcha";
 import { environment } from "../../../environments/environment";
+import { SocialModule } from "../social/social.module";
 
 @NgModule({
   declarations: [
@@ -14,10 +15,11 @@ import { environment } from "../../../environments/environment";
     FormLoginComponent,
   ],
   imports: [
-    CommonModule,
     IonicModule,
-    ReactiveFormsModule,
+    SocialModule,
+    CommonModule,
     RecaptchaV3Module,
+    ReactiveFormsModule,
   ],
   providers: [
     {
