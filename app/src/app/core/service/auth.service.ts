@@ -40,16 +40,15 @@ export class AuthService {
     private storageService: StorageService,
   ) {}
 
-  regGoogle(): Observable<any> {
+  googleAuth(): Observable<any> {
     this.setAuthLoading = ! this.authLoading;
-
     return this.http.get<any>(`${this.baseUrl}/api/auth/google`).pipe(
       tap({
-        next: (res) => console.log(res),
+        // next: (res) => console.log(res),
         complete: () => this.setAuthLoading = ! this.authLoading,
       }),
       take(1),
-      catchError(this.httpService.handleError),
+      // catchError(this.httpService.handleError),
     )
   }
 
