@@ -24,6 +24,10 @@ const httpOptions = {
 })
 export class AuthService {
   baseUrl = environment.configUrl;
+
+  authLoading: boolean = false;
+  authLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.authLoading);
+
   user: UserJwtDto | null = null;
   user$ = new BehaviorSubject<UserJwtDto>(null);
 
@@ -35,6 +39,19 @@ export class AuthService {
     private socketService: SocketService,
     private storageService: StorageService,
   ) {}
+
+  regGoogle(): Observable<any> {
+    this.setAuthLoading = ! this.authLoading;
+
+    return this.http.get<any>(`${this.baseUrl}/api/auth/google`).pipe(
+      tap({
+        next: (res) => console.log(res),
+        complete: () => this.setAuthLoading = ! this.authLoading,
+      }),
+      take(1),
+      catchError(this.httpService.handleError),
+    )
+  }
 
   registration(form: FormData): Observable<boolean> {
     return this.http.post<boolean>(`${this.baseUrl}/api/auth/registration`,form).pipe(
@@ -80,6 +97,15 @@ export class AuthService {
 
   jwtDecode(token: string): UserJwtDto {
     return jwt_decode(token)
+  }
+
+  set setAuthLoading(bool) {
+    this.authLoading = bool;
+    this.authLoading$.next(this.authLoading);
+  }
+
+  get getAuthLoading() {
+    return this.authLoading$.asObservable();
   }
 
   get userRole(): Observable<Role> {

@@ -51,7 +51,7 @@ export class AuthController {
     return JSON.stringify(true)
   }
 
-  @Get('/google/callback')
+  @Get('/google')
   AuthGoogle(@Body() body) {
     console.log(body)
   }

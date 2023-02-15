@@ -13,6 +13,6 @@ import {IonicModule} from "@ionic/angular";
   ],
   exports: [
     SocialComponent,
-  ]
+  ],
 })
 export class SocialModule { }
