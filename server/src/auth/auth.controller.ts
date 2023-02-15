@@ -4,7 +4,7 @@ import {
   HttpException, HttpStatus,
   Post,
   Put,
-  Req,
+  Req, Res,
   UploadedFile,
   UseGuards,
   UseInterceptors
@@ -17,6 +17,7 @@ import {Roles} from "./roles.decorator";
 import {Role} from "./role.enum";
 import {LocalAuthGuard} from "./local-auth.guard";
 import {ApiCreatedResponse, ApiForbiddenResponse, ApiTags} from "@nestjs/swagger";
+import {GoogleOAuthGuard} from "./google-oauth.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -52,7 +53,15 @@ export class AuthController {
   }
 
   @Get('/google')
-  AuthGoogle(@Body() body) {
-    console.log(body)
+  @UseGuards(GoogleOAuthGuard)
+  AuthGoogle(@Req() req) {
+    return req.user
+  }
+
+  @Get('/google-redirect')
+  @UseGuards(GoogleOAuthGuard)
+  RedirectGoogle(@Req() req, @Res() res) {
+    res.header('Content-type', 'text/html');
+    res.end(`<script>window.opener.postMessage(${JSON.stringify(req.user)}, "*"); window.close();</script>`);
   }
 }
