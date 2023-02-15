@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SocialComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+
+  ) { }
 
   ngOnInit() {}
 
@@ -18,6 +20,7 @@ export class SocialComponent implements OnInit {
 
   onGoogle() {
     console.log('google')
+    fetch('')
   }
 
   onFacebook() {
