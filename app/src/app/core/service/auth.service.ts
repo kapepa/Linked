@@ -8,7 +8,7 @@ import jwt_decode from "jwt-decode";
 import { UserJwtDto } from "../dto/user-jwt.dto";
 import { Router } from "@angular/router";
 import { HttpService } from "./http.service";
-import { Role } from "../dto/user.dto";
+import {Role, UserDto} from "../dto/user.dto";
 import { ChatService } from "./chat.service";
 import { SocketService } from "./socket.service";
 
@@ -48,7 +48,22 @@ export class AuthService {
         complete: () => this.setAuthLoading = ! this.authLoading,
       }),
       take(1),
-      // catchError(this.httpService.handleError),
+      catchError(this.httpService.handleError),
+    )
+  }
+
+  socialAuth(user: any): Observable<boolean> {
+    console.log(user)
+    this.setAuthLoading = !this.authLoading;
+    return this.http.post<boolean>(`${this.baseUrl}/api/auth/social`, user).pipe(
+      tap({
+        next: () => {
+
+        },
+        complete: () => this.setAuthLoading = ! this.authLoading,
+      }),
+      take(1),
+      catchError(this.httpService.handleError),
     )
   }
 
