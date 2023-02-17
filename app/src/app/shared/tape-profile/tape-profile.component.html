@@ -3,7 +3,7 @@
     <div class="tape-profile__back-bg">
       <div class="tape-profile__back-markup"></div>
       <ion-avatar id="avatar" class="tape-profile__avatar-wrapper" (click)="onAvatar($event)"><div></div>
-        <img *ngIf="user.avatar; else avatarIco"  class="tape-profile__avatar" alt="avatar" src="{{ user.avatar | url }}" />
+        <img *ngIf="user.avatar; else avatarIco"  class="tape-profile__avatar" alt="avatar" appImg src="{{ user.avatar }}" />
         <ng-template #avatarIco>
           <ion-icon  class="tape-profile__avatar" name="person-outline"></ion-icon>
         </ng-template>

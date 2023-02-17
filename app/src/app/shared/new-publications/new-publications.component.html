@@ -2,7 +2,7 @@
   <ion-card class="new-publications__card">
     <ion-card-header class="new-publications__header">
       <ion-avatar class="new-publications__avatar">
-        <img *ngIf="userAvatar; else avatarIco" class="new-publications__img" alt="avatar" src="{{userAvatar | url}}" />
+        <img *ngIf="userAvatar; else avatarIco" class="new-publications__img" alt="avatar" appImg src="{{userAvatar}}" />
         <ng-template #avatarIco>
           <ion-icon  class="new-publications__img" name="person-outline"></ion-icon>
         </ng-template>

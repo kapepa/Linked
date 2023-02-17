@@ -75,15 +75,14 @@ export class AuthService {
   }
 
   socialAuth(user: UsersDto | UsersInterface): Observable<{access_token: string}> {
-    return this.usersService.existProfile('email', user.email).pipe(
-      switchMap((exist: boolean) => {
-        if(exist) throw new HttpException('This email already exists', HttpStatus.CONFLICT);
-        return this.usersService.saveUser(user).pipe(
-          switchMap((user: UsersInterface | UsersDto) => {
-            let { firstName, lastName, id, role, avatar } = user;
-            return of({access_token: this.jwtService.sign({firstName, lastName, id, role, avatar})});
-          }),
-        )
+    return this.usersService.findOneUser({ where: {email: user.email} }).pipe(
+      tap((user: UsersInterface) => {
+        if(!!user) return of(user);
+        return this.usersService.saveUser(user);
+      }),
+      switchMap((user: UsersInterface) => {
+        let { firstName, lastName, id, role, avatar } = user;
+        return of({access_token: this.jwtService.sign({firstName, lastName, id, role, avatar})});
       })
     );
   }
