@@ -52,13 +52,15 @@ export class AuthService {
     )
   }
 
-  socialAuth(user: any): Observable<boolean> {
-    console.log(user)
+  socialAuth(user: UserDto): Observable<{access_token: string}> {
     this.setAuthLoading = !this.authLoading;
-    return this.http.post<boolean>(`${this.baseUrl}/api/auth/social`, user).pipe(
+    return this.http.post<{access_token: string}>(`${this.baseUrl}/api/auth/social`, user).pipe(
       tap({
-        next: () => {
-
+        next: (res: {access_token: string}) => {
+          let token = res.access_token;
+          this.storageService.set('token', token);
+          this.user = this.jwtDecode(token);
+          this.user$.next(this.user);
         },
         complete: () => this.setAuthLoading = ! this.authLoading,
       }),
