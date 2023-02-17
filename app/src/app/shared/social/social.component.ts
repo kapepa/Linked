@@ -26,6 +26,7 @@ export class SocialComponent implements OnInit {
   }
 
   messageEvent(e: MessageEvent) {
+    if (!e.data) return window.removeEventListener('message', this.messageEvent);
     this.authService.socialAuth(e.data).subscribe(() => {
       window.removeEventListener('message', this.messageEvent);
       this.router.navigate(['/home']);
@@ -39,6 +40,8 @@ export class SocialComponent implements OnInit {
   }
 
   onFacebook() {
-    console.log('facebook')
+    let auth = window;
+    auth.open(`${this.baseUrl}/api/auth/facebook`,"_blank","width=500,height=500,left=0,top=0");
+    auth.addEventListener('message', this.messageEvent.bind(this));
   }
 }

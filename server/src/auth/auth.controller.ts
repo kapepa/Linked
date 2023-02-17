@@ -18,6 +18,7 @@ import {Role} from "./role.enum";
 import {LocalAuthGuard} from "./local-auth.guard";
 import {ApiCreatedResponse, ApiForbiddenResponse, ApiTags} from "@nestjs/swagger";
 import {GoogleOAuthGuard} from "./google-oauth.guard";
+import {FacebookGuard} from "./facebook.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -61,15 +62,38 @@ export class AuthController {
 
   @Get('/google')
   @UseGuards(GoogleOAuthGuard)
+  @ApiCreatedResponse({ status: 200, description: 'The user do request google.'})
+  @ApiForbiddenResponse({ status: 400, description: 'Bad Request.'})
   AuthGoogle(@Req() req) {
     return req.user
   }
 
   @Get('/google-redirect')
   @UseGuards(GoogleOAuthGuard)
+  @ApiCreatedResponse({ status: 200, description: 'The user google redirect social.'})
+  @ApiForbiddenResponse({ status: 400, description: 'Bad Request.'})
   RedirectGoogle(@Req() req, @Res() res) {
     let {lastName, firstName, email, picture} = req.user;
     let toUser = {firstName, lastName, avatar: picture, email} as UsersDto;
+    res.header('Content-type', 'text/html');
+    res.end(`<script>window.opener.postMessage(${JSON.stringify(toUser)}, "*"); window.close();</script>`);
+  }
+
+  @Get('/facebook')
+  @UseGuards(FacebookGuard)
+  @ApiCreatedResponse({ status: 200, description: 'The user do request facebook.'})
+  @ApiForbiddenResponse({ status: 400, description: 'Bad Request.'})
+  AuthFacebook(@Req() req): number {
+    return HttpStatus.OK;
+  }
+
+  @Get("/facebook/redirect")
+  @UseGuards(FacebookGuard)
+  @ApiCreatedResponse({ status: 200, description: 'The user facebook redirect social.'})
+  @ApiForbiddenResponse({ status: 400, description: 'Bad Request.'})
+  RedirectFacebook(@Req() req, @Res() res) {
+    let {lastName, firstName, email} = req.user;
+    let toUser = {firstName, lastName, email} as UsersDto;
     res.header('Content-type', 'text/html');
     res.end(`<script>window.opener.postMessage(${JSON.stringify(toUser)}, "*"); window.close();</script>`);
   }

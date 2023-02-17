@@ -11,7 +11,7 @@
           <ion-row style="display: flex; align-items: center">
             <ion-avatar class="post__avatar">
               <ng-container *ngIf="!!avatar; else avatarIco">
-                <img class="post__img" alt="avatar" src="{{ avatar | url }}" />
+                <img class="post__img" alt="avatar" appImg src="{{ avatar }}" />
               </ng-container>
               <ng-template #avatarIco>
                 <ion-icon  class="post__img" name="person-outline"></ion-icon>
