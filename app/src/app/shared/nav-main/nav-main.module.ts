@@ -5,6 +5,7 @@ import { IonicModule } from "@ionic/angular";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { RouterModule } from "@angular/router";
 import { PopupFriendsModule } from "../popup-friends/popup-friends.module";
+import { DirectiveModule } from "../../core/directive/directive.module";
 
 @NgModule({
   declarations: [
@@ -15,9 +16,10 @@ import { PopupFriendsModule } from "../popup-friends/popup-friends.module";
   ],
   imports: [
     PipeModule,
-    CommonModule,
     IonicModule,
     RouterModule,
+    CommonModule,
+    DirectiveModule,
     PopupFriendsModule,
   ]
 })

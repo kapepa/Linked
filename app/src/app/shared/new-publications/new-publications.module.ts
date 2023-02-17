@@ -4,7 +4,8 @@ import { NewPublicationsComponent } from "./new-publications.component";
 import { IonicModule } from "@ionic/angular";
 import { CreatePublicationModule } from "../create-publication/create-publication.module";
 import { PipeModule } from "../../core/pipe/pipe.module";
-import {RouterModule} from "@angular/router";
+import { RouterModule } from "@angular/router";
+import { DirectiveModule } from "../../core/directive/directive.module";
 
 @NgModule({
   declarations: [
@@ -16,9 +17,10 @@ import {RouterModule} from "@angular/router";
   imports: [
     PipeModule,
     IonicModule,
-    CommonModule,
-    CreatePublicationModule,
     RouterModule,
+    CommonModule,
+    DirectiveModule,
+    CreatePublicationModule,
   ]
 })
 export class NewPublicationsModule { }
