@@ -31,7 +31,7 @@ export class User implements UsersInterface{
   @Column()
   email: string;
 
-  @Column({ select: false })
+  @Column({ select: false, default: ''})
   password: string;
 
   @Column({ default: '' })

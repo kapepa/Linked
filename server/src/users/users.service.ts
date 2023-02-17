@@ -50,6 +50,12 @@ export class UsersService {
     );
   }
 
+  existProfile(key: string, val: string): Observable<boolean> {
+    return from(this.usersRepository.findOne({ where:{ [key]: val } })).pipe(
+      switchMap((user: User) => of(!!user))
+    );
+  }
+
   saveUser(user: UsersDto | UsersInterface ): Observable<UsersInterface | UsersDto>{
     return from(this.usersRepository.save(user));
   }

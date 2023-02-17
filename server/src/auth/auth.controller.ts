@@ -49,8 +49,8 @@ export class AuthController {
   @Post('social')
   @ApiCreatedResponse({ status: 200, description: 'The user has been successfully registration through social.'})
   @ApiForbiddenResponse({ status: 400, description: 'Bad Request.'})
-  social(@Body() body: UsersDto){
-    console.log(body)
+  social(@Body() body): Observable<{access_token: string}>{
+    return this.authService.socialAuth(body);
   }
 
   @Put('role')
@@ -68,8 +68,8 @@ export class AuthController {
   @Get('/google-redirect')
   @UseGuards(GoogleOAuthGuard)
   RedirectGoogle(@Req() req, @Res() res) {
-    let {lastName, firstName, email, picture, accessToken} = req.user;
-    let toUser = {firstName, lastName, avatar: picture, email, accessToken} as UsersDto;
+    let {lastName, firstName, email, picture} = req.user;
+    let toUser = {firstName, lastName, avatar: picture, email} as UsersDto;
     res.header('Content-type', 'text/html');
     res.end(`<script>window.opener.postMessage(${JSON.stringify(toUser)}, "*"); window.close();</script>`);
   }
