@@ -9,15 +9,15 @@ export class ImgDirective implements OnInit{
 
   ngOnInit() {
     switch (true) {
-      case new RegExp('https://').test(this.el.nativeElement.src) :
+      case new RegExp(/https:/).test(this.el.nativeElement.src) :
         this.el.nativeElement.src;
-        break
-      case this.el.nativeElement.src === 'http://localhost:4200/' :
+        break;
+      case window.location.origin === this.el.nativeElement.src :
         this.el.nativeElement.src = 'assets/images/fake.png';
-        break
+        break;
       default :
         this.el.nativeElement.src = `${environment.configUrl}/${this.el.nativeElement.src.split("/").pop()}`;
-        break
+        break;
     }
   }
 }

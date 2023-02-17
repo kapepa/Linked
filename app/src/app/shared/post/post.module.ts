@@ -4,6 +4,7 @@ import { PostComponent } from "./post.component";
 import { IonicModule } from "@ionic/angular";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { RouterModule } from "@angular/router";
+import { DirectiveModule } from "../../core/directive/directive.module";
 
 
 
@@ -19,6 +20,7 @@ import { RouterModule } from "@angular/router";
     CommonModule,
     IonicModule,
     RouterModule,
+    DirectiveModule,
   ]
 })
 export class PostModule { }

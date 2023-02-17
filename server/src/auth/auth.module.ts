@@ -5,12 +5,13 @@ import { UsersModule } from "../users/users.module";
 import { LocalStrategy } from "./local.strategy";
 import { PassportModule } from '@nestjs/passport';
 import {JwtModule, JwtService} from "@nestjs/jwt";
-import { config } from "dotenv";
 import { JwtStrategy } from "./jwt.strategy";
 import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./roles.guard";
 import { MailService } from "../mailer/mailer.service";
 import { GoogleStrategy } from "./google.strategy";
+import { FacebookStrategy } from "./facebook.strategy";
+import { config } from "dotenv";
 
 config()
 
@@ -33,6 +34,7 @@ config()
     LocalStrategy,
     JwtStrategy,
     GoogleStrategy,
+    FacebookStrategy,
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })
