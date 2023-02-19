@@ -25,4 +25,8 @@ describe('PopupsComponent', () => {
   it("createPublication", () => {
 
   })
+
+  it("additionPublication", () => {
+
+  })
 });
