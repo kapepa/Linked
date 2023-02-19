@@ -21,4 +21,8 @@ describe('PopupsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("createPublication", () => {
+
+  })
 });
