@@ -8,8 +8,8 @@ import { PostService } from "../../core/service/post.service";
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  searchSend: any;
-  search = false;
+  // searchSend: any;
+  // search = false;
 
   constructor(
     private postService: PostService,
@@ -18,21 +18,21 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {}
 
   onSearch(e: Event) {
-    let val = (e.currentTarget as HTMLIonInputElement).value;
-    if(!!this.searchSend) this.searchSend.unsubscribe();
-
-    this.searchSend = timer(3000).subscribe({
-      next: () => {
-        this.postService.setSearchWorld = val.toString();
-        this.searchSend.unsubscribe();
-      },
-      complete: () => {
-        this.searchSend.unsubscribe();
-      },
-    })
+    // let val = (e.currentTarget as HTMLIonInputElement).value;
+    // if(!!this.searchSend) this.searchSend.unsubscribe();
+    //
+    // this.searchSend = timer(3000).subscribe({
+    //   next: () => {
+    //     this.postService.setSearchWorld = val.toString();
+    //     this.searchSend.unsubscribe();
+    //   },
+    //   complete: () => {
+    //     this.searchSend.unsubscribe();
+    //   },
+    // })
   }
 
   cleanSearch(e: Event) {
-    this.postService.setSearchWorld = '';
+    // this.postService.setSearchWorld = '';
   }
 }
