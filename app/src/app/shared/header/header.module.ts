@@ -13,10 +13,10 @@ import { RouterModule } from "@angular/router";
     HeaderComponent
   ],
   imports: [
-    CommonModule,
     IonicModule,
-    NavMainModule,
     RouterModule,
+    CommonModule,
+    NavMainModule,
   ]
 })
 export class HeaderModule { }
