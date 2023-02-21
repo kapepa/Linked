@@ -17,7 +17,7 @@ import { RouterModule } from "@angular/router";
     RouterModule,
     CommonModule,
     NavMainModule,
-  ],
+  ]
 })
 
 export class HeaderModule { }
