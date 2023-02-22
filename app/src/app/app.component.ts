@@ -11,7 +11,7 @@ export class AppComponent implements OnInit{
   constructor(
     private storage: Storage,
     private socketService: SocketService,
-  ) {}
+  ) {};
 
   async ngOnInit() {
     // await this.storage.clear()
