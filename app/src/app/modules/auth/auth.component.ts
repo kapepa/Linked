@@ -14,7 +14,7 @@ export class AuthComponent implements OnInit {
     private router: Router,
   ) {
     router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) this.url$.next(event.url)
+      if (event instanceof NavigationEnd) this.url$.next(event.url);
     });
   }
 
