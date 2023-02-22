@@ -8,7 +8,7 @@ import {Subject} from "rxjs";
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit {
-  url$: Subject<string> = new Subject<string>()
+  url$: Subject<string> = new Subject<string>();
 
   constructor(
     private router: Router,
