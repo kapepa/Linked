@@ -6,6 +6,7 @@ import { HeaderModule } from "../../shared/header/header.module";
 import { IonicModule } from "@ionic/angular";
 import { PipeModule } from "../../core/pipe/pipe.module";
 import { BasementModule } from "../../shared/basement/basement.module";
+import { DirectiveModule } from "../../core/directive/directive.module";
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { BasementModule } from "../../shared/basement/basement.module";
     CommonModule,
     HeaderModule,
     BasementModule,
+    DirectiveModule,
     PersonRoutingModule,
   ],
 })
