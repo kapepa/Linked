@@ -21,4 +21,4 @@ import { Chat } from "./chat.entity";
   providers: [ChatGateway, ChatService],
   controllers: [ChatController],
 })
-export class ChatModule {}
+export class ChatModule {};
