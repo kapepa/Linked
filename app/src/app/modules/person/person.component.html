@@ -10,7 +10,7 @@
         <div class="person__content">
           <div class="person__avatar">
             <ng-container *ngIf="!!person?.avatar; else avatarIco">
-              <img class="person__img" alt="avatar" src="{{ person.avatar | url }}" />
+              <img class="person__img" appImg alt="avatar" src="{{ person.avatar }}" />
             </ng-container>
             <ng-template #avatarIco>
               <ion-icon  class="person__img" name="person-outline"></ion-icon>
