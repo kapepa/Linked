@@ -10,7 +10,7 @@
       <div class="create-publication__grid">
         <div class="create-publication__avatar-g">
           <ion-avatar>
-            <img *ngIf="user.avatar; else avatarIco" alt="Silhouette of a person's head" src="{{ user.avatar | url }}" />
+            <img *ngIf="user.avatar; else avatarIco" appImg alt="Silhouette of a person's head" src="{{ user.avatar }}" />
             <ng-template #avatarIco>
               <ion-icon  class="create-publication__ico" name="person-outline"></ion-icon>
             </ng-template>
