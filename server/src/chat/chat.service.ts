@@ -154,7 +154,7 @@ export class ChatService {
   createChat(){
     return from(this.chatRepository.save( {} )).pipe(
       switchMap((chat: ChatInterface) => {
-        return from(this.chatRepository.findOne({ where: { id: chat.id}, relations: ['conversation'] }))
+        return from(this.chatRepository.findOne({ where: { id: chat.id}, relations: ['conversation'] }));
       })
     );
   }
