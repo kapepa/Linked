@@ -35,7 +35,6 @@ import { GalleryModule } from "./shared/gallery/gallery.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SocialModule } from "./shared/social/social.module";
 
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
