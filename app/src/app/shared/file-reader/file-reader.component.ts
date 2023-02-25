@@ -36,7 +36,7 @@ export class FileReaderComponent implements OnInit, OnChanges {
   }
 
   imgSrc() {
-    if(Array.isArray(this.img)){
+    if( Array.isArray(this.img) ){
       from(Promise.all(this.img.map(img => this.readDataURL(img)))).subscribe((images: ObservedValueOf<Promise<Awaited<string[]>>> ) => {
         this.imgList = images;
       })
