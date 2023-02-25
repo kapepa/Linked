@@ -43,7 +43,7 @@ export class FileReaderComponent implements OnInit, OnChanges {
     } else {
       if (!!this.img?.name) {
         from(this.readDataURL(this.img)).subscribe((img: ObservedValueOf<Promise<Awaited<string>>>) => this.imgText = img)
-      } else if (typeof this.img === 'string' ) {
+      } else if ( typeof this.img === 'string' ) {
         this.imgText = `${environment.configUrl}/${this.img}`;
       }
     }
