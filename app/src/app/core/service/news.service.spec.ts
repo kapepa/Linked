@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { NewsService } from './news.service';
 import {HttpService} from "./http.service";
-import {HttpClient, HttpErrorResponse, HttpRequest} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpRequest, HttpResponse} from "@angular/common/http";
 import {NewsClass} from "../../../utils/news-class";
 import {NewsInterface} from "../interface/news.interface";
 import {from, of, Subject} from "rxjs";
@@ -114,6 +114,43 @@ describe('NewsService', () => {
       expect(req.request.method).toEqual('GET');
 
       req.flush('create news error', errorResponse);
+    })
+  })
+
+  describe('findTidings', () => {
+    const query = {take: 5, skip: 0}
+
+    it('should return array news', (done: DoneFn) => {
+      const expectedResponse = new HttpResponse({ status: 200, body: [newsClass] })
+
+      service.findTidings(query).subscribe({
+        next: (news: NewsInterface[]) => {
+          service.getTidings.subscribe((tidings: NewsInterface[]) => {
+            expect(tidings).toEqual(news);
+          })
+          done();
+        },
+        error: () => done.fail,
+      })
+
+      const req = httpTestingController.expectOne(`${service.configUrl}/api/news/find?take=${query.take}&skip=${query.skip}`);
+      expect(req.request.method).toEqual('GET');
+      req.event(expectedResponse);
+    })
+
+    it('should turn network error', (done: DoneFn) => {
+      const errorEvent = new ProgressEvent('error');
+
+      service.findTidings(query).subscribe({
+        next: () => done.fail,
+        error: (err: HttpErrorResponse) => {
+          expect(err.status).toEqual(404);
+          done();
+        }
+      })
+
+      const req = httpTestingController.expectOne(`${service.configUrl}/api/news/find?take=${query.take}&skip=${query.skip}`);
+      req.flush('error', errorResponse);
     })
   })
 

@@ -1,5 +1,6 @@
 import {UserClass} from "./user-class";
 import {NewsDto} from "../app/core/dto/news.dto";
+import {NewsInterface} from "../app/core/interface/news.interface";
 
 export const NewsClass = {
   id: "newsID",
@@ -7,4 +8,4 @@ export const NewsClass = {
   title: "newsTitle",
   img: "newsImg",
   content: "news content",
-} as NewsDto;
+} as NewsInterface | NewsDto;
