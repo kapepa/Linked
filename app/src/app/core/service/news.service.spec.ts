@@ -164,7 +164,7 @@ describe('NewsService', () => {
 
   describe('setTidings, getTidings', () => {
     it('set new array news, get new array news', () => {
-      let newsArray = [newsClass] as NewsInterface[];
+      let newsArray = [newsClass] as any[];
       service.setTidings = newsArray;
 
       service.getTidings.subscribe((news: NewsInterface[]) => {
@@ -175,7 +175,7 @@ describe('NewsService', () => {
 
   describe('setNews, getNews', () => {
     it('set news, get news', () => {
-      let news = newsClass as NewsInterface;
+      let news = newsClass as any;
       service.setNews = news;
 
       service.getNews.subscribe((news: NewsInterface) => {

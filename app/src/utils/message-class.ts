@@ -7,4 +7,4 @@ export const MessageClass = {
   chat: ChatInterface,
   status: 'reading',
   message: 'Message',
-}
+} as any

@@ -9,6 +9,7 @@ import {UserClass} from "../../../utils/user-class";
 import {UserInterface} from "../interface/user.interface";
 import {ChatInterface} from "../interface/chat.interface";
 import {MessageInterface} from "../interface/message.interface";
+import {ChatDto} from "../dto/chat.dto";
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -16,8 +17,8 @@ describe('ChatService', () => {
   let httpTestingController: HttpTestingController;
 
   let userClass = UserClass;
-  let chatClass = ChatClass;
-  let messageClass = MessageClass;
+  let chatClass = ChatClass as ChatInterface ;
+  let messageClass = MessageClass as MessageInterface;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +39,17 @@ describe('ChatService', () => {
 
   describe('should prepare new message for socket if reading. newMessageSocket', () => {
     let dto: { friend: {id: string}, chat: {id: string}, message: MessageInterface} =
-      { friend: { id: userClass.id as string }, chat: { id: ChatClass.id }, message: messageClass as MessageInterface };
+      { friend: { id: userClass.id as string }, chat: { id: ChatClass.id }, message: messageClass  };
 
     beforeEach(() => {
-      service.setChat = chatClass as ChatInterface;
+      service.setChat = chatClass;
     })
 
     it('should be reading message', () => {
       service.newMessageSocket(dto);
       service.getChat.subscribe({
         next: (chat: ChatInterface) => {
-          expect(chat).toEqual(ChatClass as ChatInterface)
+          expect(chat).toEqual(ChatClass as ChatInterface | ChatDto)
         }
       })
     })
