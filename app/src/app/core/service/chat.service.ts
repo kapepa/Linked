@@ -108,7 +108,7 @@ export class ChatService {
     )
   }
 
-  receiveAllConversation(query?: {skip: number, take: number, first: string}):
+  receiveAllConversation(query?: {skip?: number, take?: number, first?: string}):
     Observable<{friends: UserInterface[], chat: ChatInterface, no: { read: string[] }}>
   {
     if(!!this.first) query = {...query, first: this.first};

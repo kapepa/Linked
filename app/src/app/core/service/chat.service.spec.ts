@@ -10,9 +10,10 @@ import {UserInterface} from "../interface/user.interface";
 import {ChatInterface} from "../interface/chat.interface";
 import {MessageInterface} from "../interface/message.interface";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
-import {asyncError} from "../../testing/async-observable-helpers";
+
 import {FriendsInterface} from "../interface/friends.interface";
 import {Observable} from "rxjs";
+import {asyncError} from "../../../testing/async-observable-helpers";
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -175,7 +176,7 @@ describe('ChatService', () => {
   })
 
   describe("receiveAllConversation", () => {
-    const mockQuery: {skip?: number, take?: number, first?: string} = {skip: 0, take: 1,}
+    const mockQuery: {skip?: number, take?: number, first?: string} = {skip: 0, take: 1}
     const mockResponse: { friends: UserInterface[], chat: ChatInterface, no: { read: string[] }} =
       { friends: [UserClass] as UserInterface[], chat: ChatClass as ChatInterface, no: { read: [] as string[] }  }
 
