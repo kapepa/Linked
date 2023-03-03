@@ -15,9 +15,6 @@ import {MessageClass} from "../../../utils/message-class";
 import {MessageInterface} from "../interface/message.interface";
 import {Socket} from "socket.io-client";
 
-const routes = [
-  {path: `/person/:id`, component: HomeComponent}
-] as Routes;
 
 describe('SocketService', () => {
   let router: Router;
