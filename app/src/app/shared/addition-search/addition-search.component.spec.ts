@@ -135,6 +135,10 @@ describe('AdditionSearchComponent', () => {
     })
   })
 
+  it('onClose', () => {
+    // need realize
+  })
+
   describe('createForm', () => {
     let mockAddition: AdditionDto;
 
@@ -149,11 +153,41 @@ describe('AdditionSearchComponent', () => {
     })
 
     it("get getJob", () => {
-      let getJob = spyOnProperty(component, 'getJob', 'get');
+      expect(component.getJob?.value).toEqual(mockAddition.jobTitle);
+    })
 
-      // expect(component.getJob?.value).toEqual(mockAddition.jobTitle);
-      // console.log( component.additionForm.get('jobTitle')?.value )
-      console.log(getJob)
+    it("get getCompany", () => {
+      expect(component.getCompany?.value).toEqual(mockAddition.company);
+    })
+
+    it('getPlace', () => {
+      expect(component.getPlace?.value).toEqual(mockAddition.placesWork);
+    })
+
+    it('getRegion', () => {
+      expect(component.getRegion?.value).toEqual(mockAddition.region);
+    })
+
+    it('getID', () => {
+      expect(component.getID?.value).toEqual(mockAddition.id);
+    })
+
+  })
+
+  describe('get query. getQuery', () => {
+    it('type === create', () => {
+      component.type = 'create';
+      expect(component.getQuery).toEqual({ create: true });
+    })
+
+    it('type === edit', () => {
+      let mockIndex: number = 1;
+      let mockQuery: string = 'fakeQuery';
+
+      component.index = mockIndex;
+      component.query = mockQuery;
+
+      expect(component.getQuery).toEqual({ edit: mockQuery, index: mockIndex })
     })
   })
 });
