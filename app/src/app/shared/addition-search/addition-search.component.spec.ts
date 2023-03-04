@@ -8,12 +8,14 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AdditionClass} from "../../../utils/addition-class";
 import {of} from "rxjs";
 import {AdditionDto} from "../../core/dto/addition.dto";
-import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 class MockPostService {
   indexEdit(index: number) {};
   get getCreateAddition () { return of(undefined) };
   get getEditAddition () { return of(undefined) };
+  set setEditAddition (addition: AdditionDto) {};
+  set setCreateAddition (addition: AdditionDto) {};
 }
 
 describe('AdditionSearchComponent', () => {
@@ -24,6 +26,11 @@ describe('AdditionSearchComponent', () => {
   let activatedRoute: ActivatedRoute;
 
   let additionClass = AdditionClass;
+
+  let activatedRouteSpy = {
+    ...jasmine.createSpyObj("ActivatedRoute", ["snapshot"]),
+    snapshot: {queryParams: {  }}
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -38,10 +45,7 @@ describe('AdditionSearchComponent', () => {
       ],
       providers: [
         { provide: PostService, useClass: MockPostService },
-        {
-          provide: ActivatedRoute,
-          useValue: { ...jasmine.createSpyObj("ActivatedRoute", [""]), snapshot: { queryParams: {index: 1} } }  ,
-        }
+        { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     }).compileComponents();
 
@@ -86,11 +90,70 @@ describe('AdditionSearchComponent', () => {
       })
 
       it('select on query params', () => {
-        spyOn(postService, 'indexEdit').and.returnValue(of(true));
+        let mockQuery: { index: number } = { index: 1 };
+        let navigateSpy = spyOn(router, 'navigate');
+
+        spyOn(postService, 'indexEdit').and.returnValue(of(false));
+        activatedRoute.snapshot.queryParams = mockQuery;
 
         component.ngOnInit();
-        expect(postService.indexEdit).toHaveBeenCalledWith(1);
+        expect(postService.indexEdit).toHaveBeenCalledWith(mockQuery.index);
+        expect(navigateSpy).toHaveBeenCalledWith([''], { queryParams: {} } );
       })
+    })
+  })
+
+  describe('ngOnDestroy', () => {
+    let mockAddition: AdditionDto;
+    let mockCreate: jasmine.Spy;
+
+    beforeEach(() => {
+      mockAddition = additionClass as AdditionDto;
+      mockCreate = spyOn(component, 'createAddition');
+
+      mockCreate.and.returnValue(mockAddition);
+    })
+
+    it('type === create', () => {
+      component.type = 'create';
+      let mockSetCreate = spyOnProperty(postService, 'setCreateAddition', 'set');
+
+      component.ngOnDestroy();
+
+      expect(mockCreate).toHaveBeenCalled();
+      expect(mockSetCreate).toHaveBeenCalledWith(mockAddition);
+    })
+
+    it('type === edit', () => {
+      component.type = 'edit';
+      let mockSetEdit = spyOnProperty(postService, 'setEditAddition', 'set');
+
+      component.ngOnDestroy();
+
+      expect(mockCreate).toHaveBeenCalled();
+      expect(mockSetEdit).toHaveBeenCalledWith(mockAddition);
+    })
+  })
+
+  describe('createForm', () => {
+    let mockAddition: AdditionDto;
+
+    beforeEach(() => {
+      let { post, ...other } = AdditionClass
+      mockAddition = other as AdditionDto;
+      component.createForm(mockAddition);
+    })
+
+    it('createAddition', () => {
+      expect(component.createAddition()).toEqual(mockAddition);
+    })
+
+    it("get getJob", () => {
+      let getJob = spyOnProperty(component, 'getJob', 'get');
+
+      // expect(component.getJob?.value).toEqual(mockAddition.jobTitle);
+      // console.log( component.additionForm.get('jobTitle')?.value )
+      console.log(getJob)
     })
   })
 });
