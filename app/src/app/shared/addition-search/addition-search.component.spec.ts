@@ -9,6 +9,7 @@ import {AdditionClass} from "../../../utils/addition-class";
 import {of} from "rxjs";
 import {AdditionDto} from "../../core/dto/addition.dto";
 import {ActivatedRoute, Router} from "@angular/router";
+import {By} from "@angular/platform-browser";
 
 class MockPostService {
   indexEdit(index: number) {};
@@ -136,7 +137,26 @@ describe('AdditionSearchComponent', () => {
   })
 
   it('onClose', () => {
-    // need realize
+    component.onClosePublication = () => {};
+    let xCloseBtn = fixture.debugElement.query(By.css('.addition-publication__close'));
+
+    xCloseBtn.nativeElement.click();
+    expect(component.onClosePublication).toBeTruthy();
+  })
+
+  it('onSubmit', () => {
+    let { post, ...mockAddition }: AdditionDto =  AdditionClass as AdditionDto;
+    let formAddition = fixture.debugElement.query(By.css('form'));
+    let spySetCreate = spyOnProperty(postService, 'setCreateAddition', 'set');
+    let spyRouter = spyOn(router, 'navigate');
+    component.type = 'create'
+
+    component.createForm(mockAddition);
+    formAddition.triggerEventHandler('submit', {preventDefault: () => {}});
+
+    expect(spySetCreate).toHaveBeenCalledWith(mockAddition);
+    expect(component.getQuery).toEqual({ create: true });
+    expect(spyRouter).toHaveBeenCalledWith(['/home'], { queryParams: { create: true } })
   })
 
   describe('createForm', () => {
