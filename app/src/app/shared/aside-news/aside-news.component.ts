@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NewsInterface} from "../../core/interface/news.interface";
 import {UserInterface} from "../../core/interface/user.interface";
+import {NewsDto} from "../../core/dto/news.dto";
 
 @Component({
   selector: 'app-aside-news',
@@ -9,7 +10,7 @@ import {UserInterface} from "../../core/interface/user.interface";
 })
 export class AsideNewsComponent implements OnInit {
   @Input('user') user: UserInterface;
-  @Input('tidings') tidings: NewsInterface[];
+  @Input('tidings') tidings: NewsInterface[] | NewsDto[];
 
   constructor() { }
 
