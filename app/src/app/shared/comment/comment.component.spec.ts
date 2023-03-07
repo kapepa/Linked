@@ -101,14 +101,40 @@ describe('CommentComponent', () => {
   })
 
   it('onSubmit', () => {
-    let spyReceiveComment = spyOn(postService, 'receiveComment').and.returnValue(of([]));
+    let mockID: string = 'fakeID';
+    let mockComments: string = 'comments'
+    let spyReceiveComment = spyOn(postService, 'createComment').and.returnValue( of({} as CommentInterface) );;
     let form = fixture.debugElement.query(By.css('.comment__form'));
 
-    component.commentForm.get('comment')?.patchValue(postClass.comments)
+    component.commentForm.get('id')?.patchValue(mockID);
+    component.commentForm.get('comment')?.patchValue(mockComments);
+
     form.triggerEventHandler('submit', {});
 
-    // expect(spyReceiveComment).toHaveBeenCalled(  );
-    // console.log( (postClass.comments as CommentInterface[])[0] )
+    expect(spyReceiveComment).toHaveBeenCalledWith( mockID, { comment: mockComments } );
+  })
+
+  it('onDel', () => {
+    component.user = userClass as UserInterface;
+    component.comments = postClass.comments as CommentInterface[];
+    fixture.detectChanges();
+
+    let spyDeleteComment = spyOn(postService, 'deleteComment').and.returnValue(of({raw: [], affected: 1}))
+    let btn = fixture.debugElement.query(By.css('.comment__del'));
+
+    btn.nativeElement.click();
+    expect(spyDeleteComment).toHaveBeenCalledWith(0, 'idComment');
+  })
+
+  it('onIonInfinite', () => {
+    component.comments = postClass.comments as CommentInterface[];
+
+    let spyReceiveComment = spyOn(postService, 'receiveComment').and.returnValue(of([postClass.comments] as CommentInterface[]));
+    let infiniteScroll = fixture.debugElement.query(By.css('ion-infinite-scroll'));
+
+    infiniteScroll.triggerEventHandler('ionInfinite', { target: { complete: () => {} } });
+
+    expect(spyReceiveComment).toHaveBeenCalledWith({ take: 20, skip: 1 });
   })
 
 });
