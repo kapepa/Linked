@@ -78,7 +78,7 @@ describe('CreatePublicationComponent', () => {
 
   describe('ngOnInit update post', () => {
     beforeEach(waitForAsync(() => {
-      component.post = mockPost;
+      component.post = mockPost as any;
       component.index = 1;
       component.postForm.get('id').setValue(mockPost.id);
       component.postForm.get('body').setValue(mockPost.body);

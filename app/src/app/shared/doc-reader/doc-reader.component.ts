@@ -7,14 +7,15 @@ import {environment} from "../../../environments/environment";
   styleUrls: ['./doc-reader.component.scss'],
 })
 export class DocReaderComponent implements OnInit {
-  @Input('file') file: File;
-  @Input('alt') alt: string;
-  @Input('class') class: string;
-  @Input('clearFile') clearFile: () => void;
+  @Input('file') file?: File | string;
+  @Input('alt') alt?: string;
+  @Input('class') class?: string;
+  @Input('clearFile') clearFile?: () => void;
 
-  @ViewChild('fileView') fileView: ElementRef<HTMLDivElement>
+  @ViewChild('fileView') fileView?: ElementRef<HTMLDivElement>
 
-  fileText: string;
+  configUrl = environment.configUrl;
+  fileText?: string;
   reader = new FileReader();
 
   constructor() { }
@@ -22,7 +23,7 @@ export class DocReaderComponent implements OnInit {
   ngOnInit() {}
 
   docSrc() {
-    if (!!this.file?.name) {
+    if ( typeof this.file !== 'string' && !!this.file?.name ) {
       this.reader.readAsDataURL(this.file);
       this.reader.onload = () => this.fileText = this.reader.result as string;
     } else if (typeof this.file === 'string' ) {
@@ -31,7 +32,7 @@ export class DocReaderComponent implements OnInit {
   }
 
   onClose(e: Event) {
-    this.clearFile();
+    if(!!this.clearFile) this.clearFile();
   }
 
 }
