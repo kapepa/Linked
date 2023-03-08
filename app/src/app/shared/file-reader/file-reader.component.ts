@@ -9,15 +9,15 @@ import {images} from "ionicons/icons";
   styleUrls: ['./file-reader.component.scss'],
 })
 export class FileReaderComponent implements OnInit, OnChanges {
-  @Input('img') img: File | File[];
-  @Input('alt') alt: string;
-  @Input('classImg') classImg: string;
+  @Input('img') img?: File | File[] | string;
+  @Input('alt') alt: string = '';
+  @Input('classImg') classImg: string = '';
   @Input('order') order: 'row' | 'column' | 'gallery' = 'row';
-  @Input('width') width: number;
+  @Input('width') width?: number;
   @Output('onDelete') onDelete = new EventEmitter<number>();
 
-
-  imgText: string;
+  configUrl: string = environment.configUrl;
+  imgText: string = '';
   reader = new FileReader();
 
   imgList: string[] = [];
@@ -41,15 +41,15 @@ export class FileReaderComponent implements OnInit, OnChanges {
         this.imgList = images;
       })
     } else {
-      if (!!this.img?.name) {
+      if (typeof this.img !== 'string' && !!this.img?.name) {
         from(this.readDataURL(this.img)).subscribe((img: ObservedValueOf<Promise<Awaited<string>>>) => this.imgText = img)
       } else if ( typeof this.img === 'string' ) {
-        this.imgText = `${environment.configUrl}/${this.img}`;
+        this.imgText = `${this.configUrl}/${this.img}`;
       }
     }
   }
 
-  readDataURL(img): Promise<string> {
+  readDataURL(img: File): Promise<string> {
     return new Promise((resolve) => {
       let reader = new FileReader();
       reader.readAsDataURL(img);
