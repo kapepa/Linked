@@ -36,7 +36,7 @@ describe('PostComponent', () => {
     component = fixture.componentInstance;
     component.index = 0;
     component.userID = mockUser.id;
-    component.post = mockPost;
+    component.post = mockPost as any;
     component.userAvatar = '';
     fixture.detectChanges();
   }));
