@@ -7,12 +7,14 @@ import {environment} from "../../../environments/environment";
   styleUrls: ['./video-reader.component.scss'],
 })
 export class VideoReaderComponent implements OnInit, OnChanges, AfterViewInit {
-  @Input('audio') audio: File;
-  @Input('alt') alt: string;
-  @Input('class') class: string;
-  @Input('clearAudio') clearAudio: () => void;
+  configUrl = environment.configUrl;
 
-  @ViewChild('videoPlayer') videoPlayer: ElementRef<HTMLAudioElement>
+  @Input('audio') audio?: File | string;
+  @Input('alt') alt?: string;
+  @Input('class') class?: string;
+  @Input('clearAudio') clearAudio?: () => void;
+
+  @ViewChild('videoPlayer') videoPlayer?: ElementRef<HTMLAudioElement>
 
   constructor() { }
 
@@ -28,11 +30,12 @@ export class VideoReaderComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   audioSrc() {
+    if (!this.videoPlayer) return;
     let audio = this.videoPlayer.nativeElement;
-    audio.src = !!this.audio.name ? URL.createObjectURL(this.audio) : `${environment.configUrl}/${this.audio}`;
+    audio.src = typeof this.audio === "object" ? URL.createObjectURL(this.audio) : `${this.configUrl}/${this.audio}`;
   }
 
   onClose(e: Event) {
-    this.clearAudio();
+    if(this.clearAudio) this.clearAudio();
   }
 }
