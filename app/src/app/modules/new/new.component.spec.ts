@@ -70,7 +70,7 @@ describe('NewComponent', () => {
 
   it('onCleaningImg', () => {
     let divClean = fixture.debugElement.query(By.css('.new__load-cleaning'));
-    let mockFile = new File([""], "filename", { type: 'text/html' });
+    let mockFile = new File([""], "filename", { type: 'text/html' }) as any;
     component.form.get('img')?.patchValue(mockFile);
 
     divClean.nativeNode.click();
@@ -88,7 +88,7 @@ describe('NewComponent', () => {
   it('onSubmit', () => {
     let mockNews = newsClass as NewsDto;
     let mockTitle = mockNews.title;
-    let mockContent = mockNews.content;
+    let mockContent = mockNews.content as any;
     component.form.get('title')?.patchValue(mockTitle);
     component.form.get('content')?.patchValue(mockContent);
     fixture.detectChanges();
@@ -102,8 +102,8 @@ describe('NewComponent', () => {
   })
 
   it('doc', () => {
-    let mockContent = 'fake content';
-    component.form.get('content')?.patchValue(mockContent);
+    let mockContent = 'fake content' as any;
+    component.form.get('content')?.patchValue(mockContent) ;
     fixture.detectChanges();
 
     expect(component.doc.value).toEqual(`<p>${mockContent}</p>`);
@@ -118,7 +118,7 @@ describe('NewComponent', () => {
   })
 
   it('getImg', () => {
-    let mockFile = {} as File;
+    let mockFile = {} as any;
     component.form.get('img')?.patchValue(mockFile);
     fixture.detectChanges();
 
