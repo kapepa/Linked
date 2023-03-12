@@ -21,8 +21,7 @@ export class ChatController {
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   getOne(@Param('id') id, @Query() query): Observable<ChatInterface> {
     let defaultQuery = { take: 5, skip: 0 }
-    // return this.chatService.findOne(id, !!Object.keys(query).length ? query : defaultQuery);
-    return from([])
+    return this.chatService.findOneChat({ where: { id }, ...!!Object.keys(query).length ? query : defaultQuery});
   }
 
   @Get('/conversation')
