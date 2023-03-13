@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ChatController } from './chat.controller';
+import {Test, TestingModule} from '@nestjs/testing';
+import {ChatController} from './chat.controller';
 import {ChatService} from "./chat.service";
-import {catchError, of, throwError} from "rxjs";
+import {of, throwError} from "rxjs";
 import {ChatClass, MessageClass} from "../core/utility/chat.class";
 import {OptionInterface} from "../core/interface/option.interface";
 import {ChatInterface} from "./chat.interface";
@@ -22,7 +22,7 @@ const MockChatService = {
   createMessage: jest.fn(),
 }
 
-describe('p', () => {
+describe('ChatController', () => {
   let controller: ChatController;
   let chatService: ChatService;
 
