@@ -28,10 +28,13 @@ export class UsersService {
   }
 
   findOneUser(options?: {
-    where?: { [key: string]: string | { [key: string]: string } },
-    relations?: string[],
-    order?: { [key: string]: "ASC" | "DESC" | { [key: string]: "ASC" | "DESC" | { [key: string]: "ASC" | "DESC"}} }
-    select?: [],
+    where?: {
+      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
+    };
+    relations?: string[];
+    order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } };
+    skip?: number;
+    take?: number;
   }): Observable<UsersInterface> {
     return from(this.usersRepository.findOne({...options}));
   }

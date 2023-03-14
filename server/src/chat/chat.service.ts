@@ -50,9 +50,11 @@ export class ChatService {
   }
 
   findMessage(options?: {
-    where?: { [key: string]: string | { [key: string]: string | { [key: string]: string | { [key: string]: string } } } },
+    where?: {
+      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
+    } | {[key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }}[],
     relations?: string[],
-    order?: {[key: string]: "ASC" | "DESC"},
+    order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } },
     skip?: number,
     take?: number,
   }): Observable<MessageInterface[]>{
@@ -63,7 +65,7 @@ export class ChatService {
     return from(this.messageRepository.delete({id}));
   }
 
-  deleteMessageOnID(chatID: string, messageID: string, user: UsersDto): Observable<any> {
+  deleteMessageOnID(chatID: string, messageID: string, user: UsersDto): Observable<DeleteResult> {
     return this.deleteMessage(messageID).pipe(
       tap(() => this.chatGateway.deleteMessage(chatID, messageID, user.id))
     );
@@ -83,7 +85,7 @@ export class ChatService {
     }).pipe(
       take(1),
       switchMap((users: UsersInterface) => {
-        if( !users.friends.length) return of({ friends: [] as UsersInterface[], chat: {} as ChatInterface, no: { read: [] } })
+        if( !users.friends.length ) return of({ friends: [] as UsersInterface[], chat: {} as ChatInterface, no: { read: [] } })
         let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1);
         if( !!query.first ) users.chat.sort((chat: ChatInterface) => (chat.conversation[0].id === query.first || chat.conversation[1].id === query.first ) ? -1 : 1);
         let sortFried = chatSort.reduce(( accum: UsersInterface[], chat: ChatInterface ) => {
