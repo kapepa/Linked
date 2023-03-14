@@ -15,9 +15,11 @@ import {MessageInterface} from "./message.interface";
 import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
 import {MessageStatus} from "./status.enum";
+import {MessageDto} from "./message.dto";
 
 const MockChatGateway = {
   deleteMessage: jest.fn(),
+  newMessage: jest.fn(),
 }
 
 const MockUsersService = {
@@ -29,6 +31,7 @@ const MockChat = {
   find: jest.fn(),
   delete: jest.fn(),
   save: jest.fn(),
+  remove: jest.fn(),
 }
 
 const MockMessage = {
@@ -252,6 +255,25 @@ describe('ChatService', () => {
     })
   })
 
+  it('createMessage', () => {
+    let mockChat: ChatInterface = {...ChatClass, conversation: [{...UserClass, id: 'fakeID'}, UserClass]} as ChatInterface;
+    let mockMessage: MessageInterface = MessageClass as MessageInterface;
+    let mockFindOneChat = jest.spyOn(chatRepository, 'findOne').mockResolvedValue(mockChat as Chat);
+    let mockMessageSave = jest.spyOn(messageRepository, 'save').mockResolvedValue(mockMessage as MessageEntity);
+    let mockChatSave = jest.spyOn(chatRepository, 'save').mockResolvedValue(mockChat as Chat);
+    let mockGatewayNewMessage = jest.spyOn(chatGateway, 'newMessage')
+
+    service.createMessage(mockChat.id, MessageClass as MessageDto, UserClass as UsersDto).subscribe({
+      next: (message: MessageInterface) => {
+        expect(message).toEqual(mockMessage);
+        expect(mockFindOneChat).toHaveBeenCalledWith({ where: { id: mockChat.id }, relations: ['chat', 'conversation'] });
+        expect(mockMessageSave).toHaveBeenCalledWith({...MessageClass, owner: UserClass});
+        expect(mockChatSave).toHaveBeenCalledWith({ ...mockChat, chat: mockChat.chat.concat(message),  updated_at: expect.any( Date )});
+        expect(mockGatewayNewMessage).toHaveBeenCalledWith('fakeID', UserClass.id, mockChat.id, mockMessage);
+      }
+    })
+  })
+
   it('statusMessage', () => {
     let spyMessageUpdate = jest.spyOn(messageRepository, 'update').mockResolvedValue({} as UpdateResult);
 
@@ -264,7 +286,10 @@ describe('ChatService', () => {
   })
 
   it('removeChat', async () => {
-    // let spyChatRemove = jest.spyOn(chatRepository, 'remove')
+    let mockChat: ChatInterface = ChatClass as ChatInterface;
+    let spyChatRemove = jest.spyOn(chatRepository, 'remove').mockReturnValue({} as any);
+    await service.removeChat([mockChat]);
 
+    expect(spyChatRemove).toHaveBeenCalledWith([mockChat]);
   })
 });

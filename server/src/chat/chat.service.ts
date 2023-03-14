@@ -182,7 +182,7 @@ export class ChatService {
           switchMap( (message: MessageInterface) => {
             return from([message]).pipe(
               tap(() => {
-                from(this.chatRepository.save({ ...chat, chat: chat.chat.concat(message),  updated_at: new Date()}))
+                of(this.chatRepository.save({ ...chat, chat: chat.chat.concat(message),  updated_at: new Date()}))
                   .pipe(
                     tap(() => {
                       let [ profile, companion ] = chat.conversation;
