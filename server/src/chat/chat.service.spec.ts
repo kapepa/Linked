@@ -2,7 +2,7 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {ChatService} from './chat.service';
 import {ChatGateway} from "./chat.gateway";
 import {UsersService} from "../users/users.service";
-import {DeleteResult, Repository} from "typeorm";
+import {DeleteResult, Repository, UpdateResult} from "typeorm";
 import {Chat} from "./chat.entity";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {MessageEntity} from "./message.entity";
@@ -14,6 +14,7 @@ import {ChatInterface} from "./chat.interface";
 import {MessageInterface} from "./message.interface";
 import {UsersDto} from "../users/users.dto";
 import {UsersInterface} from "../users/users.interface";
+import {MessageStatus} from "./status.enum";
 
 const MockChatGateway = {
   deleteMessage: jest.fn(),
@@ -27,6 +28,7 @@ const MockChat = {
   findOne: jest.fn(),
   find: jest.fn(),
   delete: jest.fn(),
+  save: jest.fn(),
 }
 
 const MockMessage = {
@@ -34,6 +36,8 @@ const MockMessage = {
   find: jest.fn(),
   delete: jest.fn(),
   update: jest.fn(),
+  save: jest.fn(),
+  remove: jest.fn(),
 }
 
 describe('ChatService', () => {
@@ -202,4 +206,65 @@ describe('ChatService', () => {
     })
   })
 
+  it('createChat', () => {
+    let mockChat: ChatInterface = ChatClass as ChatInterface;
+    let spyChatSave = jest.spyOn(chatRepository, 'save').mockResolvedValue(mockChat as Chat);
+    let spyChatFindOne = jest.spyOn(chatRepository, 'findOne').mockResolvedValue({...mockChat, conversation: []} as Chat);
+
+    service.createChat().subscribe({
+      next: (chat: ChatInterface) => {
+        expect(chat).toEqual({ ...mockChat, conversation: [] });
+        expect(spyChatSave).toHaveBeenCalledWith({});
+        expect(spyChatFindOne).toHaveBeenCalledWith({ where: { id: mockChat.id }, relations: ['conversation'] })
+      }
+    })
+  })
+
+  it('saveChat', () => {
+    let mockChat: ChatInterface = ChatClass as ChatInterface;
+    let spyChatSave = jest.spyOn(chatRepository, 'save').mockResolvedValue(mockChat as Chat);
+
+    service.saveChat(mockChat).subscribe({
+      next: (chat: ChatInterface) => {
+        expect(chat).toEqual(mockChat);
+        expect(spyChatSave).toHaveBeenCalledWith(mockChat);
+      }
+    })
+
+  })
+
+  it('deleteChat', () => {
+    let userID = 'userID';
+    let friendID = 'friendID';
+    let mockChat: ChatInterface = ChatClass as ChatInterface;
+    let deleteResult: DeleteResult = {raw: 'delete', affected: 200};
+    let spyChatFindOne = jest.spyOn(chatRepository, 'findOne').mockResolvedValue(mockChat as Chat);
+    let spyMessageRemove = jest.spyOn(messageRepository, 'remove').mockResolvedValue({} as MessageEntity);
+    let spyChatDelete = jest.spyOn(chatRepository, 'delete').mockResolvedValue(deleteResult);
+
+    service.deleteChat(userID, friendID).subscribe({
+      next: (res: DeleteResult) => {
+        expect(res).toEqual(deleteResult);
+        expect(spyChatFindOne).toHaveBeenCalledWith({where: { conversation: [ {id: userID}, {id: friendID} ] }, relations: ['chat'] });
+        expect(spyMessageRemove).toHaveBeenCalledWith(mockChat.chat);
+        expect(spyChatDelete).toHaveBeenCalledWith({id: mockChat.id})
+      }
+    })
+  })
+
+  it('statusMessage', () => {
+    let spyMessageUpdate = jest.spyOn(messageRepository, 'update').mockResolvedValue({} as UpdateResult);
+
+    service.statusMessage(chatClass.id).subscribe({
+      next: (res: Promise<UpdateResult>) => {
+        expect(res).toBeTruthy();
+        expect(spyMessageUpdate).toHaveBeenCalledWith({ chat: { id: chatClass.id }, status: MessageStatus.WAITING }, {status: MessageStatus.READING})
+      }
+    })
+  })
+
+  it('removeChat', async () => {
+    // let spyChatRemove = jest.spyOn(chatRepository, 'remove')
+
+  })
 });

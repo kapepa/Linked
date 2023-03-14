@@ -7,7 +7,7 @@ import {UsersService} from "../users/users.service";
 import {UsersInterface} from "../users/users.interface";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Chat} from "./chat.entity";
-import {DeleteResult, Repository} from "typeorm";
+import {DeleteResult, Repository, UpdateResult} from "typeorm";
 import {MessageEntity} from "./message.entity";
 import {ChatGateway} from "./chat.gateway";
 import {MessageDto} from "./message.dto";
@@ -153,10 +153,10 @@ export class ChatService {
     return this.usersService.findOneUser({ where: { id } });
   }
 
-  createChat(){
+  createChat(): Observable<ChatInterface>{
     return from(this.chatRepository.save( {} )).pipe(
       switchMap((chat: ChatInterface) => {
-        return from(this.chatRepository.findOne({ where: { id: chat.id}, relations: ['conversation'] }));
+        return from(this.chatRepository.findOne({ where: { id: chat.id }, relations: ['conversation'] }));
       })
     );
   }
@@ -165,7 +165,7 @@ export class ChatService {
     return from(this.chatRepository.save(chat));
   }
 
-  deleteChat(userID: string, friendID: string) {
+  deleteChat(userID: string, friendID: string): Observable<DeleteResult> {
     return from(this.chatRepository.findOne({where: { conversation: [ {id: userID}, {id: friendID} ] }, relations: ['chat'] })).pipe(
       switchMap((chat: ChatInterface) => {
         return from(this.messageRepository.remove(chat.chat as any)).pipe(
@@ -200,7 +200,7 @@ export class ChatService {
     )
   }
 
-  statusMessage(chatID: string){
+  statusMessage(chatID: string): Observable<Promise<UpdateResult>>{
     return from([this.messageRepository.update({ chat: { id: chatID }, status: MessageStatus.WAITING }, {status: MessageStatus.READING})]);
   }
 
