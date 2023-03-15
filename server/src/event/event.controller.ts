@@ -30,7 +30,7 @@ export class EventController {
   @UseGuards(JwtAuthGuard)
   @ApiBody({description: 'get one event on id', type: EventInterface})
   @ApiForbiddenResponse({ description: 'Forbidden.'})
-  oneEvent(@Param() param, @Req() req):any {
+  oneEvent(@Param() param, @Req() req):  Observable<EventInterface> {
     return this.eventService.findOneEvent({ where: { id: param.id }})
   }
 
