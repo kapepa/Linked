@@ -24,8 +24,8 @@ export class EventService {
   findEvents(find?: {
     where?: { [key: string]: string | {[key: string]: string} },
     take?: number,
-    skip: number,
-    relations: string[] }
+    skip?: number,
+    relations?: string[] }
   ): Observable<EventInterface[]> {
     return from(this.eventRepository.find(find));
   }
@@ -34,7 +34,6 @@ export class EventService {
     where?: { [key: string]: string | {[key: string]: string} },
     relations?: string[],
   }): Observable<EventInterface>{
-    console.log()
     return from(this.eventRepository.findOne(find));
   }
 }
