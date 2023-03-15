@@ -64,7 +64,7 @@ describe('FriendsService', () => {
   it('find one friend on attributes, findOne()',() => {
     let props = { where: { id: 'friendID' } };
 
-    service.findOne(props).subscribe((friend) => {
+    service.findOneFriend(props).subscribe((friend) => {
       expect(friendsRepository.findOne).toHaveBeenCalledWith(props);
     });
   })
@@ -134,7 +134,7 @@ describe('FriendsService', () => {
         of({...friend, user, friends: myProfile })
       );
 
-      service.confirm(friend.id, myProfile).subscribe((profile: UsersInterface) => {
+      service.confirm(friend.id, myProfile).subscribe((profile) => {
         expect(usersService.findOne).toHaveBeenCalledWith('id', myProfile.id, { relations: ['friends'] });
         expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
         expect(usersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['friends'] });
@@ -188,7 +188,7 @@ describe('FriendsService', () => {
     it('cancel offer add as friend', () => {
       jest.spyOn(mockFriendsEntity, 'findOne').mockImplementationOnce(() => of({...friend, user, friends: myProfile}));
 
-      service.cancel(friend.id, myProfile).subscribe((delRes: DeleteResult) => {
+      service.cancel(friend.id, myProfile).subscribe((delRes) => {
         expect(friendsRepository.findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
         expect(friendsRepository.delete).toHaveBeenCalledWith({id: friend.id});
         expect(delRes).toEqual(mockDeleteResult);

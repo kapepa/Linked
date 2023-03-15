@@ -9,6 +9,7 @@ import {DeleteResult, UpdateResult} from "typeorm";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { UserClass } from "../core/utility/user.class";
 import { UsersInterface } from "../users/users.interface";
+import {FeetDto} from "./feet.dto";
 
 describe('FeetService', () => {
   let service: FeetService;
@@ -47,7 +48,7 @@ describe('FeetService', () => {
     it('create new feet', () => {
       jest.spyOn(feetRepository, 'save').mockImplementationOnce(() => of(mockFeet));
 
-      service.createFeet({body: mockFeet.body}).subscribe((feet: FeetInterface) => {
+      service.createFeet({body: mockFeet.body} as FeetDto).subscribe((feet: FeetInterface) => {
         expect(feetRepository.save).toHaveBeenCalledWith({body: mockFeet.body});
         expect(feet).toEqual(mockFeet);
       })
@@ -57,7 +58,7 @@ describe('FeetService', () => {
       let mockErr = new HttpException('Something went wrong when save feet', HttpStatus.BAD_REQUEST)
       jest.spyOn(feetRepository, 'save').mockReturnValueOnce(of(mockErr));
 
-      service.createFeet({body: mockFeet.body}).subscribe({
+      service.createFeet({body: mockFeet.body} as FeetDto).subscribe({
         error: (err) => {
           expect(err).toThrowError(mockErr);
         }
@@ -116,7 +117,7 @@ describe('FeetService', () => {
       jest.spyOn(feetRepository, 'update').mockReturnValueOnce(of(updateResult));
       jest.spyOn(feetRepository, 'findOne').mockReturnValueOnce(of({...mockFeet, body: mockBody}));
 
-      service.updateFeet(mockFeet.id,{body: mockBody}).subscribe((feet: FeetInterface) => {
+      service.updateFeet({body: mockBody}).subscribe((feet: FeetInterface) => {
         expect(feetRepository.update).toHaveBeenCalledWith({ id: mockFeet.id }, {body: mockBody});
         expect(feet).toEqual({...mockFeet, body: mockBody});
       })
@@ -125,7 +126,7 @@ describe('FeetService', () => {
     it('Something went wrong when update feet.', () => {
       jest.spyOn(feetRepository, 'update').mockRejectedValueOnce(new Error('Mock err'));
 
-      service.updateFeet(mockFeet.id,{body: mockBody}).subscribe({
+      service.updateFeet({body: mockBody}).subscribe({
         error: (err) => {
           expect(err.response).toEqual('Something went wrong when update feet.');
         }
