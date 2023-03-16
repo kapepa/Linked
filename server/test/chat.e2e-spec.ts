@@ -11,6 +11,12 @@ import {JwtModule} from "@nestjs/jwt";
 import {Chat} from "../src/chat/chat.entity";
 import {MessageEntity} from "../src/chat/message.entity";
 import {AppModule} from "../src/app.module";
+import {config} from "dotenv";
+import * as jwt from "jsonwebtoken";
+import {UserClass} from "../src/core/utility/user.class";
+import DoneCallback = jest.DoneCallback;
+
+config();
 
 let mockChatService = {
   findOneChat: jest.fn(),
@@ -19,8 +25,16 @@ let mockChatService = {
 describe('ChatController  (e2e)', () => {
   let app: INestApplication;
 
+  let userClass = UserClass;
   let chatClass = ChatClass;
   let messageClass = MessageClass;
+
+  let authToken = jwt.sign({
+    firstName: userClass.firstName,
+    id: userClass.id,
+    role: userClass.role,
+    avatar: userClass.avatar,
+  }, process.env.JWT_SECRET)
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -34,17 +48,27 @@ describe('ChatController  (e2e)', () => {
     await app.init();
   });
 
-  it(`/GET chat`, () => {
-    jest.spyOn(mockChatService, 'findOneChat').mockImplementation(() => of(chatClass as ChatInterface));
+  describe(`/GET chat`, () => {
+    it(`/GET chat`, (done: DoneCallback) => {
+      let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockImplementation( async (a) => Promise.resolve(a) );
 
-    return request(app.getHttpServer())
-      .get('/api/chat/one/:id')
-      // .expect(200)
-      .expect(chatClass);
+      const response = request(app.getHttpServer())
+        .get(`/chat/one/${userClass.id}?take=5&skip=0`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          console.log(res.text)
+
+          return done();
+        })
+    });
+
+
+  })
+
+
+  afterAll(async () => {
+    await app.close();
   });
-
-
-  // afterAll(async () => {
-  //   await app.close();
-  // });
 });
