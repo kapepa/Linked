@@ -2,11 +2,10 @@ import {Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards} 
 import {ChatService} from "./chat.service";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {from, Observable, of, switchMap, take, tap} from "rxjs";
+import {from, Observable, of, switchMap, take} from "rxjs";
 import {ChatInterface} from "./chat.interface";
 import {MessageInterface} from "./message.interface";
 import {UsersInterface} from "../users/users.interface";
-import {DeleteResult} from "typeorm";
 
 @ApiTags('chat')
 @Controller('chat')
