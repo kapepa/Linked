@@ -16,6 +16,6 @@ const MessageClass = {
   created_at: new Date(Date.now()),
 }
 
-Object.defineProperty(ChatClass, 'chat', { value: [MessageClass] })
+// Object.defineProperty(ChatClass, 'chat', { value: [MessageClass] })
 
 export {ChatClass, MessageClass}

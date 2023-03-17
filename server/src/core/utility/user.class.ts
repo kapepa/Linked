@@ -1,4 +1,4 @@
-export const UserClass = {
+const UserClass = {
   id: 'userID',
   firstName: 'FirstName',
   lastName: 'LastName',
@@ -9,3 +9,5 @@ export const UserClass = {
   friends: [],
   role: 'user',
 }
+
+export { UserClass }

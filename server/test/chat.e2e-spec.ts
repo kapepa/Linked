@@ -1,28 +1,22 @@
 import * as request from 'supertest';
-import {INestApplication} from "@nestjs/common";
+import {HttpException, HttpStatus, INestApplication} from "@nestjs/common";
 import {ChatService} from "../src/chat/chat.service";
 import {Test} from "@nestjs/testing";
-import {ChatModule} from "../src/chat/chat.module";
 import {ChatClass, MessageClass} from "../src/core/utility/chat.class";
 import {of} from "rxjs";
-import {ChatInterface} from "../src/chat/chat.interface";
-import {TypeOrmModule} from "@nestjs/typeorm";
-import {JwtModule} from "@nestjs/jwt";
-import {Chat} from "../src/chat/chat.entity";
-import {MessageEntity} from "../src/chat/message.entity";
 import {AppModule} from "../src/app.module";
 import {config} from "dotenv";
 import * as jwt from "jsonwebtoken";
 import {UserClass} from "../src/core/utility/user.class";
-import DoneCallback = jest.DoneCallback;
 
 config();
 
 let mockChatService = {
   findOneChat: jest.fn(),
+  conversation: jest.fn(),
 }
 
-describe('ChatController  (e2e)', () => {
+describe('ChatController  (e2e)',  () => {
   let app: INestApplication;
 
   let userClass = UserClass;
@@ -30,10 +24,10 @@ describe('ChatController  (e2e)', () => {
   let messageClass = MessageClass;
 
   let authToken = jwt.sign({
-    firstName: userClass.firstName,
-    id: userClass.id,
-    role: userClass.role,
-    avatar: userClass.avatar,
+    firstName: UserClass.firstName,
+    id: UserClass.id,
+    role: UserClass.role,
+    avatar: UserClass.avatar,
   }, process.env.JWT_SECRET)
 
   beforeAll(async () => {
@@ -48,25 +42,68 @@ describe('ChatController  (e2e)', () => {
     await app.init();
   });
 
-  describe(`/GET chat`, () => {
-    it(`/GET chat`, (done: DoneCallback) => {
-      let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockImplementation( async (a) => Promise.resolve(a) );
+  describe(`/GET getOne`, () => {
+    it(`should return chats`, () => {
+      let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockImplementation(() => of(UserClass));
 
-      const response = request(app.getHttpServer())
-        .get(`/chat/one/${userClass.id}?take=5&skip=0`)
+      return request(app.getHttpServer())
+        .get(`/chat/one/${UserClass.id}?take=5&skip=0`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          console.log(res.text)
-
-          return done();
-        })
+        .expect(userClass)
+        .expect(() => {
+          expect(findOneChat).toHaveBeenCalledWith({ where: { id: UserClass.id }, take: '5', skip: '0'})
+        });
     });
 
+    it(`chat not find`, () => {
+      let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
 
+      return request(app.getHttpServer())
+        .get(`/chat/one/${userClass.id}?take=5&skip=0`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(403)
+        .expect('{"statusCode":403,"message":"Forbidden"}')
+        .expect(() => {
+          expect(findOneChat).toHaveBeenCalledWith({ where: { id: UserClass.id }, take: '5', skip: '0'});
+        })
+    });
   })
 
+  describe('/GET getAllConversation', () => {
+    it('should find all chat', () => {
+      let mockResponse = { friends: [UserClass], chat: {...ChatClass, chat: [MessageClass]}, no: { read: ['fakeID'] } }
+      let spyOnConversation = jest.spyOn(mockChatService, 'conversation').mockImplementation(() => of(mockResponse));
+
+      return request(app.getHttpServer())
+        .get('/chat/conversation?skip=0&take=1&first=fakeID')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect(JSON.stringify(mockResponse))
+        .expect((res: Response) => {
+          expect(spyOnConversation).toHaveBeenCalledWith(
+            { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
+            { skip: '0', take: '1', first: 'fakeID' }
+          )
+        })
+    })
+
+    it('should be Forbidden', () => {
+      let spyOnConversation = jest.spyOn(mockChatService, 'conversation').mockRejectedValue( new HttpException('Forbidden', HttpStatus.FORBIDDEN));
+
+      return request(app.getHttpServer())
+        .get('/chat/conversation?skip=0&take=1&first=fakeID')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.FORBIDDEN)
+        .expect('{"statusCode":403,"message":"Forbidden"}')
+        .expect(() => {
+          expect(spyOnConversation).toHaveBeenCalledWith(
+            { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
+            { skip: '0', take: '1', first: 'fakeID' }
+          )
+        })
+    })
+  })
 
   afterAll(async () => {
     await app.close();
