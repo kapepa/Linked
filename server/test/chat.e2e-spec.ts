@@ -3,7 +3,7 @@ import {HttpException, HttpStatus, INestApplication} from "@nestjs/common";
 import {ChatService} from "../src/chat/chat.service";
 import {Test} from "@nestjs/testing";
 import {ChatClass, MessageClass} from "../src/core/utility/chat.class";
-import {of} from "rxjs";
+import {from, of, throwError} from "rxjs";
 import {AppModule} from "../src/app.module";
 import {config} from "dotenv";
 import * as jwt from "jsonwebtoken";
@@ -14,6 +14,7 @@ config();
 let mockChatService = {
   findOneChat: jest.fn(),
   conversation: jest.fn(),
+  findMessage: jest.fn(),
 }
 
 describe('ChatController  (e2e)',  () => {
@@ -101,6 +102,46 @@ describe('ChatController  (e2e)',  () => {
             { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
             { skip: '0', take: '1', first: 'fakeID' }
           )
+        })
+    })
+  })
+
+  describe('/GET getMessages', () => {
+    it('should return array message', () => {
+      let findMessage = jest.spyOn(mockChatService, 'findMessage').mockImplementation(jest.fn(() => of([MessageClass])));
+
+      return request(app.getHttpServer())
+        .get(`/chat/messages?id=${chatClass.id}&take=1&skip=0`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect(JSON.stringify({messages: [MessageClass], limited: false}))
+        .expect(() => {
+          expect(findMessage).toHaveBeenCalledWith({
+            where: { chat: { id: chatClass.id } },
+            order: { created_at: "DESC" },
+            relations: ['owner', 'chat'],
+            skip: 0,
+            take: 1,
+          })
+        })
+    })
+
+    it('should be Forbidden', () => {
+      let findMessage = jest.spyOn(mockChatService, 'findMessage').mockRejectedValue( new HttpException('Forbidden', HttpStatus.FORBIDDEN));
+
+      return request(app.getHttpServer())
+        .get(`/chat/messages?id=${chatClass.id}&take=1&skip=0`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.FORBIDDEN)
+        .expect('{"statusCode":403,"message":"Forbidden"}')
+        .expect(() => {
+          expect(findMessage).toHaveBeenCalledWith({
+            where: { chat: { id: chatClass.id } },
+            order: { created_at: "DESC" },
+            relations: ['owner', 'chat'],
+            skip: 0,
+            take: 1,
+          })
         })
     })
   })
