@@ -23,7 +23,7 @@ export class EventController {
   @UseInterceptors(FileInterceptor('img', multerOption ))
   createEvent(@UploadedFile() img: Express.Multer.File, @Req() req, @Body() body: EventDto): Observable<EventDto | EventInterface> {
     let toEvent = JSON.parse(JSON.stringify(body));
-    return this.eventService.createEvent({...toEvent, img: img.filename, user: req.user});
+    return this.eventService.createEvent({...toEvent, img: img?.filename, user: req.user});
   };
 
   @Get('one/:id')
