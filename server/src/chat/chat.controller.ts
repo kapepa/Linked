@@ -6,6 +6,7 @@ import {from, Observable, of, switchMap, take} from "rxjs";
 import {ChatInterface} from "./chat.interface";
 import {MessageInterface} from "./message.interface";
 import {UsersInterface} from "../users/users.interface";
+import {DeleteResult} from "typeorm";
 
 @ApiTags('chat')
 @Controller('chat')
@@ -56,7 +57,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'delete own messages, on id', type: MessageInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  deleteMessage(@Query() query, @Req() req): Observable<any> {
+  deleteMessage(@Query() query, @Req() req): Observable<DeleteResult> {
     let { chat, message } = query
     return this.chatService.deleteMessageOnID(chat, message, req.user);
   }
