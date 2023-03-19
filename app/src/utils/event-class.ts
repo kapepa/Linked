@@ -1,5 +1,3 @@
-import {UserInterface} from "../app/core/interface/user.interface";
-import {TypeEnum} from "../app/core/enum/type.enum";
 import {UserClass} from "./user-class";
 import {EventInterface} from "../app/core/interface/event.interface";
 import {UserDto} from "../app/core/dto/user.dto";
