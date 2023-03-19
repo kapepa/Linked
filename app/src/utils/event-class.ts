@@ -14,4 +14,4 @@ export const EventClass = {
   title: 'eventTitle',
   type: 'online',
   description: 'eventDescription',
-} as EventInterface | UserDto;
+} as any;
