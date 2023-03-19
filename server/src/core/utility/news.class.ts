@@ -1,4 +1,3 @@
-import {UsersInterface} from "../../users/users.interface";
 import {UserClass} from "./user.class";
 
 const NewsClass = {

@@ -24,7 +24,7 @@ export class NewsController {
   @UseInterceptors(FileInterceptor('img', multerOption ))
   createNews(@UploadedFile() file: Express.Multer.File, @Body() body, @Req() req): Observable<NewsDto | NewsInterface> {
     let toBody = JSON.parse(JSON.stringify(body));
-    return this.newsService.createNews({...toBody, author: req.user, img: file.filename});
+    return this.newsService.createNews({...toBody, author: req.user, img: file?.filename});
   }
 
   @Get('/find')
