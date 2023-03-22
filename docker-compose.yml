@@ -3,6 +3,37 @@ services:
   angular:
     container_name: app
     hostname: app
+    restart: always
+    depends_on:
+      - nestjs
+      - postgres
     build: ./app
     ports:
       - "80:80"
+  nestjs:
+    container_name: nestjs
+    hostname: nestjs
+    restart: always
+    depends_on:
+      - postgres
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    ports:
+      - "4500:4500"
+    env_file:
+      - "./server/.env"
+    environment:
+      POSTGRES_HOST: postgres
+    links:
+      - 'postgres:postgres'
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    image: 'postgres:14.5'
+    ports:
+      - "5432:5432"
+    env_file:
+      - "./server/.env"
+
