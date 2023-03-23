@@ -1,16 +1,11 @@
 FROM node:14.17.5 as build
 
-# Docker working directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copying file into APP directory of docker
-COPY ./package.json ./package-lock.json /app/
-
-# Then install the NPM module
+COPY package*.json ./
 RUN npm install
+COPY . .
+RUN npm run build
+EXPOSE 5000
 
-# Copy current directory to APP folder
-COPY . /app/
-
-EXPOSE 4500
-CMD ["npm", "run", "start:dev"]
+CMD "npm" "run" "start:prod"
