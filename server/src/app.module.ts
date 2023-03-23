@@ -52,14 +52,17 @@ dotenv.config();
     AuthModule,
     JwtModule,
     FileModule,
-    FriendsModule,
+    // FriendsModule,
     ConfigModule,
-    ChatModule,
+    // ChatModule,
     EventModule,
     NewsModule,
     MailModule,
   ],
   controllers: [AppController],
-  providers: [AppGateway, AppService],
+  providers: [
+    AppGateway,
+    AppService,
+  ],
 })
 export class AppModule {}
