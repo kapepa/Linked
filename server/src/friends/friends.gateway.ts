@@ -18,9 +18,7 @@ export class FriendsGateway{
   @WebSocketServer()
   server: Server;
 
-  constructor(
-
-  ) {}
+  constructor() {}
 
   @SubscribeMessage('add')
   @UseGuards(SocketGuard)
