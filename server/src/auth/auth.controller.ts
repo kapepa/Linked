@@ -57,7 +57,7 @@ export class AuthController {
   @Put('role')
   @Roles(Role.Admin)
   roleAdd(){
-    return JSON.stringify(true)
+    return JSON.stringify(true);
   }
 
   @Get('/google')
@@ -65,7 +65,7 @@ export class AuthController {
   @ApiCreatedResponse({ status: 200, description: 'The user do request google.'})
   @ApiForbiddenResponse({ status: 400, description: 'Bad Request.'})
   AuthGoogle(@Req() req) {
-    return req.user
+    return req.user;
   }
 
   @Get('/google-redirect')
