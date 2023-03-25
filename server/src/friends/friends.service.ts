@@ -174,29 +174,6 @@ export class FriendsService {
                     )
                   })
                 )
-
-                // return this.usersService.saveUser(user).pipe(
-                //   switchMap(() => {
-                //     friend.friends = friend.friends.filter((person: UsersInterface) => person.id !== user.id);
-                //     friend.chat = friend.chat.filter((ch: ChatInterface) => ch.id !== chat.id);
-                //     return this.usersService.saveUser(friend).pipe(
-                //       switchMap(() => this.chatService.deleteChatAndMessage(chat).pipe(
-                //         tap(() => {
-                //           let toUser = userDto.id !== user.id ? user.id: friend.id;
-                //           let toFriend = userDto.id === user.id ? user.id: friend.id;
-                //
-                //           this.friendsGateway.deleteFriendSuggest( toUser, toFriend );
-                //           this.usersService.findOneUser({ where: { id: friend.id }, relations: ['chat', 'friends'] }).subscribe((data) => {
-                //             console.log(data)
-                //           })
-                //           this.usersService.findOneUser({ where: { id: user.id }, relations: ['chat', 'friends'] }).subscribe((data) => {
-                //             console.log(data)
-                //           })
-                //         }),
-                //       )),
-                //     )
-                //   })
-                // )
               })
             )
           })
