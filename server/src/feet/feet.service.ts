@@ -180,7 +180,7 @@ export class FeetService {
     skip?: number,
     relations?: string[],
   }) {
-    return from(this.feetRepository.find(options))
+    return from(this.feetRepository.find(options));
   }
 
   deleteFeet(id: string): Observable<DeleteResult> {
