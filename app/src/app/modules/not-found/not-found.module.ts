@@ -1,12 +1,19 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {IonicModule} from "@ionic/angular";
+import {NotFoundComponent} from "./not-found.component";
+import {RouterModule} from "@angular/router";
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    NotFoundComponent,
+  ],
   imports: [
-    CommonModule
+    CommonModule,
+    IonicModule,
+    RouterModule,
   ]
 })
 export class NotFoundModule { }

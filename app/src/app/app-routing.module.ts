@@ -13,7 +13,7 @@ export const routes: Routes = [
   { path: 'event', loadChildren: () => import('./modules/event-detailed/event-detailed.module').then(m => m.EventDetailedModule), data: {preload: true} },
   { path: 'news', loadChildren: () => import('./modules/news/news.module').then(m => m.NewsModule), data: { preload: true } },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', component: NotFoundComponent },  // Wildcard route for a 404 page
+  { path: '**', component: NotFoundComponent },
 ];
 @NgModule({
   imports: [
