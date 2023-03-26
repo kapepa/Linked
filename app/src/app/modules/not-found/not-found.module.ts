@@ -4,8 +4,6 @@ import {IonicModule} from "@ionic/angular";
 import {NotFoundComponent} from "./not-found.component";
 import {RouterModule} from "@angular/router";
 
-
-
 @NgModule({
   declarations: [
     NotFoundComponent,
@@ -13,7 +11,10 @@ import {RouterModule} from "@angular/router";
   imports: [
     CommonModule,
     IonicModule,
-    RouterModule,
+    RouterModule
+  ],
+  exports: [
+    NotFoundComponent
   ]
 })
 export class NotFoundModule { }
