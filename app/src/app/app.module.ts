@@ -35,10 +35,14 @@ import { GalleryModule } from "./shared/gallery/gallery.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SocialModule } from "./shared/social/social.module";
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {NotFoundComponent} from "./modules/not-found/not-found.component";
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    NotFoundComponent
+  ],
   imports: [
     NgbModule,
     PipeModule,
