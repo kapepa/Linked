@@ -9,6 +9,7 @@ import { UsersDto } from "../src/users/users.dto";
 import * as jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import {DeleteResult, UpdateResult} from "typeorm";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -18,13 +19,18 @@ describe('Users', () => {
   let updateResult = {generatedMaps: [], raw: [], affected: 1 } as UpdateResult;
   let mockDeleteResult = { raw: [], affected: 1 } as DeleteResult;
 
-  let authToken = jwt.sign({
-    firstName : mockUser.firstName,
-    lastName: mockUser.lastName,
-    id: mockUser.id,
-    role: mockUser.role,
-    avatar: mockUser.avatar,
-  }, process.env.JWT_SECRET);
+  let authToken = new JwtService(
+    {secret: process.env.JWT_TOKEN}
+  ).sign(
+    {
+      firstName : mockUser.firstName,
+      lastName: mockUser.lastName,
+      id: mockUser.id,
+      role: mockUser.role,
+      avatar: mockUser.avatar,
+    }
+  )
+
   let mockUsersService = {
     avatarUser: jest.fn(() => of({access_token: authToken})),
     findOne: jest.fn(() => of(mockUser)),
