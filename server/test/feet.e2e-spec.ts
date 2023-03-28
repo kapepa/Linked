@@ -5,13 +5,13 @@ import { FeetService } from "../src/feet/feet.service";
 import { AppModule } from "../src/app.module";
 import { UserClass } from "../src/core/utility/user.class";
 import { UsersDto } from "../src/users/users.dto";
-import * as jwt from "jsonwebtoken";
 import {FeetClass} from "../src/core/utility/feet.class";
 import {FeetInterface} from "../src/feet/feet.interface";
 import {catchError, of} from "rxjs";
 import { config } from "dotenv";
 import {FeetDto} from "../src/feet/feet.dto";
 import {DeleteResult} from "typeorm";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -20,14 +20,17 @@ describe('Feet (e2e)', () => {
   let mockUser = UserClass as UsersDto;
   let mockFeet = FeetClass as FeetInterface;
   let mockDeleteResult: DeleteResult = {raw: [], affected: 1,};
-  let authToken = jwt.sign({
-    firstName : mockUser.firstName,
-    lastName: mockUser.lastName,
-    id: mockUser.id,
-    role: mockUser.role,
-    avatar: mockUser.avatar,
-  }, process.env.JWT_SECRET);
-
+  let authToken = new JwtService(
+    {secret: process.env.JWT_TOKEN}
+  ).sign(
+    {
+      firstName : mockUser.firstName,
+      lastName: mockUser.lastName,
+      id: mockUser.id,
+      role: mockUser.role,
+      avatar: mockUser.avatar,
+    }
+  )
   let mockFeetService = {
     getFeet: jest.fn(),
     createFeet: jest.fn(),

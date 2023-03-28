@@ -9,6 +9,7 @@ import {config} from "dotenv";
 import * as jwt from "jsonwebtoken";
 import {UserClass} from "../src/core/utility/user.class";
 import {DeleteResult} from "typeorm";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -29,12 +30,17 @@ describe('ChatController  (e2e)',  () => {
   let chatClass = ChatClass;
   let messageClass = MessageClass;
 
-  let authToken = jwt.sign({
-    firstName: UserClass.firstName,
-    id: UserClass.id,
-    role: UserClass.role,
-    avatar: UserClass.avatar,
-  }, process.env.JWT_SECRET)
+  let authToken = new JwtService(
+    {secret: process.env.JWT_TOKEN}
+  ).sign(
+    {
+      firstName : UserClass.firstName,
+      lastName: UserClass.lastName,
+      id: UserClass.id,
+      role: UserClass.role,
+      avatar: UserClass.avatar,
+    }
+  )
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({

@@ -8,6 +8,7 @@ import {UserClass} from "../src/core/utility/user.class";
 import * as jwt from "jsonwebtoken";
 import {config} from "dotenv";
 import {of} from "rxjs";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -23,12 +24,17 @@ describe('News (e2e)', () => {
   let newsClass = NewsClass;
   let userClass = UserClass;
 
-  let authToken = jwt.sign({
-    firstName: UserClass.firstName,
-    id: UserClass.id,
-    role: UserClass.role,
-    avatar: UserClass.avatar,
-  }, process.env.JWT_SECRET )
+  let authToken = new JwtService(
+    {secret: process.env.JWT_TOKEN}
+  ).sign(
+    {
+      firstName : userClass.firstName,
+      lastName: userClass.lastName,
+      id: userClass.id,
+      role: userClass.role,
+      avatar: userClass.avatar,
+    }
+  )
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({

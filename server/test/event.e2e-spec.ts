@@ -8,6 +8,7 @@ import {of} from "rxjs";
 import * as jwt from "jsonwebtoken";
 import {UserClass} from "../src/core/utility/user.class";
 import {config} from "dotenv";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -22,12 +23,17 @@ describe('Event (e2e)', () => {
 
   let eventClass = EventClass;
 
-  let authToken = jwt.sign({
-    firstName: UserClass.firstName,
-    id: UserClass.id,
-    role: UserClass.role,
-    avatar: UserClass.avatar,
-  }, process.env.JWT_SECRET);
+  let authToken = new JwtService(
+    {secret: process.env.JWT_TOKEN}
+  ).sign(
+    {
+      firstName : UserClass.firstName,
+      lastName: UserClass.lastName,
+      id: UserClass.id,
+      role: UserClass.role,
+      avatar: UserClass.avatar,
+    }
+  )
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
