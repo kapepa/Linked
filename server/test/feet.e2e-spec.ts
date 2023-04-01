@@ -7,12 +7,13 @@ import { UserClass } from "../src/core/utility/user.class";
 import { UsersDto } from "../src/users/users.dto";
 import {FeetClass} from "../src/core/utility/feet.class";
 import {FeetInterface} from "../src/feet/feet.interface";
-import {catchError, from, of, tap} from "rxjs";
-import { config } from "dotenv";
-import {FeetDto} from "../src/feet/feet.dto";
+import {of} from "rxjs";
+import {config} from "dotenv";
 import {DeleteResult} from "typeorm";
 import {JwtService} from "@nestjs/jwt";
 import {FileService} from "../src/file/file.service";
+import {CommentClass} from "../src/core/utility/comment.class";
+import {CommentInterface} from "../src/feet/comment.interface";
 
 config();
 
@@ -20,7 +21,10 @@ describe('Feet (e2e)', () => {
   let app: INestApplication;
   let mockUser = UserClass as UsersDto;
   let mockFeet = FeetClass as FeetInterface;
+  let mockComment = CommentClass as CommentInterface;
+
   let mockDeleteResult: DeleteResult = {raw: [], affected: 1,};
+
   let authToken = new JwtService(
     {secret: process.env.JWT_SECRET}
   ).sign(
@@ -32,6 +36,7 @@ describe('Feet (e2e)', () => {
       avatar: mockUser.avatar,
     }
   )
+
   let mockFeetService = {
     findFeetList: jest.fn(),
     getFeet: jest.fn(),
@@ -40,6 +45,9 @@ describe('Feet (e2e)', () => {
     allFeet: jest.fn(),
     deleteFeet: jest.fn(),
     likePost: jest.fn(),
+    getComment: jest.fn(),
+    commentCreate: jest.fn(),
+    deleteComment: jest.fn(),
   };
 
   let mockFileService = {
@@ -135,7 +143,37 @@ describe('Feet (e2e)', () => {
         .expect(200)
         .expect((res: Response) => {
           expect(likePost).toHaveBeenCalled();
-          console.log(res)
+        })
+    })
+  })
+
+  describe('/GET feet/comments', () => {
+    it('should return comment to feet', () => {
+      let getComment = jest.spyOn(mockFeetService, 'getComment').mockImplementation(() => of([mockComment]));
+
+      return request(app.getHttpServer())
+        .get('/feet/comments?take=1&skip=0')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect((res: Response) => {
+          expect(res.body).toEqual([mockComment])
+          expect(getComment).toHaveBeenCalled();
+        })
+    })
+  })
+
+  describe('/POST feet/comment/create/:id', () => {
+    it('should create new comment and add to feet', () => {
+      let commentCreate = jest.spyOn(mockFeetService, 'commentCreate').mockImplementation(() => of(mockComment));
+
+      return request(app.getHttpServer())
+        .post(`/feet/comment/create/${mockFeet.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ body: 'comment' })
+        .expect(201)
+        .expect((res: Response) => {
+          expect(res.body).toEqual(mockComment);
+          expect(commentCreate).toHaveBeenCalled();
         })
     })
   })
@@ -151,6 +189,21 @@ describe('Feet (e2e)', () => {
         .expect(200)
         .expect((res: Response) => {
           expect(deleteFeet).toHaveBeenCalledWith(mockFeet.id);
+        })
+    })
+  })
+
+  describe('/DELETE feet/comment/:id', () => {
+    it('should be delete comment on id', () => {
+      let deleteComment = jest.spyOn(mockFeetService, 'deleteComment').mockImplementation(() => of(mockDeleteResult));
+
+      return request(app.getHttpServer())
+        .delete(`/feet/comment/${mockComment.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toEqual(mockDeleteResult);
+          expect(deleteComment).toHaveBeenCalled();
         })
     })
   })
