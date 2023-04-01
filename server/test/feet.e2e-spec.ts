@@ -38,7 +38,8 @@ describe('Feet (e2e)', () => {
     createFeet: jest.fn(),
     updateFeet: jest.fn(),
     allFeet: jest.fn(),
-    deleteFeet: jest.fn()
+    deleteFeet: jest.fn(),
+    likePost: jest.fn(),
   };
 
   let mockFileService = {
@@ -120,6 +121,21 @@ describe('Feet (e2e)', () => {
         .expect(200)
         .expect((res: Response & {body: FeetInterface}) => {
           expect(createFeet).toHaveBeenCalled();
+        })
+    })
+  })
+
+  describe('/PUT feet/like/:id', () => {
+    it('should set up and cancel like in feet', () => {
+      let likePost = jest.spyOn(mockFeetService, 'likePost').mockImplementation(() => of({...mockFeet, like: [mockUser]}));
+
+      return request(app.getHttpServer())
+        .put(`/feet/like/${mockFeet.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect((res: Response) => {
+          expect(likePost).toHaveBeenCalled();
+          console.log(res)
         })
     })
   })
