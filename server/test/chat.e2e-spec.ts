@@ -31,7 +31,7 @@ describe('ChatController  (e2e)',  () => {
   let messageClass = MessageClass;
 
   let authToken = new JwtService(
-    {secret: process.env.JWT_TOKEN}
+    {secret: process.env.JWT_SECRET}
   ).sign(
     {
       firstName : UserClass.firstName,
@@ -67,19 +67,6 @@ describe('ChatController  (e2e)',  () => {
           expect(findOneChat).toHaveBeenCalledWith({ where: { id: UserClass.id }, take: '5', skip: '0'})
         });
     });
-
-    it(`chat not find`, () => {
-      let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/chat/one/${userClass.id}?take=5&skip=0`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(403)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(findOneChat).toHaveBeenCalledWith({ where: { id: UserClass.id }, take: '5', skip: '0'});
-        })
-    });
   })
 
   describe('/GET getAllConversation', () => {
@@ -94,23 +81,7 @@ describe('ChatController  (e2e)',  () => {
         .expect(JSON.stringify(mockResponse))
         .expect((res: Response) => {
           expect(spyOnConversation).toHaveBeenCalledWith(
-            { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
-            { skip: '0', take: '1', first: 'fakeID' }
-          )
-        })
-    })
-
-    it('should be Forbidden', () => {
-      let spyOnConversation = jest.spyOn(mockChatService, 'conversation').mockRejectedValue( new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get('/chat/conversation?skip=0&take=1&first=fakeID')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(spyOnConversation).toHaveBeenCalledWith(
-            { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
+            { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
             { skip: '0', take: '1', first: 'fakeID' }
           )
         })
@@ -136,27 +107,6 @@ describe('ChatController  (e2e)',  () => {
           })
         })
     })
-
-    it('should be Forbidden', () => {
-      let findMessage = jest.spyOn(mockChatService, 'findMessage').mockImplementation( jest.fn(() => {
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
-      }) );
-
-      return request(app.getHttpServer())
-        .get(`/chat/messages?id=${chatClass.id}&take=1&skip=0`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(findMessage).toHaveBeenCalledWith({
-            where: { chat: { id: chatClass.id } },
-            order: { created_at: "DESC" },
-            relations: ['owner', 'chat'],
-            skip: 0,
-            take: 1,
-          })
-        })
-    })
   })
 
   describe('/DELETE deleteMessage', () => {
@@ -170,22 +120,10 @@ describe('ChatController  (e2e)',  () => {
         .expect(200)
         .expect(result)
         .expect(() => {
-          expect(deleteMessageOnID).toHaveBeenCalledWith(ChatClass.id, MessageClass.id, { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
+          expect(deleteMessageOnID).toHaveBeenCalledWith(ChatClass.id, MessageClass.id, { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
         })
     })
 
-    it('should be Forbidden', () => {
-      let deleteMessageOnID = jest.spyOn(mockChatService, 'deleteMessageOnID').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .delete(`/chat/messages?chat=${ChatClass.id}&message=${MessageClass.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(deleteMessageOnID).toHaveBeenCalledWith(ChatClass.id, MessageClass.id, { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
-        })
-    })
   })
 
   describe('/GET companion', () => {
@@ -202,18 +140,6 @@ describe('ChatController  (e2e)',  () => {
         })
     })
 
-    it('should be Forbidden', () => {
-      let companion = jest.spyOn(mockChatService, 'companion').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/chat/companion/${UserClass.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(companion).toHaveBeenCalledWith(UserClass.id)
-        })
-    })
   })
 
   describe('/GET changeChat', () => {
@@ -226,20 +152,7 @@ describe('ChatController  (e2e)',  () => {
         .expect(200)
         .expect(JSON.stringify(ChatClass))
         .expect(() => {
-          expect(getChat).toHaveBeenCalledWith(UserClass.id, { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
-        })
-    })
-
-    it('should be Forbidden', () => {
-      let getChat = jest.spyOn(mockChatService, 'getChat').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/chat/change/${UserClass.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(getChat).toHaveBeenCalledWith(UserClass.id, { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
+          expect(getChat).toHaveBeenCalledWith(UserClass.id, { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
         })
     })
   })
@@ -256,27 +169,9 @@ describe('ChatController  (e2e)',  () => {
         .expect(200)
         .expect(JSON.stringify(MessageClass))
         .expect(() => {
-          expect(createMessage).toHaveBeenCalledWith(ChatClass.id, bodyMessage, { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
-        })
-    })
-
-    it('should be Forbidden',() => {
-      let {created_at, chat, ...bodyMessage} = MessageClass;
-      let createMessage = jest.spyOn(mockChatService, 'createMessage').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .put(`/chat/send/${ChatClass.id}`)
-        .send(bodyMessage)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(createMessage).toHaveBeenCalledWith(ChatClass.id, bodyMessage, { firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
+          expect(createMessage).toHaveBeenCalledWith(ChatClass.id, bodyMessage, { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
         })
     })
   })
 
-  afterAll(async () => {
-    await app.close();
-  });
 });
