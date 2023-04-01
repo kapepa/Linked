@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -34,10 +34,15 @@ import { PopupPostModule } from "./shared/popup-post/popup-post.module";
 import { GalleryModule } from "./shared/gallery/gallery.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SocialModule } from "./shared/social/social.module";
+import { ServiceWorkerModule } from '@angular/service-worker';
+import {NotFoundComponent} from "./modules/not-found/not-found.component";
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    NotFoundComponent
+  ],
   imports: [
     NgbModule,
     PipeModule,
@@ -70,6 +75,12 @@ import { SocialModule } from "./shared/social/social.module";
     CreatePublicationModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [
     HttpService,

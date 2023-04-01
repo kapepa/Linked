@@ -1,0 +1,11 @@
+README.md
+dist
+www
+node_modules
+
+npm-debug.log
+.coverage
+.coverage.*
+.env
+.aws
+.dockerignore

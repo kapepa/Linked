@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {NotFoundComponent} from "./modules/not-found/not-found.component";
 
 export const routes: Routes = [
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule), data: { preload: true } },
@@ -11,8 +12,8 @@ export const routes: Routes = [
   { path: 'new', loadChildren: () => import('./modules/new/new.module').then(m => m.NewModule), data: {preload: true} },
   { path: 'event', loadChildren: () => import('./modules/event-detailed/event-detailed.module').then(m => m.EventDetailedModule), data: {preload: true} },
   { path: 'news', loadChildren: () => import('./modules/news/news.module').then(m => m.NewsModule), data: { preload: true } },
-  { path: '', redirectTo: '/home', pathMatch: 'full' }
-  // { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', component: NotFoundComponent },
 ];
 @NgModule({
   imports: [

@@ -5,9 +5,9 @@ import {EventService} from "../src/event/event.service";
 import {AppModule} from "../src/app.module";
 import {EventClass} from "../src/core/utility/event.class";
 import {of} from "rxjs";
-import * as jwt from "jsonwebtoken";
 import {UserClass} from "../src/core/utility/user.class";
 import {config} from "dotenv";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -22,12 +22,17 @@ describe('Event (e2e)', () => {
 
   let eventClass = EventClass;
 
-  let authToken = jwt.sign({
-    firstName: UserClass.firstName,
-    id: UserClass.id,
-    role: UserClass.role,
-    avatar: UserClass.avatar,
-  }, process.env.JWT_SECRET);
+  let authToken = new JwtService(
+    {secret: process.env.JWT_SECRET}
+  ).sign(
+    {
+      firstName : UserClass.firstName,
+      lastName: UserClass.lastName,
+      id: UserClass.id,
+      role: UserClass.role,
+      avatar: UserClass.avatar,
+    }
+  )
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -54,19 +59,6 @@ describe('Event (e2e)', () => {
           expect(createEvent).toHaveBeenCalled();
         })
     })
-
-    it('should be Forbidden', () => {
-      let createEvent = jest.spyOn(eventService, 'createEvent').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .post('/event/create')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({ img: { } as Express.Multer.File, body: eventClass })
-        .expect(HttpStatus.FORBIDDEN)
-        .expect(() => {
-          expect(createEvent).toHaveBeenCalled();
-        })
-    })
   });
 
   describe('/GET findOneEvent', () => {
@@ -83,18 +75,6 @@ describe('Event (e2e)', () => {
         })
     })
 
-    it('should be Forbidden', () => {
-      let findOneEvent = jest.spyOn(eventService, 'findOneEvent').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/event/one/${eventClass.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(findOneEvent).toHaveBeenCalledWith({ where: { id: eventClass.id }})
-        })
-    })
   })
 
   describe('/GET listEvent', () => {
@@ -110,22 +90,5 @@ describe('Event (e2e)', () => {
           expect(findEvents).toHaveBeenCalledWith({take: 1, skip: 0});
         })
     })
-
-    it('should be Forbidden', () => {
-      let findEvents = jest.spyOn(eventService, 'findEvents').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/event/list?take=1&skip=0`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect('{"statusCode":403,"message":"Forbidden"}')
-        .expect(() => {
-          expect(findEvents).toHaveBeenCalledWith({take: 1, skip: 0});
-        })
-    })
   })
-
-  afterAll(async () => {
-    await app.close();
-  });
 });

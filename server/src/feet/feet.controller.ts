@@ -46,8 +46,9 @@ export class FeetController {
     @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[], file?: Express.Multer.File[] },
     @Req() req,
   ): Observable<FeetInterface | FeetDto> {
-    let { img, video, file } = JSON.parse(JSON.stringify(files));
-    let imgFilename = img.map(picture => picture.filename);
+    let { img, video, file } = JSON.parse(JSON.stringify(files ?? {}));
+    let imgFilename = img?.map(picture => picture.filename) ?? [];
+
     return this.feetService.createFeet({
       ...JSON.parse(JSON.stringify(body)),
       ...(!!img && !!img?.length) ? { img: imgFilename } : undefined,
@@ -55,13 +56,12 @@ export class FeetController {
       ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
       author: req.user,
     }).pipe(
-      tap(() => {
+      tap((feet) => {
         from(imgFilename).pipe(
           map((name: string) => this.fileService.formFile(name))
         ).subscribe()
       })
     )
-
   }
 
   @Patch('/update/:id')
@@ -71,10 +71,11 @@ export class FeetController {
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   updateFeet(
     @Param('id') id: string,
-    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[] },
+    @UploadedFiles() files: { img?: Express.Multer.File[], video?: Express.Multer.File[], file?: {} },
     @Body() body: FeetDto
   ): Observable<FeetInterface | FeetDto>{
-    let { img, video, file } = JSON.parse(JSON.stringify(files));
+    let { img, video, file } = JSON.parse(JSON.stringify({img: [], video: [], file: [], ...files}));
+
     return this.feetService.updateFeet({
       id,
       ...(!!img && !!img.length) ? { img: img[0]?.filename } : undefined,
@@ -84,7 +85,7 @@ export class FeetController {
     }).pipe(
       tap(() => {
         if (!!img && !!img.length) this.fileService.formFile(img[0].filename).subscribe();
-      })
+      }),
     )
   }
 

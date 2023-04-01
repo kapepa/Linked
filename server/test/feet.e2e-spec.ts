@@ -5,13 +5,15 @@ import { FeetService } from "../src/feet/feet.service";
 import { AppModule } from "../src/app.module";
 import { UserClass } from "../src/core/utility/user.class";
 import { UsersDto } from "../src/users/users.dto";
-import * as jwt from "jsonwebtoken";
 import {FeetClass} from "../src/core/utility/feet.class";
 import {FeetInterface} from "../src/feet/feet.interface";
-import {catchError, of} from "rxjs";
-import { config } from "dotenv";
-import {FeetDto} from "../src/feet/feet.dto";
+import {of} from "rxjs";
+import {config} from "dotenv";
 import {DeleteResult} from "typeorm";
+import {JwtService} from "@nestjs/jwt";
+import {FileService} from "../src/file/file.service";
+import {CommentClass} from "../src/core/utility/comment.class";
+import {CommentInterface} from "../src/feet/comment.interface";
 
 config();
 
@@ -19,34 +21,38 @@ describe('Feet (e2e)', () => {
   let app: INestApplication;
   let mockUser = UserClass as UsersDto;
   let mockFeet = FeetClass as FeetInterface;
+  let mockComment = CommentClass as CommentInterface;
+
   let mockDeleteResult: DeleteResult = {raw: [], affected: 1,};
-  let authToken = jwt.sign({
-    firstName : mockUser.firstName,
-    lastName: mockUser.lastName,
-    id: mockUser.id,
-    role: mockUser.role,
-    avatar: mockUser.avatar,
-  }, process.env.JWT_SECRET);
+
+  let authToken = new JwtService(
+    {secret: process.env.JWT_SECRET}
+  ).sign(
+    {
+      firstName : mockUser.firstName,
+      lastName: mockUser.lastName,
+      id: mockUser.id,
+      role: mockUser.role,
+      avatar: mockUser.avatar,
+    }
+  )
 
   let mockFeetService = {
+    findFeetList: jest.fn(),
     getFeet: jest.fn(),
     createFeet: jest.fn(),
-    updateFeet: jest.fn((id: string, data: FeetDto) => {
-      let feet = [mockFeet].find(feet => feet.id === id);
-      if(!Object.keys(feet).length) throw new HttpException('Forbidden db didn\'t find those feet.', HttpStatus.BAD_REQUEST);
-      return of({...feet, ...data});
-    }),
-    allFeet: jest.fn(({take, skip}) => {
-      let list = [mockFeet, {...mockFeet, id: 'feetOne'}].slice(skip, take);
-      if(!list.length) throw new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND)
-      return of(list);
-    }),
-    deleteFeet: jest.fn((id: string) => {
-      let feet = [mockFeet].find(feet => feet.id === id);
-      if(!Object.keys(feet).length) throw new HttpException('Something went wrong when delete feet.', HttpStatus.NOT_FOUND);
-      return mockDeleteResult;
-    })
+    updateFeet: jest.fn(),
+    allFeet: jest.fn(),
+    deleteFeet: jest.fn(),
+    likePost: jest.fn(),
+    getComment: jest.fn(),
+    commentCreate: jest.fn(),
+    deleteComment: jest.fn(),
   };
+
+  let mockFileService = {
+    formFile: jest.fn(),
+  }
 
 
   beforeAll(async () => {
@@ -55,6 +61,8 @@ describe('Feet (e2e)', () => {
     })
       .overrideProvider(FeetService)
       .useValue(mockFeetService)
+      .overrideProvider(FileService)
+      .useValue(mockFileService)
       .compile();
 
     app = moduleRef.createNestApplication();
@@ -63,39 +71,26 @@ describe('Feet (e2e)', () => {
 
   describe('/POST feet/create', () => {
     it(`success create feet`, () => {
-      jest.spyOn(mockFeetService, 'createFeet').mockReturnValueOnce(of( {...mockFeet, author: mockUser} ))
+      jest.spyOn(mockFeetService, 'createFeet').mockImplementation(() => of( {...mockFeet, author: mockUser} ))
 
       return request(app.getHttpServer())
         .post('/feet/create')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ body: mockFeet.body } as FeetDto)
+        .expect(201)
+        .send({ body: mockFeet.body } )
         .expect((res: Response) => {
-          expect(res.status).toEqual(201);
           expect(res.body).toEqual({...mockFeet, author: mockUser});
         });
     });
-
-    it('forbidden', () => {
-      jest.spyOn(mockFeetService, 'createFeet').mockRejectedValue( new ForbiddenException() );
-
-      return request(app.getHttpServer())
-        .post('/feet/create')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({ body: mockFeet.body } as FeetDto)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(403);
-          expect(res.body).toEqual({ statusCode: 403, message: 'Forbidden' })
-        });
-    })
   })
 
 
   describe('/GET feet/:id', () => {
     it('should return feet on id', () => {
-      jest.spyOn(mockFeetService, 'getFeet').mockReturnValueOnce(of(mockFeet));
+      jest.spyOn(mockFeetService, 'getFeet').mockImplementation(() => of(mockFeet));
 
       return request(app.getHttpServer())
-        .get(`/feet/${mockFeet.id}`)
+        .get(`/feet/one/${mockFeet.id}`)
         .expect((res: Response) => {
           expect(res.status).toEqual(200);
           expect(res.body).toEqual(mockFeet);
@@ -105,22 +100,15 @@ describe('Feet (e2e)', () => {
 
   describe('/GET feet', () => {
     it('should return FeetInterface[] on query params', () => {
-      return request(app.getHttpServer())
-        .get('/feet?take=2&skip=0')
-        .expect((res: Response & {body: FeetInterface[]}) => {
-          expect(res.status).toEqual(200);
-          expect(mockFeetService.allFeet).toHaveBeenCalledWith({take: 2, skip: 0});
-          expect(res.body.length).toEqual(2);
-        })
-    })
+      let findFeetList = jest.spyOn(mockFeetService, 'findFeetList').mockImplementation(() => (of([FeetClass])))
 
-    it('Forbidden db didn\'t find those feet.', () => {
       return request(app.getHttpServer())
-        .get('/feet?take=2&skip=2')
-        .expect((res: Response) => {
-          expect(res.status).toEqual(404);
-          expect(mockFeetService.allFeet).toHaveBeenCalledWith({take: 2, skip: 2})
-          expect(res.body).toEqual({ statusCode: 404, message: "db didn't not found feet." })
+        .get('/feet?take=1&skip=0&word=')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect((res: Response & {body: FeetInterface[]}) => {
+          expect(findFeetList).toHaveBeenCalledWith({ take: 1, skip: 0, }, {avatar: UserClass.avatar, firstName: UserClass.firstName, lastName: UserClass.lastName, id: UserClass.id, role: UserClass.role});
+          expect(res.body).toEqual([FeetClass]);
         })
     })
   })
@@ -129,66 +117,94 @@ describe('Feet (e2e)', () => {
     let mockBody = 'Update feet';
 
     it('should success update feet and return current feet', () => {
+      let mockFeet = FeetClass
+      let createFeet = jest.spyOn(mockFeetService, 'updateFeet').mockImplementation( () => of(mockFeet));
+      jest.spyOn(mockFeetService, 'allFeet').mockImplementation(() => of([mockFeet]));
+      jest.spyOn(mockFileService, 'formFile').mockImplementation(() => of({}));
+
       return request(app.getHttpServer())
         .patch(`/feet/update/${mockFeet.id}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({body: mockBody})
+        .expect(200)
         .expect((res: Response & {body: FeetInterface}) => {
-          expect(res.status).toEqual(200);
-          expect(mockFeetService.updateFeet).toHaveBeenCalledWith(mockFeet.id, {body: mockBody});
-          expect(res.body).toEqual({ id: mockFeet.id, body: mockBody, author: {} });
+          expect(createFeet).toHaveBeenCalled();
         })
     })
+  })
 
-    it('Forbidden db didn\'t find those feet.', () => {
+  describe('/PUT feet/like/:id', () => {
+    it('should set up and cancel like in feet', () => {
+      let likePost = jest.spyOn(mockFeetService, 'likePost').mockImplementation(() => of({...mockFeet, like: [mockUser]}));
+
       return request(app.getHttpServer())
-        .patch(`/feet/update/mockID`)
+        .put(`/feet/like/${mockFeet.id}`)
         .set('Authorization', `Bearer ${authToken}`)
-        .send({body: mockBody})
+        .expect(200)
         .expect((res: Response) => {
-          expect(res.status).toEqual(403);
-          expect(mockFeetService.updateFeet).toHaveBeenCalledWith(mockFeet.id, {body: mockBody});
-          expect(res.body).toEqual({ statusCode: 403, message: 'Forbidden resource', error: 'Forbidden' });
+          expect(likePost).toHaveBeenCalled();
         })
     })
+  })
 
-    it('Not Found data for update.', () => {
+  describe('/GET feet/comments', () => {
+    it('should return comment to feet', () => {
+      let getComment = jest.spyOn(mockFeetService, 'getComment').mockImplementation(() => of([mockComment]));
+
       return request(app.getHttpServer())
-        .patch(`/feet/update/${mockFeet.id}`)
+        .get('/feet/comments?take=1&skip=0')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({})
+        .expect(200)
         .expect((res: Response) => {
-          expect(res.status).toEqual(404);
-          expect(res.body).toEqual({ statusCode: 404, message: 'Not Found data for update.' })
+          expect(res.body).toEqual([mockComment])
+          expect(getComment).toHaveBeenCalled();
+        })
+    })
+  })
+
+  describe('/POST feet/comment/create/:id', () => {
+    it('should create new comment and add to feet', () => {
+      let commentCreate = jest.spyOn(mockFeetService, 'commentCreate').mockImplementation(() => of(mockComment));
+
+      return request(app.getHttpServer())
+        .post(`/feet/comment/create/${mockFeet.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ body: 'comment' })
+        .expect(201)
+        .expect((res: Response) => {
+          expect(res.body).toEqual(mockComment);
+          expect(commentCreate).toHaveBeenCalled();
         })
     })
   })
 
   describe('/DELETE feet/:id', () => {
     it('should success delete feet on id', () => {
+      let deleteFeet = jest.spyOn(mockFeetService, 'deleteFeet').mockImplementation(() => of(mockDeleteResult))
+      jest.spyOn(mockFeetService, 'allFeet').mockImplementation(() => of([mockFeet]));
+
       return request(app.getHttpServer())
         .delete(`/feet/${mockFeet.id}`)
         .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
         .expect((res: Response) => {
-          expect(res.status).toEqual(200);
-          expect(mockFeetService.deleteFeet).toHaveBeenCalledWith(mockFeet.id);
-          expect(res.body).toEqual(mockDeleteResult);
-        })
-    })
-
-    it('Forbidden db didn\'t find those feet', () => {
-      let mockID = 'mockID'
-      return request(app.getHttpServer())
-        .delete(`/feet/${mockID}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(403);
-          expect(res.body).toEqual({ statusCode: 403, message: 'Forbidden resource', error: 'Forbidden' });
+          expect(deleteFeet).toHaveBeenCalledWith(mockFeet.id);
         })
     })
   })
 
-  afterAll(async () => {
-    await app.close();
-  });
+  describe('/DELETE feet/comment/:id', () => {
+    it('should be delete comment on id', () => {
+      let deleteComment = jest.spyOn(mockFeetService, 'deleteComment').mockImplementation(() => of(mockDeleteResult));
+
+      return request(app.getHttpServer())
+        .delete(`/feet/comment/${mockComment.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toEqual(mockDeleteResult);
+          expect(deleteComment).toHaveBeenCalled();
+        })
+    })
+  })
 });

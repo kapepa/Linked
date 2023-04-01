@@ -24,7 +24,7 @@ import {FacebookGuard} from "./facebook.guard";
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   @Post('login')

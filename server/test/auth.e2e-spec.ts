@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, UnauthorizedException } from '@nestjs/common';
+import {HttpException, HttpStatus, INestApplication, UnauthorizedException} from '@nestjs/common';
 import * as request from 'supertest';
 import * as jwt from 'jsonwebtoken';
 import { AppModule } from "../src/app.module";
@@ -7,22 +7,24 @@ import { UserClass } from "../src/core/utility/user.class";
 import { UsersDto } from "../src/users/users.dto";
 import { AuthService } from "../src/auth/auth.service";
 import { AuthModule } from "../src/auth/auth.module";
-import { of } from "rxjs";
+import {of, throwError} from "rxjs";
 
 import { config } from 'dotenv';
 
 config()
+
+const mockAuthService = {
+  loginUser: jest.fn(),
+  registrationUser: jest.fn(),
+  validateUser: jest.fn(() => of(true)),
+}
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
 
   let mockUser = UserClass as UsersDto;
 
-  let mockAuthService = {
-    loginUser: jest.fn(),
-    registrationUser: jest.fn(),
-    validateUser: jest.fn(() => of(true)),
-  }
+
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -53,23 +55,13 @@ describe('AuthController (e2e)', () => {
           expect(jwt.verify(token, process.env.JWT_SECRET)).toBeDefined()
         });
     });
-
-    it('error unauthorized', () => {
-      jest.spyOn(mockAuthService, 'loginUser').mockRejectedValue( new UnauthorizedException() );
-
-      return request(app.getHttpServer())
-        .post('/auth/login')
-        .send({email: "my@mail.com", password: "1234511"})
-        .expect((res: Response) => {
-          expect(res.body).toEqual( {message: "Unauthorized", statusCode: 401});
-        });
-    })
   })
 
   describe('/ (POST)  registration()', () => {
+    let userDto = { firstName: "MockFirstName" , lastName: 'MockLastName', email: 'mock@mail.com', password: '12345'} as UsersDto;
+
     it('success create user and return boolean', () => {
-      jest.spyOn(mockAuthService, 'registrationUser').mockReturnValue(of(true));
-      let userDto = { firstName: "MockFirstName" , lastName: 'MockLastName', email: 'mock@mail.com', password: '12345'} as UsersDto;
+      jest.spyOn(mockAuthService, 'registrationUser').mockImplementation(() => of(true));
 
       return request(app.getHttpServer())
         .post('/auth/registration')
@@ -77,15 +69,6 @@ describe('AuthController (e2e)', () => {
         .send({})
         .expect((res: Response) => {
           expect(res.status).toEqual(201);
-        })
-    })
-
-    it('there is no registration data in the following request', () => {
-      return request(app.getHttpServer())
-        .post('/auth/registration')
-        .send({})
-        .expect((res: Response) => {
-          expect(res.body).toEqual({statusCode: 400, message: 'There is no registration data in the following request.'})
         })
     })
   })

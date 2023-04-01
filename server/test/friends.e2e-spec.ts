@@ -11,6 +11,7 @@ import * as jwt from "jsonwebtoken";
 import { config } from 'dotenv';
 import {of} from "rxjs";
 import {DeleteResult} from "typeorm";
+import {JwtService} from "@nestjs/jwt";
 
 config();
 
@@ -18,16 +19,17 @@ describe('Friends', () => {
   let app: INestApplication;
   let mockUser = UserClass as UsersDto;
   let mockFriend = FriendCLass as FriendsDto;
-  let jwt_token = jwt.sign(
+  let jwt_token =  new JwtService(
+    {secret: process.env.JWT_TOKEN}
+  ).sign(
     {
       firstName : mockUser.firstName,
       lastName: mockUser.lastName,
       id: mockUser.id,
       role: mockUser.role,
       avatar: mockUser.avatar,
-    } as UsersDto,
-    process.env.JWT_SECRET
-  );
+    }
+  )
 
   const mockDeleteResult: DeleteResult = {
     raw: [],
