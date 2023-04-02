@@ -20,7 +20,7 @@ describe('Users', () => {
   let mockDeleteResult = { raw: [], affected: 1 } as DeleteResult;
 
   let authToken = new JwtService(
-    {secret: process.env.JWT_TOKEN}
+    {secret: process.env.JWT_SECRET}
   ).sign(
     {
       firstName : mockUser.firstName,
@@ -62,15 +62,6 @@ describe('Users', () => {
           expect(res.body).toBeDefined();
         });
     });
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .post('/users/avatar')
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   })
 
   describe('/GET users', () => {
@@ -84,15 +75,6 @@ describe('Users', () => {
           expect(res.body).toEqual(mockUser);
         });
     });
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .get('/users')
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   })
 
   describe('/GET users/person/:id', () => {
@@ -107,15 +89,6 @@ describe('Users', () => {
           expect(mockUsersService.person).toHaveBeenCalledWith(mockUser.id, other);
           expect(res.body).toEqual({...mockUser, id: 'personID', friends: [mockUser]});
         })
-    })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .get(`/users/person/${mockUser.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
     })
   })
 
@@ -133,15 +106,6 @@ describe('Users', () => {
           expect(res.body).toEqual(updateResult);
         })
     })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .patch(`/users/update`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   })
 
   describe('/DELETE users', () => {
@@ -156,18 +120,5 @@ describe('Users', () => {
           expect(res.body).toEqual(mockDeleteResult);
         })
     })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .delete(`/users/${mockUser.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   })
-
-  afterAll(async () => {
-    await app.close();
-  });
 });

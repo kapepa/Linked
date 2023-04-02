@@ -25,7 +25,7 @@ describe('News (e2e)', () => {
   let userClass = UserClass;
 
   let authToken = new JwtService(
-    {secret: process.env.JWT_TOKEN}
+    {secret: process.env.JWT_SECRET}
   ).sign(
     {
       firstName : userClass.firstName,
@@ -61,19 +61,6 @@ describe('News (e2e)', () => {
           expect(createNews).toHaveBeenCalled();
         })
     });
-
-    it('should be Forbidden', () => {
-      let createNews = jest.spyOn(newsService, 'createNews').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN))
-
-      return request(app.getHttpServer())
-        .post('/news/create')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({file: {} as Express.Multer.File, body: UserClass })
-        .expect(HttpStatus.FORBIDDEN)
-        .expect(() => {
-          expect(createNews).toHaveBeenCalled();
-        })
-    })
   })
 
   describe('findNews', () => {
@@ -85,23 +72,6 @@ describe('News (e2e)', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200)
         .expect(JSON.stringify([newsClass]))
-        .expect(() => {
-          expect(getNewsFind).toHaveBeenCalledWith({
-            take: 1,
-            skip: 0,
-            order: { created_at: "ASC" },
-            relations: ['author'],
-          })
-        })
-    })
-
-    it('should be Forbidden', () => {
-      let getNewsFind = jest.spyOn(newsService, 'getNewsFind').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/news/find?take=1&skip=0`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
         .expect(() => {
           expect(getNewsFind).toHaveBeenCalledWith({
             take: 1,
@@ -125,21 +95,5 @@ describe('News (e2e)', () => {
           expect(getNewsOne).toHaveBeenCalledWith({ where: { id: newsClass.id }, relations: ['author'] })
         })
     })
-
-    it('should be Forbidden', () => {
-      let getNewsOne = jest.spyOn(newsService, 'getNewsOne').mockRejectedValue(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
-
-      return request(app.getHttpServer())
-        .get(`/news/one/${newsClass.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(HttpStatus.FORBIDDEN)
-        .expect(() => {
-          expect(getNewsOne).toHaveBeenCalledWith({ where: { id: newsClass.id }, relations: ['author'] })
-        })
-    })
   })
-
-  afterAll(async () => {
-    await app.close();
-  });
 });

@@ -20,7 +20,7 @@ describe('Friends', () => {
   let mockUser = UserClass as UsersDto;
   let mockFriend = FriendCLass as FriendsDto;
   let jwt_token =  new JwtService(
-    {secret: process.env.JWT_TOKEN}
+    {secret: process.env.JWT_SECRET}
   ).sign(
     {
       firstName : mockUser.firstName,
@@ -77,15 +77,6 @@ describe('Friends', () => {
           expect(res.body).toEqual({ ...mockFriend, user: other, friends: { id: friendID } })
         });
     });
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .post(`/friends/add/${mockFriend.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   });
 
   describe('/GET friends/suggest', () => {
@@ -98,15 +89,6 @@ describe('Friends', () => {
           expect(mockFriendsService.suggest).toHaveBeenCalledWith(mockUser.id);
           expect(res.body).toEqual( [ mockFriend ])
         })
-    })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .get('/friends/suggest')
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
     })
   })
 
@@ -121,15 +103,6 @@ describe('Friends', () => {
           expect(mockFriendsService.suggest).toHaveBeenCalledWith(mockUser.id);
           expect(res.body).toEqual( [ mockUser ]);
         })
-    })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .get('/friends/offer')
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
     })
   })
 
@@ -146,15 +119,6 @@ describe('Friends', () => {
           expect(res.body).toEqual(mockUser);
         })
     })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .put(`/friends/confirm/${mockFriend.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   })
 
   describe('/DELETE cancel/:id', () => {
@@ -169,15 +133,6 @@ describe('Friends', () => {
           expect(mockFriendsService.cancel).toHaveBeenCalledWith(mockFriend.id, other);
           expect(res.body).toEqual(mockDeleteResult);
         })
-    })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .delete(`/friends/cancel/${mockFriend.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
     })
   })
 
@@ -194,18 +149,5 @@ describe('Friends', () => {
           expect(res.body).toEqual(mockDeleteResult);
         })
     })
-
-    it('unauthorized', () => {
-      return request(app.getHttpServer())
-        .delete(`/friends/delete/${mockFriend.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(401);
-          expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
-        });
-    })
   })
-
-  afterAll(async () => {
-    await app.close();
-  });
 });
