@@ -20,7 +20,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: server install
         working-directory: ./server
-        run: npm install
+        run: npm install --force
+      - name: server build
+        working-directory: ./server
+        run: npm run build
       - name: server test e2e
         working-directory: ./server
-        run: npm run test:e2e
+        run: npm run check:e2e
