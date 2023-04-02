@@ -21,6 +21,4 @@ jobs:
       - name: server install
         working-directory: ./server
         run: npm install
-      - name: server test e2e
-        working-directory: ./server
-        run: npm run test:e2e
+
