@@ -26,4 +26,4 @@ jobs:
         run: npm run build
       - name: server test e2e
         working-directory: ./server
-        run: npm run check:e2e
+        run: npm run test:e2e
