@@ -21,4 +21,3 @@ jobs:
       - name: server install
         working-directory: ./server
         run: npm install
-
