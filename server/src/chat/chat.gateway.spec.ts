@@ -5,6 +5,7 @@ import {JwtModule, JwtService} from "@nestjs/jwt";
 import {config} from "dotenv";
 import {MessageInterface} from "./message.interface";
 import {Server} from "socket.io";
+import spyOn = jest.spyOn;
 
 config()
 
@@ -14,7 +15,6 @@ const mockChatService = {
 
 describe('ChatGateway', () => {
   let gateway: ChatGateway;
-  let server: Server;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,9 +49,24 @@ describe('ChatGateway', () => {
   })
 
   it('newMessage', () => {
-    // let mockServerTo = jest.spyOn(gateway.server, 'to').mockImplementation((attr: any) => attr);
-    // let mockServerEmit = jest.spyOn(gateway.server, 'emit').mockImplementation((attr: any) => attr);
+    gateway.server = {to: jest.fn(() => gateway.server), emit: jest.fn(() => gateway.server)} as any;
+    let to = jest.spyOn(gateway.server, 'to');
+    let emit = jest.spyOn(gateway.server, 'emit');
 
     gateway.newMessage('friendID', 'userID', 'chatID', {} as MessageInterface);
+    expect(to).toHaveBeenCalledWith('friendID');
+    expect(emit).toHaveBeenCalledWith('new-message', { friend: {id: 'userID'}, chat: {id: 'chatID'}, message: {} as MessageInterface });
+  })
+
+  it('deleteMessage', () => {
+    gateway.server = {to: jest.fn(() => gateway.server), except: jest.fn(() => gateway.server), emit: jest.fn(() => gateway.server)} as any;
+    let to = jest.spyOn(gateway.server, 'to');
+    let except = jest.spyOn(gateway.server,'except');
+    let emit = jest.spyOn(gateway.server, 'emit');
+
+    gateway.deleteMessage('chatID', 'messageID', 'userID');
+    expect(to).toHaveBeenCalledWith('chatID');
+    expect(except).toHaveBeenCalledWith('userID');
+    expect(emit).toHaveBeenCalledWith('deleteMessage', 'messageID');
   })
 });
