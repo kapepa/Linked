@@ -1,17 +1,14 @@
 import {
-  OnGatewayConnection, OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer, WsResponse
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { ChatService } from "./chat.service";
 import { MessageInterface } from "./message.interface";
-import { take, tap } from "rxjs";
 import { forwardRef, Inject, UseGuards } from "@nestjs/common";
 import { SocketGuard } from "../auth/socket.guard";
-import { JwtService } from "@nestjs/jwt";
 
 @WebSocketGateway({
   cors: {
@@ -26,7 +23,6 @@ export class ChatGateway implements OnGatewayInit{
   constructor(
     @Inject(forwardRef(() => ChatService))
     private chatService: ChatService,
-    private jwtService: JwtService,
   ) {}
 
   @SubscribeMessage('message')

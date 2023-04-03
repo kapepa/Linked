@@ -7,6 +7,9 @@ import { UsersModule } from "../users/users.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MessageEntity } from "./message.entity";
 import { Chat } from "./chat.entity";
+import { config } from "dotenv";
+
+config();
 
 @Module({
   imports: [

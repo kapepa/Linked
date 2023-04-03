@@ -24,8 +24,6 @@ describe('AuthController (e2e)', () => {
 
   let mockUser = UserClass as UsersDto;
 
-
-
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule, AuthModule],
