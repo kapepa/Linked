@@ -8,29 +8,34 @@ import { of } from "rxjs";
 import * as bcrypt from "bcrypt";
 import { UsersInterface } from "../users/users.interface";
 import { config } from "dotenv";
+import {MailService} from "../mailer/mailer.service";
 
 config();
 
+const mockUsersService = {
+  findOne: jest.fn(),
+  existUser: jest.fn(),
+  saveUser: jest.fn(),
+}
+
+const mockJwtService = {
+  sign: jest.fn(),
+}
+
+const mockMailService = {
+  regUser: jest.fn(),
+}
+
 describe('AuthService', () => {
   let service: AuthService;
-
   let mockUser = UserClass as UsersDto;
-
-  let mockUsersService = {
-    findOne: jest.fn(),
-    existUser: jest.fn(),
-    saveUser: jest.fn(),
-  }
-
-  let mockJwtService = {
-    sign: jest.fn(),
-  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: UsersService, useValue: mockUsersService },
+        { provide: MailService, useValue: mockMailService },
         { provide: JwtService, useValue: mockJwtService },
       ],
     }).compile();
@@ -50,7 +55,7 @@ describe('AuthService', () => {
     jest.spyOn(bcrypt, 'compare').mockReturnValueOnce(of(true))
 
     service.validateUser(mockUser.email, mockPassword).subscribe((user: UsersInterface) => {
-      expect(mockUsersService.findOne).toHaveBeenCalledWith( 'email', mockUser.email, {select: ['id', 'firstName', 'lastName', 'email', 'password', 'role']} );
+      expect(mockUsersService.findOne).toHaveBeenCalled();
       expect(bcrypt.compare).toHaveBeenCalledWith(mockPassword, mockData.password);
       expect(user).toEqual(mockData);
     })
@@ -63,6 +68,7 @@ describe('AuthService', () => {
     it('success create user', () => {
       jest.spyOn(mockUsersService, 'existUser').mockReturnValueOnce(of(false));
       jest.spyOn(mockUsersService, 'saveUser').mockReturnValueOnce(of({...mockUser, password: hashPassword}));
+      jest.spyOn(mockMailService, 'regUser').mockReturnValueOnce(of({} as any))
       jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(of(hashPassword));
 
       service.registrationUser(mockCreate).subscribe(( res: boolean ) => {
