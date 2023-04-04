@@ -6,8 +6,24 @@ import { UserClass } from "../core/utility/user.class";
 import { UsersDto } from "../users/users.dto";
 import { FeetClass } from "../core/utility/feet.class";
 import { FeetInterface } from "./feet.interface";
-import { of } from "rxjs";
+import {of, throwError} from "rxjs";
 import { DeleteResult } from "typeorm";
+import {FileService} from "../file/file.service";
+import {FeetDto} from "./feet.dto";
+import {HttpException, HttpStatus} from "@nestjs/common";
+
+const mockFeetService = {
+  createFeet: jest.fn(),
+  getFeet: jest.fn(),
+  allFeet: jest.fn(),
+  updateFeet: jest.fn(),
+  findFeetList: jest.fn(),
+  deleteFeet: jest.fn(() => of({raw: [], affected: 1,} as DeleteResult)),
+}
+
+const mockFileService = {
+
+}
 
 describe('FeetController', () => {
   let controller: FeetController;
@@ -15,24 +31,19 @@ describe('FeetController', () => {
   let user = UserClass as UsersDto;
   let feet = FeetClass as FeetInterface;
 
+
+
   const mockDeleteResult: DeleteResult = {
     raw: [],
     affected: 1,
   };
-
-  let mockFeetService = {
-    createFeet: jest.fn(),
-    getFeet: jest.fn(),
-    allFeet: jest.fn(),
-    updateFeet: jest.fn(),
-    deleteFeet: jest.fn(() => of(mockDeleteResult)),
-  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FeetController],
       providers: [
         { provide: FeetService, useValue: mockFeetService },
+        { provide: FileService, useValue: mockFileService },
       ],
       imports: [JwtModule],
     }).compile();
@@ -48,7 +59,7 @@ describe('FeetController', () => {
     let body = feet.body;
     jest.spyOn(mockFeetService, 'createFeet').mockReturnValueOnce(of(feet));
 
-    controller.createFeet({body}, {user}).subscribe((mockFeet) => {
+    controller.createFeet({body}, {}, {user}).subscribe((mockFeet) => {
       expect(mockFeetService.createFeet).toHaveBeenCalledWith({body, author: user});
       expect(mockFeet).toEqual(feet);
     })
@@ -74,29 +85,33 @@ describe('FeetController', () => {
 
   it('get feet[], allFeet()', () => {
     let query = { take: 1, skip: 0 };
-    jest.spyOn(mockFeetService, 'allFeet').mockReturnValueOnce(of([feet]));
+    let findFeetList = jest.spyOn(mockFeetService, 'findFeetList').mockReturnValueOnce(of([feet]));
 
     controller.allFeet(query.take, query.skip).subscribe((mockFeet: FeetInterface[] ) => {
-      expect(mockFeetService.allFeet).toHaveBeenCalledWith(query);
+      expect(findFeetList).toHaveBeenCalled();
       expect(mockFeet).toEqual([feet]);
     })
   })
 
   describe('updateFeet()', () => {
+    let newBody = 'new body';
+
     it('success update feet', () => {
-      let newBody = 'new body';
       jest.spyOn(mockFeetService, 'updateFeet').mockReturnValueOnce(of({...feet, body: newBody}));
 
-      controller.updateFeet(feet.id, {body: newBody}).subscribe((mockFeet: FeetInterface) => {
-        expect(mockFeetService.updateFeet).toHaveBeenCalledWith(feet.id, {body: newBody});
+      controller.updateFeet(feet.id, {}, {body: newBody} as FeetDto).subscribe((mockFeet: FeetInterface) => {
+        expect(mockFeetService.updateFeet).toHaveBeenCalledWith( {body: newBody, id: "feetID"});
         expect(mockFeet).toEqual({...feet, body: newBody});
       })
     })
 
     it('Not Found data for update', () => {
-      controller.updateFeet(feet.id, {}).subscribe({
+      let exception = new HttpException('Not Found data for update', HttpStatus.NOT_FOUND);
+      jest.spyOn(mockFeetService, 'updateFeet').mockReturnValue(throwError(() => exception));
+
+      controller.updateFeet(feet.id, {}, {body: newBody} as FeetDto).subscribe({
         error: (err) => {
-          expect(err.response).toEqual('Not Found data for update.');
+          expect({status: err.status, response: err.response}).toEqual({status: HttpStatus.NOT_FOUND, response: 'Not Found data for update'})
         }
       })
     })

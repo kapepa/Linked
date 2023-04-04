@@ -53,7 +53,7 @@ export class FeetService {
       })
     )
 
-    if(!!Object.keys(addition).length) return additionChange;
+    if( !!Object.keys(addition).length ) return additionChange;
   }
 
   getFeet(id: string): Observable<FeetInterface> {
@@ -135,7 +135,7 @@ export class FeetService {
     )
   }
 
-  commentCreate(feetID: string, comment: CommentInterface, user: UsersDto): Observable<any> {
+  commentCreate(feetID: string, comment: CommentInterface, user: UsersDto): Observable<CommentInterface> {
     return this.findOneFeet({ where: { id: feetID }, relations: ['comments'] }).pipe(
       switchMap((feet: FeetInterface) => {
         return this.saveComment({...comment, host: user as UsersInterface, feet }).pipe(
@@ -152,7 +152,7 @@ export class FeetService {
     where?: { [key: string]: string | FindOperator<string> | { [key: string]: string } },
     order?: { [key: string]: 'DESC' | 'ASC' | { [key: string]: 'DESC' | 'ASC' } },
     relations?: string[],
-  }): Observable<FeetInterface > {
+  }): Observable<FeetInterface> {
     return from(this.feetRepository.findOne(options))
   }
 
@@ -179,7 +179,7 @@ export class FeetService {
     take?: number,
     skip?: number,
     relations?: string[],
-  }) {
+  }): Observable<FeetInterface[]> {
     return from(this.feetRepository.find(options));
   }
 

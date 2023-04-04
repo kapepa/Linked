@@ -103,7 +103,7 @@ export class FeetController {
   @ApiResponse({ status: 404, description: 'Forbidden db didn\'t find those feet.'})
   allFeet(@Query() query, @Req() req): Observable<FeetInterface[]> {
     let { take, skip, word } = query;
-    let where = !!word.length ? {  where: { body: Like(`%${word}%`) }  } : {};
+    let where = word && !!word.length ? {  where: { body: Like(`%${word}%`) }  } : {};
     return this.feetService.findFeetList({ ...where, take: Number(take), skip: Number(skip) }, req.user);
   }
 
