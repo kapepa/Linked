@@ -4,8 +4,6 @@ import {ChatService} from "./chat.service";
 import {JwtModule, JwtService} from "@nestjs/jwt";
 import {config} from "dotenv";
 import {MessageInterface} from "./message.interface";
-import {Server} from "socket.io";
-import spyOn = jest.spyOn;
 
 config()
 
