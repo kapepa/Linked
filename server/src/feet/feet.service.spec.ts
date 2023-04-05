@@ -20,6 +20,7 @@ import {createSocket} from "dgram";
 import {CommentClass} from "../core/utility/comment.class";
 import {CommentInterface} from "./comment.interface";
 import {UsersDto} from "../users/users.dto";
+import {AdditionDto} from "./addition.dto";
 
 const mockFeetRepository = {
   save: jest.fn(),
@@ -46,7 +47,7 @@ const mockAdditionRepository = {
 }
 
 const fileService = {
-
+  removeFile: jest.fn(),
 }
 
 describe('FeetService', () => {
@@ -118,10 +119,10 @@ describe('FeetService', () => {
       let saveFeet = jest.spyOn(repositoryFeet, 'save').mockResolvedValue(mockFeet as Feet);
 
       service.updateFeet({...mockFeet, addition: mockAddition}).subscribe((feet: FeetInterface | FeetDto) => {
-        expect(feet).toEqual({ id: mockFeet.id, body: mockFeet.body, author: {}, comments: [] });
+        expect(feet).toEqual({ ...mockFeet, author: {}, comments: [] });
         expect(findOneFeet).toHaveBeenCalledWith({ where: { id: mockFeet.id } });
         expect(saveAddition).toHaveBeenCalledWith(mockAddition);
-        expect(saveFeet).toHaveBeenCalledWith({ id: mockFeet.id, body: mockFeet.body, author: {}, comments: [] })
+        expect(saveFeet).toHaveBeenCalledWith({ ...mockFeet, author: {}, comments: [] })
       })
     })
   })
@@ -197,7 +198,7 @@ describe('FeetService', () => {
 
     it('db didn\'t not found feet.', () => {
       let mockErr = new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND);
-      let findFeet = jest.spyOn(repositoryFeet, 'find').mockRejectedValue(throwError(() => mockErr));
+      jest.spyOn(repositoryFeet, 'find').mockRejectedValue(throwError(() => mockErr));
 
       service.findFeetList({}, mockUser as UsersDto).subscribe({
         error: (err) => {
@@ -278,24 +279,88 @@ describe('FeetService', () => {
     })
   })
 
-  // describe('deleteFeet()', () => {
-  //   it('success delete feet on id', () => {
-  //     jest.spyOn(feetRepository, 'delete').mockReturnValueOnce(of(mockDeleteResult));
-  //
-  //     service.deleteFeet(mockFeet.id).subscribe((res: DeleteResult) => {
-  //       expect(feetRepository.delete).toHaveBeenCalledWith({ id: mockFeet.id });
-  //       expect(res).toEqual(mockDeleteResult);
-  //     })
-  //   })
-  //
-  //   it('Something went wrong when delete feet.', () => {
-  //     jest.spyOn(feetRepository, 'delete').mockRejectedValueOnce(new Error('Mock err'));
-  //
-  //     service.deleteFeet(mockFeet.id).subscribe({
-  //       error: (err) => {
-  //         expect(err.response).toEqual('Something went wrong when delete feet.')
-  //       }
-  //     })
-  //   })
-  // })
+  describe('deleteFeet()', () => {
+    it('success be delete feet on id', () => {
+      let findOneFeet = jest.spyOn(repositoryFeet, 'findOne').mockResolvedValue(mockFeet as Feet);
+      let deleteFeet = jest.spyOn(repositoryFeet, 'delete').mockResolvedValue(mockDeleteResult);
+      let removeFile = jest.spyOn(fileService, 'removeFile').mockImplementation(() => of(true))
+
+      service.deleteFeet(mockFeet.id).subscribe((res: DeleteResult) => {
+        expect(res).toEqual(mockDeleteResult);
+        expect(findOneFeet).toHaveBeenCalledWith({ where: { id: mockFeet.id } });
+        expect(deleteFeet).toHaveBeenCalledWith({ id: mockFeet.id });
+        expect(removeFile).toHaveBeenCalledWith(mockFeet.img[0]);
+      })
+    })
+
+    it('Something went wrong when delete feet.', () => {
+      let mockErr = new HttpException('db didn\'t not found feet.', HttpStatus.NOT_FOUND);
+      let findOneFeet = jest.spyOn(repositoryFeet, 'findOne').mockRejectedValue(mockErr)
+
+      service.deleteFeet(mockFeet.id).subscribe({
+        error: (err) => {
+          expect({response: err.response, status: err.status}).toEqual({response: 'db didn\'t not found feet.', status: HttpStatus.NOT_FOUND});
+          expect(findOneFeet).toHaveBeenCalled();
+        }
+      })
+    })
+  })
+
+  describe('deleteComment()', () => {
+    it('success be delete comment on id', () => {
+      let findOneComment = jest.spyOn(repositoryCommentEntity, 'findOne').mockResolvedValue({...mockComment, host: mockUser} as CommentEntity);
+      let deleteComment = jest.spyOn(repositoryCommentEntity, 'delete').mockResolvedValue(mockDeleteResult);
+
+      service.deleteComment(mockComment.id, mockUser as UsersDto).subscribe((res: DeleteResult) => {
+        expect(res).toEqual(mockDeleteResult);
+        expect(findOneComment).toHaveBeenCalledWith({ where: { id: mockComment.id }, relations: ['host'] });
+        expect(deleteComment).toHaveBeenCalledWith({ id: mockComment.id });
+      })
+    })
+
+    it('something went wrong when delete comment.', () => {
+      let mockErr = new HttpException('db didn\'t not found comment.', HttpStatus.NOT_FOUND);
+      let findOneComment = jest.spyOn(repositoryCommentEntity, 'findOne').mockRejectedValue( mockErr );
+
+      service.deleteComment(mockComment.id, mockUser as UsersDto).subscribe({
+        error: (err) => {
+          expect({ response: err.response, status: err.status }).toEqual({response: 'db didn\'t not found comment.', status: HttpStatus.NOT_FOUND});
+          expect(findOneComment).toHaveBeenCalledWith({ where: { id: mockComment.id }, relations: ['host'] });
+        }
+      })
+    })
+  })
+
+  describe('saveFeet()', () => {
+    it('should be save feet', () => {
+      let saveFeet = jest.spyOn(repositoryFeet, 'save').mockResolvedValue(mockFeet as Feet);
+
+      service.saveFeet(mockFeet).subscribe((feet: FeetInterface | FeetDto) => {
+        expect(feet).toEqual(mockFeet);
+        expect(saveFeet).toHaveBeenCalledWith(mockFeet);
+      })
+    })
+  })
+
+  describe('saveComment()', () => {
+    it('should be save comment', () => {
+      let saveComment = jest.spyOn(repositoryCommentEntity, 'save').mockResolvedValue(mockComment as CommentEntity);
+
+      service.saveComment(mockComment).subscribe((comment: CommentInterface) => {
+        expect(comment).toEqual(mockComment);
+        expect(saveComment).toHaveBeenCalledWith(mockComment);
+      })
+    })
+  })
+
+  describe('saveAddition()', () => {
+    it('should be save addition', () => {
+      let saveAddition = jest.spyOn(repositoryAdditionEntity, 'save').mockResolvedValue(mockAddition as AdditionEntity);
+
+      service.saveAddition(mockAddition).subscribe((addition: AdditionDto | AdditionInterface) => {
+        expect(addition).toEqual(mockAddition);
+        expect(saveAddition).toHaveBeenCalledWith(mockAddition);
+      })
+    })
+  })
 });
