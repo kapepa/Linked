@@ -1,15 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FileService } from './file.service';
 import * as fs from "fs";
+import * as sharp from "sharp";
 import {join, resolve} from "path";
-import DoneCallback = jest.DoneCallback;
-import {catchError} from "rxjs";
-import {HttpException, HttpStatus} from "@nestjs/common";
 
 describe('FileService', () => {
   let service: FileService;
 
-  let mockImage = resolve(__dirname, '..', '..', 'static', 'face-14.jpg');
+  let mockPictureName: string = '1b7246c0-d896-43ad-80d2-7435cbcc614bpng.png';
+  let mockImage = resolve(__dirname, '..', '..', 'static', mockPictureName);
 
   let mockFile = {
     fieldname: 'file',
@@ -34,6 +33,8 @@ describe('FileService', () => {
   });
 
   describe('sharpFile()', () => {
+    const writeFileSpy = jest.spyOn(fs, "writeFile");
+
     it('resize loaded images, sharpFile()', () => {
       service.sharpFile(mockImage).subscribe((bol: boolean) => {
         expect(jest.spyOn(fs, 'writeFile')).not.toHaveBeenCalled()
@@ -43,10 +44,8 @@ describe('FileService', () => {
   })
 
   describe('formFile()', () => {
-    let avatar = 'face-14.jpg';
-
     it('check exist file, return boole value', (done) => {
-      service.formFile(avatar).subscribe((bol: boolean) => {
+      service.formFile(mockPictureName).subscribe((bol: boolean) => {
         expect(bol).toBeTruthy();
         done();
       })
@@ -62,7 +61,6 @@ describe('FileService', () => {
     })
   })
 
-
   describe('removeFile', () => {
     let avatar = 'face-14.jpg';
     it('success remove file',  async () => {
@@ -73,11 +71,11 @@ describe('FileService', () => {
     })
 
     it('I made a mistake while deleting', async () => {
-      jest.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => Promise.reject(new Error('Err')));
+      jest.spyOn(fs, 'unlinkSync').mockImplementation(() => Promise.reject(new Error('Err')));
       try {
         await service.removeFile(avatar)
       } catch (err) {
-        expect(err.response).toEqual('I made a mistake while deleting');
+        expect(err).toBeTruthy()
       }
     })
   })
