@@ -70,7 +70,7 @@ describe('Friends', () => {
         .post(`/friends/add/${mockFriend.id}`)
         .set('Authorization', `Bearer ${jwt_token}`)
         .expect((res: Response) => {
-          let { email, request, suggest, friends, ...other} = mockUser;
+          let { chat, email, request, suggest, friends, ...other} = mockUser;
 
           expect(res.status).toEqual(201);
           expect(mockFriendsService.create).toHaveBeenCalledWith(friendID, other);
@@ -112,7 +112,7 @@ describe('Friends', () => {
         .put(`/friends/confirm/${mockFriend.id}`)
         .set('Authorization', `Bearer ${jwt_token}`)
         .expect((res: Response) => {
-          let { email, request, suggest, friends, ...other} = mockUser;
+          let { chat, email, request, suggest, friends, ...other} = mockUser;
 
           expect(res.status).toEqual(200);
           expect(mockFriendsService.confirm).toHaveBeenCalledWith(mockFriend.id, other);
@@ -127,7 +127,7 @@ describe('Friends', () => {
         .delete(`/friends/cancel/${mockFriend.id}`)
         .set('Authorization', `Bearer ${jwt_token}`)
         .expect((res: Response) => {
-          let { email, request, suggest, friends, ...other} = mockUser;
+          let { chat, email, request, suggest, friends, ...other} = mockUser;
 
           expect(res.status).toEqual(200);
           expect(mockFriendsService.cancel).toHaveBeenCalledWith(mockFriend.id, other);
@@ -142,7 +142,7 @@ describe('Friends', () => {
         .delete(`/friends/delete/${mockFriend.id}`)
         .set('Authorization', `Bearer ${jwt_token}`)
         .expect((res: Response) => {
-          let { email, request, suggest, friends, ...other} = mockUser;
+          let { chat, email, request, suggest, friends, ...other} = mockUser;
 
           expect(res.status).toEqual(200);
           expect(mockFriendsService.cancel).toHaveBeenCalledWith(mockFriend.id, other);

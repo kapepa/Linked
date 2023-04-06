@@ -52,7 +52,6 @@ describe('FriendsService', () => {
 
   let user = UserClass as UsersDto;
   let friend = FriendCLass;
-  let myProfile = {...Object.assign(user), id: 'myID'};
   let chatClass: ChatInterface = ChatClass as ChatInterface;
 
   const mockDeleteResult: DeleteResult = {
