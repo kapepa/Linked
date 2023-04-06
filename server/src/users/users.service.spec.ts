@@ -9,6 +9,10 @@ import {UsersDto} from "./users.dto";
 import {of} from "rxjs";
 import {UsersInterface} from "./users.interface";
 import {UpdateResult} from "typeorm";
+import { config } from "dotenv";
+import {JwtService} from "@nestjs/jwt";
+
+config();
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -17,6 +21,10 @@ describe('UsersService', () => {
   let user = UserClass as UsersDto;
 
   let updateResult = {generatedMaps: [], raw: [], affected: 1 } as UpdateResult;
+
+  let toke = new JwtService({secret: process.env.JWT_SECRET}).sign(
+    {firstName: user.firstName, lastName: user.lastName, id: user.id, role: user.role, avatar: user.avatar}
+  )
 
   let mockFile = {
     buffer: Buffer.from('12 3d'),
@@ -119,30 +127,20 @@ describe('UsersService', () => {
   })
 
   describe('avatarUser()', () => {
-    let token = {access_token: 'some_token'};
-    jest.spyOn(mockUserEntity, 'update').mockReturnValue(of(updateResult));
-    jest.spyOn(mockAuthService, 'loginUser').mockReturnValue(of(token));
-
     it('load avatar user success', () => {
-      jest.spyOn(mockFileService, 'formFile').mockReturnValueOnce(of(true));
+      let mockToken = {access_token: toke};
+      let formFile = jest.spyOn(mockFileService, 'formFile').mockImplementation(() => of(true));
+      let findOne = jest.spyOn(mockUserEntity, 'findOne').mockResolvedValue({...user, avatar: ''});
+      let saveUser = jest.spyOn(mockUserEntity, 'save').mockResolvedValue(user);
+      let loginUser = jest.spyOn(mockAuthService, 'loginUser').mockImplementation(() => of(mockToken));
 
-      service.avatarUser(mockFile, user).subscribe((newToken: {access_token: string}) => {
-        expect(mockFileService.formFile).toHaveBeenCalledWith(mockFile.filename);
-        expect(mockFileService.removeFile).toHaveBeenCalledWith(user.avatar);
-        expect(newToken).toEqual(token);
-      })
-    })
-
-    it('Your avatar has not been saved',() => {
-      jest.spyOn(mockFileService, 'formFile').mockReturnValueOnce(of(false))
-
-      service.avatarUser(mockFile, user).subscribe({
-        error: (err) => {
-          expect(mockFileService.formFile).toHaveBeenCalledWith(mockFile.filename);
-          expect(err.response).toEqual('Your avatar has not been saved');
-        }
+      service.avatarUser(mockFile, user).subscribe((res: {access_token: string}) => {
+        expect(formFile).toHaveBeenCalledWith(mockFile.filename);
+        expect(findOne).toHaveBeenCalledWith({ where: { id: user.id }});
+        expect(saveUser).toHaveBeenCalledWith({...user, avatar: mockFile.filename});
+        expect(loginUser).toHaveBeenCalledTimes(1);
+        expect(res).toEqual(mockToken);
       })
     })
   })
-
 });

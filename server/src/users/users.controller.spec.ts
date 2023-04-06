@@ -5,21 +5,31 @@ import { UserClass } from "../core/utility/user.class";
 import { UsersDto } from "./users.dto";
 import { of } from "rxjs";
 import { UsersInterface } from "./users.interface";
-import {UpdateResult} from "typeorm";
+import {DeleteResult, UpdateResult} from "typeorm";
+import {JwtService} from "@nestjs/jwt";
+import { config } from "dotenv";
+
+config();
 
 describe('UsersController', () => {
   let controller: UsersController;
   let usersService: UsersService;
 
   let user = UserClass as UsersDto;
-
   let updateResult = {generatedMaps: [], raw: [], affected: 1 } as UpdateResult;
+  let deleteResult: DeleteResult = {raw: [], affected: 1};
+
+  let mockToken = new JwtService({secret: process.env.JWT_SECRET}).sign(
+    {firstName: user.firstName, lastName: user.lastName, id: user.id, role: user.role, avatar: user.avatar}
+  )
 
   let mockUsersService = {
-    avatarUser: jest.fn().mockImplementation((data) => of(data)),
-    findOne: jest.fn().mockImplementation((data) => of(data)),
-    person: jest.fn().mockImplementation((data) => of(data)),
-    updateUser: jest.fn().mockImplementation((data) => of(updateResult)),
+    avatarUser: jest.fn(),
+    findOne: jest.fn(),
+    person: jest.fn(),
+    recommendedUsers: jest.fn(),
+    updateUser: jest.fn(),
+    del: jest.fn(),
   }
 
   beforeEach(async () => {
@@ -38,45 +48,79 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('set a new user avatar, avatarLoad()', async () => {
-    const mockFile = {
-      fieldname: 'file',
-      originalname: 'face-14.jpg',
-      encoding: '7bit',
-      mimetype: 'image/jpg',
-      buffer: Buffer.from('<Buffer ff d8 ff e0 00 10 4a 46 49 42>'),
-      size: 51828,
-    } as Express.Multer.File;
+  describe('avatarLoad()', () => {
+    it('set a new user avatar,', async () => {
+      let mockFile = {
+        fieldname: 'file',
+        originalname: 'face-14.jpg',
+        encoding: '7bit',
+        mimetype: 'image/jpg',
+        buffer: Buffer.from('<Buffer ff d8 ff e0 00 10 4a 46 49 42>'),
+        size: 51828,
+      } as Express.Multer.File;
+      let avatarUser = jest.spyOn(mockUsersService, 'avatarUser').mockImplementation(() => of({access_token: mockToken}))
 
-    controller.avatarLoad(mockFile, {user}).subscribe(() => {
-      expect(mockUsersService.avatarUser).toHaveBeenCalledWith(mockFile, user)
+      controller.avatarLoad(mockFile, {user}).subscribe((res: {access_token: string}) => {
+        expect(res).toEqual({access_token: mockToken});
+        expect(mockUsersService.avatarUser).toHaveBeenCalledWith(mockFile, user);
+      })
     })
   })
 
-  it('get own profile, getUser()', () => {
-    jest.spyOn(mockUsersService, 'findOne').mockReturnValueOnce(of(user));
+  describe('getUser()', () => {
+    it('get own profile, getUser()', () => {
+      let findOne = jest.spyOn(mockUsersService, 'findOne').mockImplementation(() => of(user));
 
-    controller.getUser({user}).subscribe((findUser: UsersInterface) => {
-      expect(mockUsersService.findOne).toHaveBeenCalledWith('id', user.id, { relations: ['suggest', 'suggest.user'] });
-      expect(findUser).toEqual(user);
+      controller.getUser({user}).subscribe((findUser: UsersInterface) => {
+        expect(findOne).toHaveBeenCalledWith('id', user.id, { relations: ['suggest', 'suggest.user'] });
+        expect(findUser).toEqual(user);
+      })
     })
   })
 
-  it('find user on id, receive his data and friends, person()', () => {
-    jest.spyOn(mockUsersService, "person").mockReturnValueOnce(of(user));
+  describe('person()', () => {
+    it('find user on id, receive his data and friends, person()', () => {
+      let personOne = jest.spyOn(mockUsersService, "person").mockImplementation(() => of(user));
 
-    controller.person(user.id, {user}).subscribe((person: UsersInterface) => {
-      expect(mockUsersService.person).toHaveBeenCalledWith(user.id, user);
-      expect(person).toEqual(user);
-    });
-  })
-
-  it('update own data, in profile', () => {
-    let mockBody = {firstName: "BestName"};
-    controller.update(mockBody, {user}).subscribe((res: UpdateResult) => {
-      expect(mockUsersService.updateUser).toHaveBeenCalledWith('id', user.id, mockBody);
-      expect(res).toEqual(updateResult);
+      controller.person(user.id, {user}).subscribe((person: UsersInterface) => {
+        expect(personOne).toHaveBeenCalledWith(user.id, user);
+        expect(person).toEqual(user);
+      });
     })
   })
 
+  describe('recommended()', () => {
+    it('should be returned users which recommended', () => {
+      let mockUsers = [{...user, id: 'personID'}];
+      let recommendedUsers = jest.spyOn(mockUsersService, 'recommendedUsers').mockImplementation(() => of(mockUsers));
+
+      controller.recommended({user}).subscribe((users: UsersInterface[]) => {
+        expect(users).toEqual(mockUsers);
+        expect(recommendedUsers).toHaveBeenCalledWith(user);
+      })
+    })
+  })
+
+  describe('update()', () => {
+    it('should be update user', () => {
+      let body = { firstName: 'Update Name' }
+      let updateUser = jest.spyOn(mockUsersService, 'updateUser').mockImplementation(() => of(updateResult));
+
+      controller.update(body, {user}).subscribe((res: UpdateResult) => {
+        expect(res).toEqual(updateResult);
+        expect(updateUser).toHaveBeenCalledWith('id', user.id, body);
+      })
+    })
+  })
+
+  describe('del()', () => {
+    it('should be delete  user on id', () => {
+      let del = jest.spyOn(mockUsersService, 'del').mockImplementation(() => of(deleteResult));
+
+      controller.del(user.id).subscribe((res) => {
+        expect(res).toEqual(deleteResult);
+        expect(del).toHaveBeenCalledWith(user.id)
+      })
+    })
+  })
 });
