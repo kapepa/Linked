@@ -7,6 +7,7 @@ const UserClass = {
   request: [],
   suggest: [],
   friends: [],
+  chat: [],
   role: 'user',
 }
 

@@ -83,7 +83,7 @@ describe('Users', () => {
         .get(`/users/person/${mockUser.id}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect((res: Response) => {
-          let { email, request, suggest, friends, ...other} = mockUser;
+          let { chat, email, request, suggest, friends, ...other} = mockUser;
 
           expect(res.status).toEqual(200);
           expect(mockUsersService.person).toHaveBeenCalledWith(mockUser.id, other);

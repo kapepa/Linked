@@ -81,6 +81,7 @@ export class FriendsService {
               let { friends, chat, request, suggest, ...otherFriend } = profile;
               return otherFriend;
             }
+
             this.chatService.createChat().pipe(
               switchMap((chat: ChatInterface) => {
                 return from([friendsDto.user, friendsDto.friends]).pipe(
@@ -98,19 +99,18 @@ export class FriendsService {
                   toArray(),
                   switchMap((users: UsersInterface[]) => {
                     let [user, friend] = users;
-
-                      return this.usersService.saveUser(user).pipe(
-                        switchMap(() => this.usersService.saveUser(friend).pipe(
-                          switchMap(() => this.chatService.saveChat(chat).pipe(
-                            switchMap(() => this.deleteRequest(friendsDto.id)),
-                            tap(() => this.friendsGateway.changeFriendSuggest(user.id, friends.id))
-                          )),
-                        ))
-                      )
+                    this.friendsGateway.changeFriendSuggest(user.id, friends.id)
+                    return this.usersService.saveUser(user).pipe(
+                      switchMap(() => this.usersService.saveUser(friend).pipe(
+                        switchMap(() => this.chatService.saveChat(chat).pipe(
+                          switchMap(() => this.deleteRequest(friendsDto.id)),
+                        )),
+                      ))
+                    )
                   }),
                 )
               })
-            ).subscribe();
+            ).subscribe(() => this.friendsGateway.changeFriendSuggest(user.id, friends.id));
           })
         )
       }),
