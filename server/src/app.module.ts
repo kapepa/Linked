@@ -18,7 +18,7 @@ import { join } from 'path';
 import { ChatModule } from "./chat/chat.module";
 import { Chat } from "./chat/chat.entity";
 import { MessageEntity } from "./chat/message.entity";
-import { AppGateway } from "./app.gateway.spec";
+import { AppGateway } from "./app.gateway";
 import { CommentEntity } from "./feet/comment.entity";
 import { AdditionEntity } from "./feet/addition.entity";
 import { EventModule } from './event/event.module';

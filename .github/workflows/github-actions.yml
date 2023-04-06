@@ -35,6 +35,9 @@ jobs:
       - name: server build
         working-directory: ./server
         run: npm run build
+      - name: server test unit-test
+        working-directory: ./server
+        run: npm run test
       - name: server test e2e
         working-directory: ./server
         run: npm run test:e2e

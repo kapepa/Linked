@@ -5,9 +5,8 @@ import * as bcrypt from "bcrypt";
 import { UsersDto } from "../users/users.dto";
 import { UsersInterface } from "../users/users.interface";
 import { JwtService } from "@nestjs/jwt";
-
-import { config } from "dotenv";
 import {MailService} from "../mailer/mailer.service";
+import { config } from "dotenv";
 
 config();
 
