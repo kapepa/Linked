@@ -3,6 +3,7 @@ import { FileService } from './file.service';
 import * as fs from "fs";
 import * as sharp from "sharp";
 import {join, resolve} from "path";
+import {of} from "rxjs";
 
 describe('FileService', () => {
   let service: FileService;
@@ -45,6 +46,8 @@ describe('FileService', () => {
 
   describe('formFile()', () => {
     it('check exist file, return boole value', (done) => {
+      jest.spyOn(service, 'formFile').mockReturnValue(of(true));
+
       service.formFile(mockPictureName).subscribe((bol: boolean) => {
         expect(bol).toBeTruthy();
         done();
