@@ -7,6 +7,7 @@ import { UsersInterface } from "../users/users.interface";
 import { JwtService } from "@nestjs/jwt";
 import {MailService} from "../mailer/mailer.service";
 import { config } from "dotenv";
+import {DeleteResult} from "typeorm";
 
 config();
 
@@ -84,5 +85,9 @@ export class AuthService {
         return of({access_token: this.jwtService.sign({firstName, lastName, id, role, avatar})});
       })
     );
+  }
+
+  deleteMyself(user: UsersDto): Observable<DeleteResult> {
+    return this.usersService.del(user.id);
   }
 }

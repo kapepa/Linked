@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller, Get,
+  Controller, Delete, Get,
   HttpException, HttpStatus,
   Post,
   Put,
@@ -19,6 +19,7 @@ import {LocalAuthGuard} from "./local-auth.guard";
 import {ApiCreatedResponse, ApiForbiddenResponse, ApiTags} from "@nestjs/swagger";
 import {GoogleOAuthGuard} from "./google-oauth.guard";
 import {FacebookGuard} from "./facebook.guard";
+import {JwtAuthGuard} from "./jwt-auth.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,15 +27,6 @@ export class AuthController {
   constructor(
     private authService: AuthService,
   ) {}
-
-  @Post('login')
-  @UseInterceptors(AnyFilesInterceptor())
-  @UseGuards(LocalAuthGuard)
-  @ApiCreatedResponse({ status: 201, description: 'The user has been successfully login.'})
-  @ApiForbiddenResponse({ status: 401, description: 'Unauthorized.'})
-  login(@Req() req): Observable<{access_token: string}> {
-    return this.authService.loginUser(req.user);
-  }
 
   @Post('registration')
   @UseInterceptors(FileInterceptor('file'))
@@ -45,6 +37,15 @@ export class AuthController {
     let parse = JSON.parse(JSON.stringify(body));
     if (!Object.keys(parse).length) return throwError(() => new HttpException('There is no registration data in the following request.', HttpStatus.BAD_REQUEST));
     return this.authService.registrationUser(parse);
+  }
+
+  @Post('login')
+  @UseInterceptors(AnyFilesInterceptor())
+  @UseGuards(LocalAuthGuard)
+  @ApiCreatedResponse({ status: 201, description: 'The user has been successfully login.'})
+  @ApiForbiddenResponse({ status: 401, description: 'Unauthorized.'})
+  login(@Req() req): Observable<{access_token: string}> {
+    return this.authService.loginUser(req.user);
   }
 
   @Post('social')
@@ -96,5 +97,13 @@ export class AuthController {
     let toUser = {firstName, lastName, email} as UsersDto;
     res.header('Content-type', 'text/html');
     res.end(`<script>window.opener.postMessage(${JSON.stringify(toUser)}, "*"); window.close();</script>`);
+  }
+
+  @Delete('/myself')
+  @UseGuards(JwtAuthGuard)
+  @ApiCreatedResponse({ status: 200, description: 'Should be delete myself user on id'})
+  @ApiForbiddenResponse({ status: 400, description: 'Can not delete myself'})
+  DeleteMyself(@Req() req){
+    return this.authService.deleteMyself(req.user);
   }
 }
