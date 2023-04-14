@@ -10,7 +10,7 @@ import {FriendsInterface} from "../src/friends/friends.interface";
 describe('ChatController (e2e)',  () => {
   let app: INestApplication;
 
-  let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: UserClass.password, email: UserClass.email, avatar: UserClass.avatar };
+  let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: '123456', email: UserClass.email, avatar: UserClass.avatar };
   let friendClass = { firstName: 'FirstFriend', lastName: 'LastFriend', password: '123456', email: 'friend@mail.com', avatar: 'FriendAvatar.png' }
   let chatClass = ChatClass;
   let messageClass = MessageClass;
