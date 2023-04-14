@@ -70,6 +70,14 @@ export class UsersController {
     return this.usersService.updateUser('id', req.user.id, body);
   }
 
+  @Get('/one/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Should be receive user on id'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'User not found'})
+  findUser(@Param('id') id, @Req() req){
+    return this.usersService.findOneUser({where: { id }});
+  }
+
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'delete user on id'})

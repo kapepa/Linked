@@ -18,7 +18,7 @@ export class UsersInterface {
   suggest?: FriendsInterface[];
   friends?: UsersInterface[];
   comments?: CommentInterface[];
-  role: Role;
+  role?: Role;
   feet?: FeetInterface[];
   chat?: ChatInterface[];
   messages?: MessageInterface[]
