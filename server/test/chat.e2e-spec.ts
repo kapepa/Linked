@@ -41,6 +41,10 @@ describe('ChatController (e2e)',  () => {
       .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
   });
 
+  it('default', () => {
+    expect(true).toBeTruthy();
+  })
+
   afterAll(async () => {
     await request(app.getHttpServer())
       .delete('/auth/myself')
@@ -48,10 +52,6 @@ describe('ChatController (e2e)',  () => {
     await request(app.getHttpServer())
       .delete('/auth/myself')
       .set('Authorization', `Bearer ${friendData.token}`);
-  })
-
-  it('default', () => {
-    expect(true).toBeTruthy();
   })
 
   // describe('(GET) getAllConversation()', () => {
