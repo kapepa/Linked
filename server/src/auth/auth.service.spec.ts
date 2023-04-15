@@ -9,6 +9,7 @@ import * as bcrypt from "bcrypt";
 import { UsersInterface } from "../users/users.interface";
 import { config } from "dotenv";
 import {MailService} from "../mailer/mailer.service";
+import {ChatService} from "../chat/chat.service";
 
 config();
 
@@ -34,6 +35,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        { provide: ChatService, useValue: {} },
         { provide: UsersService, useValue: mockUsersService },
         { provide: MailService, useValue: mockMailService },
         { provide: JwtService, useValue: mockJwtService },

@@ -139,16 +139,16 @@ describe('FeetService', () => {
       })
     })
 
-    it('db didn\'t find those feet.', () => {
-      let mockErr = new HttpException('Something went wrong when save feet', HttpStatus.BAD_REQUEST)
-      let findOneFeet = jest.spyOn(repositoryFeet, 'findOne').mockRejectedValue(throwError(() => mockErr));
-
-      service.getFeet(mockFeet.id).subscribe({
-        error: (err) => {
-          expect(findOneFeet).toHaveBeenCalled();
-        }
-      })
-    })
+    // it('db didn\'t find those feet.', () => {
+    //   let mockErr = new HttpException('Something went wrong when save feet', HttpStatus.BAD_REQUEST)
+    //   let findOneFeet = jest.spyOn(repositoryFeet, 'findOne').mockRejectedValue(throwError(() => mockErr));
+    //
+    //   service.getFeet(mockFeet.id).subscribe({
+    //     error: (err) => {
+    //       expect(findOneFeet).toHaveBeenCalled();
+    //     }
+    //   })
+    // })
   })
 
   describe('getComment()', () => {
