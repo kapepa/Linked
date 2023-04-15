@@ -138,7 +138,6 @@ describe('FeetService', () => {
         expect(findFeet).toHaveBeenCalled();
       })
     })
-
     // it('db didn\'t find those feet.', () => {
     //   let mockErr = new HttpException('Something went wrong when save feet', HttpStatus.BAD_REQUEST)
     //   let findOneFeet = jest.spyOn(repositoryFeet, 'findOne').mockRejectedValue(throwError(() => mockErr));
