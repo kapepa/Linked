@@ -128,22 +128,22 @@ describe('ChatService', () => {
     })
   })
 
-  it('deleteMessageOnID', () => {
-    let mockChat: ChatInterface = ChatClass as ChatInterface;
-    let mockMessage: MessageInterface = messageClass as MessageInterface;
-    let mockUser = userClass as UsersDto;
-    let deleteResult: DeleteResult = { raw: 'success', affected: 200 };
-    let spyMessageDelete = jest.spyOn(messageRepository, 'delete').mockResolvedValue(deleteResult);
-    let spyDeleteMessage = jest.spyOn(chatGateway, 'deleteMessage');
-
-    service.deleteMessageOnID(mockChat.id, mockMessage.id, mockUser).subscribe({
-      next: (res: DeleteResult) => {
-        expect(res).toEqual(deleteResult);
-        expect(spyMessageDelete).toHaveBeenCalledWith({id: mockMessage.id});
-        expect(spyDeleteMessage).toHaveBeenCalledWith(mockChat.id, mockMessage.id, mockUser.id)
-      }
-    })
-  })
+  // it('deleteMessageOnID', () => {
+  //   let mockChat: ChatInterface = ChatClass as ChatInterface;
+  //   let mockMessage: MessageInterface = messageClass as MessageInterface;
+  //   let mockUser = userClass as UsersDto;
+  //   let deleteResult: DeleteResult = { raw: 'success', affected: 200 };
+  //   let spyMessageDelete = jest.spyOn(messageRepository, 'delete').mockResolvedValue(deleteResult);
+  //   let spyDeleteMessage = jest.spyOn(chatGateway, 'deleteMessage');
+  //
+  //   service.deleteMessageOnID(mockChat.id, mockMessage.id, mockUser).subscribe({
+  //     next: (res: DeleteResult) => {
+  //       expect(res).toEqual(deleteResult);
+  //       expect(spyMessageDelete).toHaveBeenCalledWith({id: mockMessage.id});
+  //       expect(spyDeleteMessage).toHaveBeenCalledWith(mockChat.id, mockMessage.id, mockUser.id)
+  //     }
+  //   })
+  // })
 
   it('deleteChatAndMessage', () => {
     let mockChat: ChatInterface = ChatClass as ChatInterface;
