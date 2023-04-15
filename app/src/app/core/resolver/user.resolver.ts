@@ -26,8 +26,9 @@ export class UserResolver implements Resolve<boolean> {
         return this.userService.getOwnProfile().pipe(
           switchMap((user: UserInterface) => {
             if(!user) return this.router.navigate(['/auth','login']);
+
             return of(!!user)
-          })
+          }),
         )
       }),
     )

@@ -37,7 +37,7 @@ export class ConversationResolver implements Resolve<boolean> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.chatService.receiveAllConversation().pipe(
+    return this.chatService.receiveAllConversation({skip: 0, take: 10, first: ''}).pipe(
       take(1),
       switchMap( (dto: {friends: UserInterface[]}) => {
         if(!dto.friends.length){

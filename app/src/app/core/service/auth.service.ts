@@ -149,7 +149,7 @@ export class AuthService {
         if(!token) return of(false);
         const parseToken: UserJwtDto = this.jwtDecode(token);
         if (!!parseToken) this.user$.next(parseToken);
-        return of(parseToken['exp'] * 1000 > Date.now());
+        return of(!(Date.now() >= parseToken.exp * 1000));
       })
     )
   }

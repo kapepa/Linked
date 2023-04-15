@@ -39,7 +39,12 @@ export class UsersService {
     return from(this.usersRepository.findOne({...options}));
   }
 
-  findUsers(options?: { where: { [key:string] : string | number, }, relations?: string[], order?: { [key: string]: string | { [key: string]: string } } }) {
+  findUsers(
+    options?: {
+      where: { [key:string] : string | number  } | { [key:string] : string | number }[] | any,
+      relations?: string[],
+      order?: { [key: string]: string | { [key: string]: string | {[key: string]: string}[] } }
+    }) {
     return from(this.usersRepository.find({...options}));
   }
   

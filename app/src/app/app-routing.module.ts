@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {NotFoundComponent} from "./modules/not-found/not-found.component";
+import { NotFoundComponent } from "./modules/not-found/not-found.component";
 
 export const routes: Routes = [
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule), data: { preload: true } },

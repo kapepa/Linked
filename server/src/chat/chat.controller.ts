@@ -15,6 +15,14 @@ export class ChatController {
     private chatService: ChatService,
   ) {}
 
+  @Get('/conversation')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'receive all conversation', type: ChatInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  getAllConversation(@Req() req, @Query() query): Observable<{ friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }> {
+    return this.chatService.conversation(req.user, query);
+  }
+
   @Get('/one/:id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'Receive chat on id', type: ChatInterface})
@@ -24,12 +32,28 @@ export class ChatController {
     return this.chatService.findOneChat({ where: { id }, ...!!Object.keys(query).length ? query : defaultQuery});
   }
 
-  @Get('/conversation')
+  @Get('/companion/:id')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'receive all conversation', type: ChatInterface})
+  @ApiResponse({ status: 201, description: 'find friends, which have in chat', type: UsersInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
-  getAllConversation(@Req() req, @Query() query): Observable<{ friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }> {
-    return this.chatService.conversation(req.user, query);
+  companion(@Param('id') param, @Req() req): Observable<UsersInterface> {
+    return this.chatService.companion(param);
+  }
+
+  @Get('/change/:friendID')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'find chat, and return chat and message', type: ChatInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  changeChat(@Param() param, @Req() req): Observable<ChatInterface>{
+    return this.chatService.getChat(param.friendID, req.user);
+  }
+
+  @Put('/send/:chatID')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'send and set new message in chat', type: MessageInterface})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  sendNewMessage(@Param('chatID') chatID, @Body() body, @Req() req): Observable<MessageInterface> {
+    return this.chatService.createMessage(chatID, body, req.user);
   }
 
   @Get('/messages')
@@ -61,29 +85,4 @@ export class ChatController {
     let { chat, message } = query
     return this.chatService.deleteMessageOnID(chat, message, req.user);
   }
-
-  @Get('/companion/:id')
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'find friends, which have in chat', type: UsersInterface})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
-  companion(@Param('id') param, @Req() req): Observable<UsersInterface> {
-    return this.chatService.companion(param);
-  }
-
-  @Get('/change/:friendID')
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'find chat, and return chat and message', type: ChatInterface})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
-  changeChat(@Param() param, @Req() req): Observable<ChatInterface>{
-    return this.chatService.getChat(param.friendID, req.user);
-  }
-
-  @Put('/send/:chatID')
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'send and set new message in chat', type: MessageInterface})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
-  sendNewMessage(@Param('chatID') chatID, @Body() body, @Req() req): Observable<MessageInterface> {
-    return this.chatService.createMessage(chatID, body, req.user);
-  }
-
 }

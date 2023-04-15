@@ -4,8 +4,9 @@ import {Test} from "@nestjs/testing";
 import {ChatClass, MessageClass} from "../src/core/utility/chat.class";
 import {AppModule} from "../src/app.module";
 import {UserClass} from "../src/core/utility/user.class";
-import {UsersInterface} from "../src/users/users.interface";
 import {FriendsInterface} from "../src/friends/friends.interface";
+import {CreateProfileTest, ProfileInterface} from "../src/core/utility/create.profile.test";
+import {ChatInterface} from "../src/chat/chat.interface";
 
 describe('ChatController (e2e)',  () => {
   let app: INestApplication;
@@ -15,11 +16,9 @@ describe('ChatController (e2e)',  () => {
   let chatClass = ChatClass;
   let messageClass = MessageClass;
 
-  let token: string;
-  let friendToken: string;
-
-  let MyUser: ReadableStream<Uint8Array>;
-  let MyFriend: ReadableStream<Uint8Array>;
+  let userData: ProfileInterface = {token: undefined, profile: undefined};
+  let friendData: ProfileInterface = {token: undefined, profile: undefined};
+  let chatData: {chat: ChatInterface} = {chat: undefined};
 
   let friends: FriendsInterface;
 
@@ -31,43 +30,42 @@ describe('ChatController (e2e)',  () => {
     app = moduleRef.createNestApplication();
     await app.init();
 
-    await request(app.getHttpServer())
-      .post('/auth/registration').send(userClass);
-    await request(app.getHttpServer())
-      .post('/auth/login').send({password: userClass.password, email: userClass.email})
-      .expect((res: Response) => token = res.body['access_token'])
-    await request(app.getHttpServer())
-      .get('/users').set('Authorization', `Bearer ${token}`)
-      .expect((res: Response) => MyUser = res.body)
+    await CreateProfileTest(app, userClass, userData);
+    await CreateProfileTest(app, friendClass, friendData);
 
     await request(app.getHttpServer())
-      .post('/auth/registration').send(friendClass);
-    await request(app.getHttpServer())
-      .post('/auth/login').send({password: userClass.password, email: userClass.email})
-      .expect((res: Response) => friendToken = res.body['access_token'])
-    await request(app.getHttpServer())
-      .get('/users').set('Authorization', `Bearer ${friendToken}`)
-      .expect((res: Response) => MyFriend = res.body);
+      .post(`/friends/add/${friendData.profile.id}`).set('Authorization', `Bearer ${userData.token}`)
+      .expect((res: Response & {body: FriendsInterface} ) => friends = res.body)
 
-    // await request(app.getHttpServer())
-    //   .post(`/friends/add/${MyFriend.id}`).set('Authorization', `Bearer ${token}`)
-    //   .expect((res ) => {console.log(res.body)})
+    await request(app.getHttpServer())
+      .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
   });
 
   afterAll(async () => {
     await request(app.getHttpServer())
       .delete('/auth/myself')
-      .set('Authorization', `Bearer ${token}`);
+      .set('Authorization', `Bearer ${userData.token}`);
     await request(app.getHttpServer())
       .delete('/auth/myself')
-      .set('Authorization', `Bearer ${friendToken}`);
+      .set('Authorization', `Bearer ${friendData.token}`);
   })
 
-  describe('(GET) ', () => {
-    it('', () => {
-      expect(true).toBeTruthy();
-    })
+  it('default', () => {
+    expect(app).toBeDefined();
   })
+
+  // describe('(GET) getAllConversation()', () => {
+  //   let query = {skip: 0, take: 1, first: ''};
+  //   it('should be receive chat and friends', () => {
+  //     return request(app.getHttpServer())
+  //       .get(`/chat/conversation?skip=${query.skip}&take=${query.take}&first=${query.first}`)
+  //       .set('Authorization', `Bearer ${userData.token}`)
+  //       .expect(200)
+  //       .expect((res: Response) => {
+  //         console.log(res.body)
+  //       })
+  //   })
+  // })
 
   // describe(`/GET getOne`, () => {
   //   it(`should return chats`, () => {

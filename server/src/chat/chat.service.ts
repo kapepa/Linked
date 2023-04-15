@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
+import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {ChatInterface} from "./chat.interface";
-import {from, Observable, of, switchMap, take, tap} from "rxjs";
+import {from, map, Observable, of, switchMap, take, tap} from "rxjs";
 import {MessageInterface} from "./message.interface";
 import {UsersDto} from "../users/users.dto";
 import {UsersService} from "../users/users.service";
@@ -17,6 +17,7 @@ import {MessageStatus} from "./status.enum";
 export class ChatService {
 
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
     @InjectRepository(Chat)
     private chatRepository: Repository<Chat>,
@@ -39,7 +40,7 @@ export class ChatService {
 
   findChat(options?:{
     where?: {
-      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
+      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | {[key: string]: string}[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
     } | {[key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }}[],
     relations?: string[],
     order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } },
@@ -51,7 +52,7 @@ export class ChatService {
 
   findMessage(options?: {
     where?: {
-      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
+      [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } } | {}
     } | {[key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }}[],
     relations?: string[],
     order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } },
@@ -78,50 +79,74 @@ export class ChatService {
 
   conversation(user: UsersDto, query?: {skip?: number, take?: number, first?: string}):
     Observable<{ friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }> {
-    return this.usersService.findOneUser( {
-      where: { id: user.id },
-      relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'],
-      order: { chat: { updated_at: "ASC" } },
-    }).pipe(
-      take(1),
-      switchMap((users: UsersInterface) => {
-        if( !users.friends.length ) return of({ friends: [] as UsersInterface[], chat: {} as ChatInterface, no: { read: [] } })
-        let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1);
-        if( !!query.first ) users.chat.sort((chat: ChatInterface) => (chat.conversation[0].id === query.first || chat.conversation[1].id === query.first ) ? -1 : 1);
-        let sortFried = chatSort.reduce(( accum: UsersInterface[], chat: ChatInterface ) => {
-          accum.push(...chat.conversation.filter((person: UsersInterface) => person.id !== user.id));
-          return accum;
-        }, [] as UsersInterface[]);
-        let chat = chatSort.splice(0,1)[0];
 
-        return !chat ? of({ friends: sortFried, chat: {} as ChatInterface, no: { read: [] } }):
-          from(this.findChat({
-            where: chatSort.map(ch => ({ id: ch.id, chat: { status: 'waiting' } })),
-            relations: ['conversation'],
-          })).pipe(
-            switchMap((noReadChat: ChatInterface[]) => {
-              let noRead = noReadChat.map((chat: ChatInterface) =>
-                (chat.conversation[0].id === user.id) ? chat.conversation[1].id : chat.conversation[0].id
-              );
-              return from(this.findMessage({
-                where: { chat: { id: chat.id} },
-                order: { created_at: "DESC" },
-                relations: [ 'owner', 'chat' ],
-                take: 20,
-                skip: 0,
-              })).pipe(
-                switchMap((message: MessageInterface[]) => {
-                  return from([{ friends: sortFried, chat: { ...chat, chat: message.reverse() }, no: { read: noRead } }]).pipe(
-                    tap(() => {
-                      this.statusMessage(chat.id).subscribe();
-                    })
-                  )
-                })
-              )
-            })
-          )
-      }),
+    return this.findChat({where: { conversation: [{id: user.id}],  }, relations: ['chat'] }).pipe(
+      switchMap((chat: ChatInterface[]) => {
+        console.log(chat)
+
+        return of({ friends: [], chat: {} as ChatInterface, no: { read: [] } })
+      })
     )
+
+
+
+    // return  this.usersService.findUsers({
+    //   where: { friends: [{ id: user.id }], chat: { chat: [{status: MessageStatus.WAITING}] } },
+    //   relations: ['chat', 'chat.chat'],
+    //   // order: { chat: { chat: [{ created_at: "DESC" }] } }
+    // }).pipe(
+    //   switchMap((data) => {
+    //     console.log(data)
+    //     return of({ friends: [], chat: {} as ChatInterface, no: { read: [] } })
+    //   })
+    // )
+
+    // return this.usersService.findOneUser( {
+    //   where: { id: user.id },
+    //   relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'],
+    //   order: { chat: { updated_at: "ASC" } },
+    // }).pipe(
+    //   take(1),
+    //   switchMap((users: UsersInterface) => {
+    //     if( !users.friends.length ) return of({ friends: [] as UsersInterface[], chat: {} as ChatInterface, no: { read: [] } })
+    //     let chatSort = users.chat.sort((chat: ChatInterface) => chat.chat.length ? -1 : 1);
+    //     if( !!query.first ) users.chat.sort((chat: ChatInterface) => (chat.conversation[0].id === query.first || chat.conversation[1].id === query.first ) ? -1 : 1);
+    //     let sortFried = chatSort.reduce(( accum: UsersInterface[], chat: ChatInterface ) => {
+    //       accum.push(...chat.conversation.filter((person: UsersInterface) => person.id !== user.id));
+    //       return accum;
+    //     }, [] as UsersInterface[]);
+    //     let chat = chatSort.splice(0,1)[0];
+    //
+    //     return !chat ? of({ friends: sortFried, chat: {} as ChatInterface, no: { read: [] } }):
+    //       from(this.findChat({
+    //         where: chatSort.map(ch => ({ id: ch.id, chat: { status: 'waiting' } })),
+    //         relations: ['conversation'],
+    //       })).pipe(
+    //         switchMap((noReadChat: ChatInterface[]) => {
+    //           let noRead = noReadChat.map((chat: ChatInterface) =>
+    //             (chat.conversation[0].id === user.id) ? chat.conversation[1].id : chat.conversation[0].id
+    //           );
+    //
+    //           return from(this.findMessage({
+    //             where: { chat: { id: chat.id} },
+    //             order: { created_at: "DESC" },
+    //             relations: [ 'owner', 'chat' ],
+    //             take: 20,
+    //             skip: 0,
+    //           })).pipe(
+    //             switchMap((message: MessageInterface[]) => {
+    //
+    //               return from([{ friends: sortFried, chat: { ...chat, chat: message.reverse() }, no: { read: noRead } }]).pipe(
+    //                 tap(() => {
+    //                   this.statusMessage(chat.id).subscribe();
+    //                 })
+    //               )
+    //             })
+    //           )
+    //         })
+    //       )
+    //   }),
+    // )
   }
 
   getChat( friendID: string, user: UsersDto ): Observable<ChatInterface>{

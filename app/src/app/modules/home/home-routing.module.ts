@@ -16,7 +16,7 @@ const routes: Routes = [
       posts: PostsResolver,
       recommended: RecommendedResolver,
     }
-  }
+  },
 ];
 
 @NgModule({
