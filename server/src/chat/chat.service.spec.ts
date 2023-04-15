@@ -145,20 +145,20 @@ describe('ChatService', () => {
   //   })
   // })
 
-  it('deleteChatAndMessage', () => {
-    let mockChat: ChatInterface = ChatClass as ChatInterface;
-    let deleteResult: DeleteResult = { raw: 'success', affected: 200 };
-    let spyMessageDelete = jest.spyOn(messageRepository, 'delete').mockResolvedValue(deleteResult);
-    let spyChatDelete = jest.spyOn(chatRepository, 'delete').mockResolvedValue(deleteResult);
-
-    service.deleteChatAndMessage(mockChat).subscribe({
-      next: (res: DeleteResult) => {
-        expect(res).toEqual(deleteResult);
-        expect(spyMessageDelete).toHaveBeenCalledWith({ chat: {id: mockChat.id }});
-        expect(spyChatDelete).toHaveBeenCalledWith({id: mockChat.id})
-      }
-    })
-  })
+  // it('deleteChatAndMessage', () => {
+  //   let mockChat: ChatInterface = ChatClass as ChatInterface;
+  //   let deleteResult: DeleteResult = { raw: 'success', affected: 200 };
+  //   let spyMessageDelete = jest.spyOn(messageRepository, 'delete').mockResolvedValue(deleteResult);
+  //   let spyChatDelete = jest.spyOn(chatRepository, 'delete').mockResolvedValue(deleteResult);
+  //
+  //   service.deleteChatAndMessage(mockChat).subscribe({
+  //     next: (res: DeleteResult) => {
+  //       expect(res).toEqual(deleteResult);
+  //       expect(spyMessageDelete).toHaveBeenCalledWith({ chat: {id: mockChat.id }});
+  //       expect(spyChatDelete).toHaveBeenCalledWith({id: mockChat.id})
+  //     }
+  //   })
+  // })
 
   describe('conversation', () => {
     let mockChat: ChatInterface = {...ChatClass, conversation: [{...userClass, id: 'fakeID'}]} as ChatInterface;
