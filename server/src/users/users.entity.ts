@@ -37,10 +37,10 @@ export class User implements UsersInterface{
   @Column({ default: '' })
   avatar: string;
 
-  @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.user)
+  @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.user, { onDelete: 'CASCADE' })
   request: FriendsEntity[];
 
-  @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.friends)
+  @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.friends, { onDelete: 'CASCADE' })
   suggest: FriendsEntity[];
 
   @ManyToMany(() => User,{cascade: true})
@@ -50,26 +50,26 @@ export class User implements UsersInterface{
   @Column({ type: "enum", enum: Role, default: Role.User})
   role: Role;
 
-  @OneToMany(() => Feet, (feet) => feet.author)
+  @OneToMany(() => Feet, (feet) => feet.author, { onDelete: 'CASCADE' })
   feet: Feet[];
 
-  @ManyToMany(() => Chat, (chat) => chat.conversation)
+  @ManyToMany(() => Chat, (chat) => chat.conversation, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
   chat: Chat[];
 
-  @ManyToMany(() => Feet, (feet) => feet.like)
+  @ManyToMany(() => Feet, (feet) => feet.like, { onDelete: 'CASCADE' })
   @JoinTable({ name: 'feet-like' })
   my_like: Feet[];
 
-  @OneToMany(() => CommentEntity, (comment) => comment.host)
+  @OneToMany(() => CommentEntity, (comment) => comment.host, { onDelete: 'CASCADE' })
   comment: CommentEntity[]
 
-  @OneToMany(() => MessageEntity, (message) => message.owner)
+  @OneToMany(() => MessageEntity, (message) => message.owner, { onDelete: 'CASCADE' })
   messages: MessageEntity[];
 
-  @OneToMany(() => EventEntity, (event) => event.user)
+  @OneToMany(() => EventEntity, (event) => event.user, { onDelete: 'CASCADE' })
   event: EventEntity[];
 
-  @OneToMany(() => NewsEntity, (news) => news.author)
+  @OneToMany(() => NewsEntity, (news) => news.author, { onDelete: 'CASCADE' })
   news: NewsEntity[];
 
   @CreateDateColumn({ select: false, name: 'created_at'})

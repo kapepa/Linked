@@ -35,7 +35,7 @@ export class UserService {
           this.user = user;
           this.user$.next(this.user);
         },
-        complete: () => this.setUserLoader = !this.userLoader,
+        complete: () => {this.setUserLoader = !this.userLoader},
       }),
       catchError(this.httpService.handleError),
     )

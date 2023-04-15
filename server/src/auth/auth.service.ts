@@ -8,6 +8,7 @@ import { JwtService } from "@nestjs/jwt";
 import {MailService} from "../mailer/mailer.service";
 import { config } from "dotenv";
 import {DeleteResult} from "typeorm";
+import {ChatService} from "../chat/chat.service";
 
 config();
 
@@ -16,6 +17,8 @@ export class AuthService {
   constructor(
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
+    @Inject(forwardRef(() => ChatService))
+    private chatService: ChatService,
     private jwtService: JwtService,
     private mailService: MailService,
   ) {}
@@ -88,6 +91,6 @@ export class AuthService {
   }
 
   deleteMyself(user: UsersDto): Observable<DeleteResult> {
-    return this.usersService.del(user.id);
+    return this.usersService.del(user.id)
   }
 }

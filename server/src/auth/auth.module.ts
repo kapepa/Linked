@@ -12,13 +12,16 @@ import { MailService } from "../mailer/mailer.service";
 import { GoogleStrategy } from "./google.strategy";
 import { FacebookStrategy } from "./facebook.strategy";
 import { config } from "dotenv";
+import {ChatService} from "../chat/chat.service";
+import {ChatModule} from "../chat/chat.module";
 
-config()
+config();
 
 @Module({
   controllers: [AuthController],
   imports: [
     forwardRef(() => UsersModule),
+    forwardRef(() => ChatModule),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
@@ -31,8 +34,8 @@ config()
   providers: [
     AuthService,
     MailService,
-    LocalStrategy,
     JwtStrategy,
+    LocalStrategy,
     GoogleStrategy,
     FacebookStrategy,
     { provide: APP_GUARD, useClass: RolesGuard },

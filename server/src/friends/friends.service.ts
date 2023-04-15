@@ -30,7 +30,6 @@ export class FriendsService {
   }
 
   create(friendsID: string, user: UsersDto): Observable<FriendsInterface> {
-    console.log(friendsID)
     return this.usersService.findOneUser({ where: { id: friendsID }, relations: ['friends', 'suggest', 'request'] }).pipe(
       switchMap((friend: UsersInterface) => {
         let existFriend = friend.friends.some(( profile: UsersInterface ) => profile.id === user.id);
@@ -102,8 +101,8 @@ export class FriendsService {
                     let [user, friend] = users;
                     this.friendsGateway.changeFriendSuggest(user.id, friends.id)
                     return this.usersService.saveUser(user).pipe(
-                      switchMap(() => this.usersService.saveUser(friend).pipe(
-                        switchMap(() => this.chatService.saveChat(chat).pipe(
+                      switchMap(() => this.chatService.saveChat(chat).pipe(
+                        switchMap(() => this.usersService.saveUser(friend).pipe(
                           switchMap(() => this.deleteRequest(friendsDto.id)),
                         )),
                       ))
