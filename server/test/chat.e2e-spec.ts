@@ -46,16 +46,14 @@ describe('ChatController (e2e)',  () => {
     expect(true).toBeTruthy();
   })
 
-  afterAll(async () => {
-    // await request(app.getHttpServer())
-    //   .delete('/auth/myself')
-    //   .set('Authorization', `Bearer ${userData.token}`);
-    // await request(app.getHttpServer())
-    //   .delete('/auth/myself')
-    //   .set('Authorization', `Bearer ${friendData.token}`);
-
-    await app.close()
-  })
+  // afterAll(async () => {
+  //   await request(app.getHttpServer())
+  //     .delete('/auth/myself')
+  //     .set('Authorization', `Bearer ${userData.token}`);
+  //   await request(app.getHttpServer())
+  //     .delete('/auth/myself')
+  //     .set('Authorization', `Bearer ${friendData.token}`);
+  // })
 
 
 
