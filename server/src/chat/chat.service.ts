@@ -80,9 +80,10 @@ export class ChatService {
   conversation(user: UsersDto, query?: {skip?: number, take?: number, first?: string}):
     Observable<{ friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }> {
 
-    return this.findChat({where: { conversation: [{id: user.id}],  }, relations: ['chat'] }).pipe(
+    return this.findChat({where: { conversation: [{id: user.id}], chat: [{status: MessageStatus.WAITING}] }, relations: ['chat', 'conversation'] }).pipe(
       switchMap((chat: ChatInterface[]) => {
         console.log(chat)
+        console.log(chat[0].conversation)
 
         return of({ friends: [], chat: {} as ChatInterface, no: { read: [] } })
       })
