@@ -32,7 +32,7 @@ export class UsersService {
       [key: string]: string | string[] | UsersInterface[] | UsersDto[] | { [key: string]: string | UsersDto | { [key: string]: string | UsersDto } }
     };
     relations?: string[];
-    order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" } };
+    order?: {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC" | {[key: string]: "ASC" | "DESC"}} };
     skip?: number;
     take?: number;
   }): Observable<UsersInterface> {
