@@ -78,7 +78,6 @@ export class ChatService {
 
   conversation(user: UsersDto, query?: {skip?: number, take?: number, first?: string}):
     Observable<{ friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }> {
-    console.log('ownID', user.id)
     let ChatFirstID: string;
     let result = { friends: [], chat: {} as ChatInterface, no: { read: [] } }
 
@@ -89,28 +88,20 @@ export class ChatService {
       }
     }
 
-    // let extractChat = (userID: string, status: MessageInterface[keyof Pick<MessageInterface, 'status'>][] ) => {
-    //   return this.findChat({
-    //     // where: { conversation: {id: userID}, chat: {status: MessageStatus.READING}},
-    //     where: { conversation: {id: userID}  },
-    //     order: { chat: { created_at: "DESC" }  },
-    //     relations: ['chat', 'chat.owner', 'conversation'],
-    //   }).pipe(
-    //     tap((chat: ChatInterface[]) => {
-    //       // console.log(chat)
-    //       // if(status[0] === MessageStatus.READING && !result.no.read.length) ChatFirstID = chat[0].id;
-    //       // if(!!chat) chat.forEach(chat => {
-    //       //   if(status[0] === MessageStatus.WAITING) {compareStatus(chat)};
-    //       //   if(status[0] === MessageStatus.READING ) result.friends.push(...chat.conversation.filter(profile => profile.id !== user.id));
-    //       // });
-    //     })
-    //   )
-    // }
-
-    let extractChat = (chat: ChatInterface[]) => {
-      // let sort = chat.sort((a: ChatInterface, b: ChatInterface) => a.updated_at - b.updated_at);
-
-      return of([])
+    let extractChat = (ids: string[], status?: MessageStatus.WAITING) => {
+      return this.findChat({
+        where: { id: In(ids), ...status ? {chat: { status: MessageStatus.WAITING  } } : undefined },
+        order: { chat: { created_at: "DESC" }  },
+        relations: ['chat', 'chat.owner', 'conversation'],
+      }).pipe(
+        tap((chat: ChatInterface[]) => {
+            if(!!chat.length) chat.forEach((chat: ChatInterface) => {
+              if(status !== MessageStatus.WAITING) result.friends.push(chat.conversation.find(profile => profile.id !== user.id));
+              if(status === MessageStatus.WAITING) compareStatus(chat);
+              if(!ChatFirstID) ChatFirstID = chat.id;
+            })
+          }
+        ))
     }
 
     return this.usersService.findOneUser({
@@ -118,19 +109,31 @@ export class ChatService {
       relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner'],
       order: { chat: { chat: { created_at: "DESC" }} },
     }).pipe(
-      switchMap((user: UsersInterface) => extractChat(user.chat).pipe(
-        switchMap((chat: ChatInterface[]) => {
-          return extractChat(chat).pipe(
-            switchMap(() => {
-              return !result.friends.length ? of(result) : this.findMessage({where: { chat: { id: ChatFirstID } }, relations: ['owner'], order: { created_at: "DESC" } }).pipe(
-                switchMap((message: MessageInterface[]) => {
-                  return of({...result, chat: {...result.chat, chat: message }})
-                })
-              );
-            })
-          )
-        })
-      ))
+      switchMap((user: UsersInterface) => {
+        let ids = user.chat.map(chat => chat.id);
+        return extractChat(ids, MessageStatus.WAITING).pipe(
+          switchMap(() => {
+            return extractChat(ids).pipe(
+              switchMap(() => {
+                return !result.friends.length
+                  ? of(result)
+                  : this.findMessage({
+                    where: { chat: { id: ChatFirstID } },
+                    relations: ['owner'],
+                    order: { created_at: "DESC" },
+                    skip: query.skip,
+                    take: query.take
+                    },
+                  ).pipe(
+                  switchMap((message: MessageInterface[]) => {
+                    return of({...result, chat: {...result.chat, chat: message }})
+                  })
+                );
+              })
+            )
+          })
+        )}
+      )
     )
   }
 

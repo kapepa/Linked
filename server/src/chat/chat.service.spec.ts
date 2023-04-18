@@ -160,42 +160,42 @@ describe('ChatService', () => {
     })
   })
 
-  // describe('conversation', () => {
-  //   let mockChat: ChatInterface = {...ChatClass, conversation: [{...userClass, id: 'fakeID'}]} as ChatInterface;
-  //   let mockMessage: MessageInterface = MessageClass as MessageInterface;
-  //   let mockQuery: {skip?: number, take?: number, first?: string} = {skip: 0, take: 1}
-  //
-  //   it('should return no have friends', () => {
-  //     let mockUser = userClass as UsersInterface;
-  //     let spyUsersFind = jest.spyOn(usersService, 'findOneUser').mockImplementation(
-  //       (option: OptionInterface): Observable<UsersInterface> => of({...mockUser, friends: []}));
-  //
-  //     service.conversation(userClass as UsersDto, mockQuery).subscribe({
-  //       next: (res: { friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }) => {
-  //         expect(res).toEqual({ friends: [], chat: {} , no: { read: [] } });
-  //         expect(spyUsersFind).toHaveBeenCalled();
-  //       }
-  //     })
-  //   })
-  //
-  //   it('should return sort conversation', () => {
-  //     let mockUser = {...userClass, chat: [mockChat], friends: [userClass] } as UsersInterface;
-  //     let spyChatFind = jest.spyOn(chatRepository, 'find').mockResolvedValue([mockChat] as Chat[]);
-  //     let spyMessageFind = jest.spyOn(messageRepository, 'find').mockResolvedValue([mockMessage] as MessageEntity[]);
-  //     let spyMessageUpdate = jest.spyOn(messageRepository, 'update');
-  //     let spyUsersFind = jest.spyOn(usersService, 'findOneUser').mockImplementation(
-  //       (option: OptionInterface): Observable<UsersInterface> => of(mockUser));
-  //
-  //     service.conversation(userClass as UsersDto, mockQuery).subscribe({
-  //       next: (res: { friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }) => {
-  //         expect(res).toEqual({friends: [{...userClass, id: 'fakeID'}], chat: mockChat, no: { read: [ 'fakeID' ] }} )
-  //         expect(spyChatFind).toHaveBeenCalledTimes(2);
-  //         expect(spyMessageFind).toHaveBeenCalledWith({where: { chat: { id: mockChat.id} }, order: { created_at: "DESC" }, relations: [ 'owner', 'chat' ], take: 20, skip: 0,});
-  //         expect(spyMessageUpdate).toHaveBeenCalled();
-  //         expect(spyUsersFind).toHaveBeenCalledWith({ where: { id: mockUser.id }, relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'], order: { chat: { updated_at: "ASC" } },})}
-  //     })
-  //   })
-  // })
+  describe('conversation', () => {
+    let mockChat: ChatInterface = {...ChatClass, conversation: [{...userClass, id: 'fakeID'}]} as ChatInterface;
+    let mockMessage: MessageInterface = MessageClass as MessageInterface;
+    let mockQuery: {skip?: number, take?: number, first?: string} = {skip: 0, take: 1}
+
+    it('should return no have friends', () => {
+      let mockUser = userClass as UsersInterface;
+      let spyUsersFind = jest.spyOn(usersService, 'findOneUser').mockImplementation(
+        (option: OptionInterface): Observable<UsersInterface> => of({...mockUser, friends: []}));
+
+      service.conversation(userClass as UsersDto, mockQuery).subscribe({
+        next: (res: { friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }) => {
+          expect(res).toEqual({ friends: [], chat: {} , no: { read: [] } });
+          expect(spyUsersFind).toHaveBeenCalled();
+        }
+      })
+    })
+
+    it('should return sort conversation', () => {
+      let mockUser = {...userClass, chat: [mockChat], friends: [userClass] } as UsersInterface;
+      let spyChatFind = jest.spyOn(chatRepository, 'find').mockResolvedValue([mockChat] as Chat[]);
+      let spyMessageFind = jest.spyOn(messageRepository, 'find').mockResolvedValue([mockMessage] as MessageEntity[]);
+      let spyMessageUpdate = jest.spyOn(messageRepository, 'update');
+      let spyUsersFind = jest.spyOn(usersService, 'findOneUser').mockImplementation(
+        (option: OptionInterface): Observable<UsersInterface> => of(mockUser));
+
+      service.conversation(userClass as UsersDto, mockQuery).subscribe({
+        next: (res: { friends: UsersInterface[], chat: ChatInterface, no: { read: string[] } }) => {
+          expect(res).toEqual({friends: [{...userClass, id: 'fakeID'}], chat: mockChat, no: { read: [ 'fakeID' ] }} )
+          expect(spyChatFind).toHaveBeenCalledTimes(2);
+          expect(spyMessageFind).toHaveBeenCalledWith({where: { chat: { id: mockChat.id} }, order: { created_at: "DESC" }, relations: [ 'owner', 'chat' ], take: 20, skip: 0,});
+          expect(spyMessageUpdate).toHaveBeenCalled();
+          expect(spyUsersFind).toHaveBeenCalledWith({ where: { id: mockUser.id }, relations: ['chat', 'chat.chat', 'chat.conversation', 'chat.chat.owner', 'friends'], order: { chat: { updated_at: "ASC" } },})}
+      })
+    })
+  })
 
   it('companion', () => {
     let mockUser = userClass as UsersInterface;
