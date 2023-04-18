@@ -55,6 +55,10 @@ describe('ChatController (e2e)',  () => {
   //     .set('Authorization', `Bearer ${friendData.token}`);
   // })
 
+  afterAll(async () => {
+    await app.close();
+  });
+
 
 
   // describe('(GET) getAllConversation()', () => {
