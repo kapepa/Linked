@@ -30,16 +30,16 @@ describe('ChatController (e2e)',  () => {
 
     app = moduleRef.createNestApplication();
     await app.init();
-    //
-    // await CreateProfileTest(app, userClass, userData);
-    // await CreateProfileTest(app, friendClass, friendData);
-    //
-    // await request(app.getHttpServer())
-    //   .post(`/friends/add/${friendData.profile.id}`).set('Authorization', `Bearer ${userData.token}`)
-    //   .expect((res: Response & {body: FriendsInterface} ) => friends = res.body)
-    //
-    // await request(app.getHttpServer())
-    //   .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
+
+    await CreateProfileTest(app, userClass, userData);
+    await CreateProfileTest(app, friendClass, friendData);
+
+    await request(app.getHttpServer())
+      .post(`/friends/add/${friendData.profile.id}`).set('Authorization', `Bearer ${userData.token}`)
+      .expect((res: Response & {body: FriendsInterface} ) => friends = res.body)
+
+    await request(app.getHttpServer())
+      .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
   });
 
   it('default', () => {
@@ -56,6 +56,12 @@ describe('ChatController (e2e)',  () => {
   // })
 
   afterAll(async () => {
+    await request(app.getHttpServer())
+      .delete('/auth/myself')
+      .set('Authorization', `Bearer ${userData.token}`);
+    await request(app.getHttpServer())
+      .delete('/auth/myself')
+      .set('Authorization', `Bearer ${friendData.token}`);
     await app.close();
   });
 
