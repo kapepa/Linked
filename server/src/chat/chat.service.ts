@@ -121,8 +121,7 @@ export class ChatService {
                     where: { chat: { id: ChatFirstID } },
                     relations: ['owner'],
                     order: { created_at: "DESC" },
-                    skip: query.skip,
-                    take: query.take
+                    skip: query.skip, take: query.take,
                     },
                   ).pipe(
                   switchMap((message: MessageInterface[]) => {
