@@ -111,19 +111,16 @@ export class ChatService {
     }).pipe(
       switchMap((user: UsersInterface) => {
         let ids = user.chat.map(chat => chat.id);
-        return extractChat(ids, MessageStatus.WAITING).pipe(
+        return (!user.chat.length) ? of(result) : extractChat(ids, MessageStatus.WAITING).pipe(
           switchMap(() => {
             return extractChat(ids).pipe(
               switchMap(() => {
-                return !result.friends.length
-                  ? of(result)
-                  : this.findMessage({
+                return this.findMessage({
                     where: { chat: { id: ChatFirstID } },
                     relations: ['owner'],
                     order: { created_at: "DESC" },
                     skip: query.skip, take: query.take,
-                    },
-                  ).pipe(
+                  }).pipe(
                   switchMap((message: MessageInterface[]) => {
                     return of({...result, chat: {...result.chat, chat: message }})
                   })
