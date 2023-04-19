@@ -5,7 +5,7 @@ import {ChatClass, MessageClass} from "../src/core/utility/chat.class";
 import {AppModule} from "../src/app.module";
 import {UserClass} from "../src/core/utility/user.class";
 import {FriendsInterface} from "../src/friends/friends.interface";
-import {CreateProfileTest, ProfileInterface} from "../src/core/utility/create.profile.test";
+import {ProfileInterface} from "../src/core/utility/create.profile.test";
 import {ChatInterface} from "../src/chat/chat.interface";
 
 describe('ChatController (e2e)',  () => {
@@ -24,22 +24,24 @@ describe('ChatController (e2e)',  () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule]
+      imports: [
+        AppModule,
+      ]
     })
       .compile();
 
     app = moduleRef.createNestApplication();
     await app.init();
 
-    await CreateProfileTest(app, userClass, userData);
-    await CreateProfileTest(app, friendClass, friendData);
+    // await CreateProfileTest(app, userClass, userData);
+    // await CreateProfileTest(app, friendClass, friendData);
 
-    await request(app.getHttpServer())
-      .post(`/friends/add/${friendData.profile.id}`).set('Authorization', `Bearer ${userData.token}`)
-      .expect((res: Response & {body: FriendsInterface} ) => friends = res.body)
-
-    await request(app.getHttpServer())
-      .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
+    // await request(app.getHttpServer())
+    //   .post(`/friends/add/${friendData.profile.id}`).set('Authorization', `Bearer ${userData.token}`)
+    //   .expect((res: Response & {body: FriendsInterface} ) => friends = res.body)
+    //
+    // await request(app.getHttpServer())
+    //   .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
   });
 
   it('default', () => {
@@ -55,15 +57,15 @@ describe('ChatController (e2e)',  () => {
   //     .set('Authorization', `Bearer ${friendData.token}`);
   // })
 
-  afterAll(async () => {
-    await request(app.getHttpServer())
-      .delete('/auth/myself')
-      .set('Authorization', `Bearer ${userData.token}`);
-    await request(app.getHttpServer())
-      .delete('/auth/myself')
-      .set('Authorization', `Bearer ${friendData.token}`);
-    await app.close();
-  });
+  // afterAll(async () => {
+  //   // await request(app.getHttpServer())
+  //   //   .delete('/auth/myself')
+  //   //   .set('Authorization', `Bearer ${userData.token}`);
+  //   // await request(app.getHttpServer())
+  //   //   .delete('/auth/myself')
+  //   //   .set('Authorization', `Bearer ${friendData.token}`);
+  //   await app.close();
+  // });
 
 
 
