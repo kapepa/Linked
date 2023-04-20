@@ -5,11 +5,22 @@ import {ChatClass, MessageClass} from "../src/core/utility/chat.class";
 import {AppModule} from "../src/app.module";
 import {UserClass} from "../src/core/utility/user.class";
 import {FriendsInterface} from "../src/friends/friends.interface";
-import {ProfileInterface} from "../src/core/utility/create.profile.test";
 import {ChatInterface} from "../src/chat/chat.interface";
+import {User} from "../src/users/users.entity";
+import * as dotenv from "dotenv";
+import {Repository} from "typeorm";
+import {MemoryDb} from "./utility/memory.db";
+import {UsersInterface} from "../src/users/users.interface";
+
+dotenv.config();
+
+interface ProfileInterface {
+  token: string, profile: UsersInterface,
+}
 
 describe('ChatController (e2e)',  () => {
   let app: INestApplication;
+  let userRepository: Repository<User>;
 
   let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: '123456', email: UserClass.email, avatar: UserClass.avatar };
   let friendClass = { firstName: 'FirstFriend', lastName: 'LastFriend', password: '123456', email: 'friend@mail.com', avatar: 'FriendAvatar.png' }
@@ -27,21 +38,17 @@ describe('ChatController (e2e)',  () => {
       imports: [
         AppModule,
       ]
-    })
-      .compile();
+    }).compile();
 
     app = moduleRef.createNestApplication();
     await app.init();
 
-    // await CreateProfileTest(app, userClass, userData);
-    // await CreateProfileTest(app, friendClass, friendData);
+    userRepository = moduleRef.get('UserRepository');
+    userData.profile = await userRepository.save(userClass)
 
-    // await request(app.getHttpServer())
-    //   .post(`/friends/add/${friendData.profile.id}`).set('Authorization', `Bearer ${userData.token}`)
-    //   .expect((res: Response & {body: FriendsInterface} ) => friends = res.body)
-    //
-    // await request(app.getHttpServer())
-    //   .put(`/friends/confirm/${userData.profile.id}`).set('Authorization', `Bearer ${friendData.token}`)
+    // await MemoryDb.createUser(userClass, userRepository)
+
+    console.log(MemoryDb)
   });
 
   it('default', () => {
