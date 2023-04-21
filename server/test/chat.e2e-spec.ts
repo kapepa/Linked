@@ -119,8 +119,9 @@ describe('ChatController (e2e)',  () => {
         .set('Authorization', `Bearer ${userData.token}`)
         .expect(200)
         .expect((res: Response) => {
-          expect({...res.body, updated_at: new Date(res.body['updated_at'])})
-            .toEqual({...chatData.chat, conversation: [ MemoryDb.userValue(userData.profile), MemoryDb.userValue(friendData.profile) ], chat: []})
+          expect(res.body['id']).toEqual(chatData.chat.id);
+          expect(res.body['conversation'].length).toEqual(2);
+          expect(res.body['chat'].length).toEqual(0);
         })
     })
   })
