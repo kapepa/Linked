@@ -4,13 +4,14 @@ import {Test} from "@nestjs/testing";
 import {ChatClass, MessageClass} from "../src/core/utility/chat.class";
 import {AppModule} from "../src/app.module";
 import {UserClass} from "../src/core/utility/user.class";
-import {FriendsInterface} from "../src/friends/friends.interface";
 import {ChatInterface} from "../src/chat/chat.interface";
 import {User} from "../src/users/users.entity";
+import {Chat} from "../src/chat/chat.entity";
 import * as dotenv from "dotenv";
 import {Repository} from "typeorm";
 import {MemoryDb} from "./utility/memory.db";
 import {UsersInterface} from "../src/users/users.interface";
+import {MessageInterface} from "../src/chat/message.interface";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ interface ProfileInterface {
 describe('ChatController (e2e)',  () => {
   let app: INestApplication;
   let userRepository: Repository<User>;
+  let chatRepository: Repository<Chat>;
 
   let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: '123456', email: UserClass.email, avatar: UserClass.avatar };
   let friendClass = { firstName: 'FirstFriend', lastName: 'LastFriend', password: '123456', email: 'friend@mail.com', avatar: 'FriendAvatar.png' }
@@ -29,9 +31,7 @@ describe('ChatController (e2e)',  () => {
 
   let userData: ProfileInterface = {token: undefined, profile: undefined};
   let friendData: ProfileInterface = {token: undefined, profile: undefined};
-  let chatData: {chat: ChatInterface} = {chat: undefined};
-
-  let friends: FriendsInterface;
+  let chatData: {chat: ChatInterface, message: MessageInterface} = {chat: undefined, message: undefined};
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -44,169 +44,126 @@ describe('ChatController (e2e)',  () => {
     await app.init();
 
     userRepository = moduleRef.get('UserRepository');
-    userData.profile = await userRepository.save(userClass)
+    chatRepository = moduleRef.get('ChatRepository');
 
-    // await MemoryDb.createUser(userClass, userRepository)
+    await MemoryDb.createUser(userClass, userRepository).then(async (user) => {
+      userData.profile = user;
+      userData.token = await MemoryDb.createToken(user);
+    })
 
-    console.log(MemoryDb)
+    await MemoryDb.createUser(friendClass, userRepository).then(async (user) => {
+      friendData.profile = user;
+      friendData.token = await MemoryDb.createToken(user);
+    })
+
+    await chatRepository.save({conversation: [userData.profile, friendData.profile]}).then( async (chat) => {
+      chatData.chat = chat;
+      await userRepository.save({...userData.profile, chat: [chat], friends: [friendData.profile]});
+      await userRepository.save({...friendData.profile, chat: [chat], friends: [userData.profile]});
+    });
+
+
   });
 
-  it('default', () => {
-    expect(true).toBeTruthy();
+  afterAll(async () => {
+    await MemoryDb.deleteUser(userData.profile.id, userRepository);
+    await MemoryDb.deleteUser(friendData.profile.id, userRepository);
+    await chatRepository.delete({id: chatData.chat.id});
+    await app.close();
   })
 
-  // afterAll(async () => {
-  //   await request(app.getHttpServer())
-  //     .delete('/auth/myself')
-  //     .set('Authorization', `Bearer ${userData.token}`);
-  //   await request(app.getHttpServer())
-  //     .delete('/auth/myself')
-  //     .set('Authorization', `Bearer ${friendData.token}`);
-  // })
+  describe('(GET) getAllConversation()', () => {
+    let query = { take: 1, skip: 0 };
 
-  // afterAll(async () => {
-  //   // await request(app.getHttpServer())
-  //   //   .delete('/auth/myself')
-  //   //   .set('Authorization', `Bearer ${userData.token}`);
-  //   // await request(app.getHttpServer())
-  //   //   .delete('/auth/myself')
-  //   //   .set('Authorization', `Bearer ${friendData.token}`);
-  //   await app.close();
-  // });
+    it('should be return all conversation', () => {
+      return request(app.getHttpServer())
+        .get(`/chat/conversation?take=${query.take}&skip=${query.skip}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          let { created_at, password, ...friend } = friendData.profile;
+          expect(res.body).toEqual({friends: [friend], chat: { chat: [] }, no: { read: [] }})
+        })
+    })
+  })
 
+  describe('(GET) getOne()', () => {
+    it('should be return chat on id', () => {
+      return request(app.getHttpServer())
+        .get(`/chat/one/${chatData.chat.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          let { chat, conversation, ...otherChat } = chatData.chat;
+          expect(res.text).toEqual(JSON.stringify(otherChat));
+        })
+    })
+  })
 
+  describe('(GET) companion()', () => {
+    it('should be find companion in chat, on id chat', () => {
+      return request(app.getHttpServer())
+        .get(`/chat/companion/${friendData.profile.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          expect(res.body).toEqual(MemoryDb.userValue(friendData.profile));
+        })
+    })
+  })
 
-  // describe('(GET) getAllConversation()', () => {
-  //   let query = {skip: 0, take: 1, first: ''};
-  //   it('should be receive chat and friends', () => {
-  //     return request(app.getHttpServer())
-  //       .get(`/chat/conversation?skip=${query.skip}&take=${query.take}&first=${query.first}`)
-  //       .set('Authorization', `Bearer ${userData.token}`)
-  //       .expect(200)
-  //       .expect((res: Response) => {
-  //         console.log(res.body)
-  //       })
-  //   })
-  // })
+  describe('(GET) changeChat()', () => {
+    it('should be return chat on friend id', () => {
+      return request(app.getHttpServer())
+        .get(`/chat/change/${friendData.profile.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          expect({...res.body, updated_at: new Date(res.body['updated_at'])})
+            .toEqual({...chatData.chat, conversation: [ MemoryDb.userValue(userData.profile), MemoryDb.userValue(friendData.profile) ], chat: []})
+        })
+    })
+  })
 
-  // describe(`/GET getOne`, () => {
-  //   it(`should return chats`, () => {
-  //     let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockImplementation(() => of(UserClass));
-  //
-  //     return request(app.getHttpServer())
-  //       .get(`/chat/one/${UserClass.id}?take=5&skip=0`)
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(userClass)
-  //       .expect(() => {
-  //         expect(findOneChat).toHaveBeenCalledWith({ where: { id: UserClass.id }, take: '5', skip: '0'})
-  //       });
-  //   });
-  // })
-  //
-  // describe('/GET getAllConversation', () => {
-  //   it('should find all chat', () => {
-  //     let mockResponse = { friends: [UserClass], chat: {...ChatClass, chat: [MessageClass]}, no: { read: ['fakeID'] } }
-  //     let spyOnConversation = jest.spyOn(mockChatService, 'conversation').mockImplementation(() => of(mockResponse));
-  //
-  //     return request(app.getHttpServer())
-  //       .get('/chat/conversation?skip=0&take=1&first=fakeID')
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(JSON.stringify(mockResponse))
-  //       .expect((res: Response) => {
-  //         expect(spyOnConversation).toHaveBeenCalledWith(
-  //           { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar},
-  //           { skip: '0', take: '1', first: 'fakeID' }
-  //         )
-  //       })
-  //   })
-  // })
-  //
-  // describe('/GET getMessages', () => {
-  //   it('should return array message', () => {
-  //     let findMessage = jest.spyOn(mockChatService, 'findMessage').mockImplementation(jest.fn(() => of([MessageClass])));
-  //
-  //     return request(app.getHttpServer())
-  //       .get(`/chat/messages?id=${chatClass.id}&take=1&skip=0`)
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(JSON.stringify({messages: [MessageClass], limited: false}))
-  //       .expect(() => {
-  //         expect(findMessage).toHaveBeenCalledWith({
-  //           where: { chat: { id: chatClass.id } },
-  //           order: { created_at: "DESC" },
-  //           relations: ['owner', 'chat'],
-  //           skip: 0,
-  //           take: 1,
-  //         })
-  //       })
-  //   })
-  // })
-  //
-  // describe('/DELETE deleteMessage', () => {
-  //   it('should delete message on id', () => {
-  //     let result: DeleteResult = { raw: 'error', affected: 200 };
-  //     let deleteMessageOnID = jest.spyOn(mockChatService, 'deleteMessageOnID').mockImplementation(jest.fn(() => of(result)));
-  //
-  //     return request(app.getHttpServer())
-  //       .delete(`/chat/messages?chat=${ChatClass.id}&message=${MessageClass.id}`)
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(result)
-  //       .expect(() => {
-  //         expect(deleteMessageOnID).toHaveBeenCalledWith(ChatClass.id, MessageClass.id, { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
-  //       })
-  //   })
-  //
-  // })
-  //
-  // describe('/GET companion', () => {
-  //   it('should return companion in chat', () => {
-  //     let companion = jest.spyOn(mockChatService, 'companion').mockImplementation(() => of(UserClass));
-  //
-  //     return request(app.getHttpServer())
-  //       .get(`/chat/companion/${UserClass.id}`)
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(JSON.stringify(UserClass))
-  //       .expect(() => {
-  //         expect(companion).toHaveBeenCalledWith(UserClass.id)
-  //       })
-  //   })
-  //
-  // })
-  //
-  // describe('/GET changeChat', () => {
-  //   it('should return chant on friend', () => {
-  //     let getChat = jest.spyOn(mockChatService, 'getChat').mockImplementation(() => of(ChatClass));
-  //
-  //     return request(app.getHttpServer())
-  //       .get(`/chat/change/${UserClass.id}`)
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(JSON.stringify(ChatClass))
-  //       .expect(() => {
-  //         expect(getChat).toHaveBeenCalledWith(UserClass.id, { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
-  //       })
-  //   })
-  // })
-  //
-  // describe('/PUT createMessage',() => {
-  //   it('create new message in chat', () => {
-  //     let {created_at, chat, ...bodyMessage} = MessageClass;
-  //     let createMessage = jest.spyOn(mockChatService, 'createMessage').mockImplementation(() => of(MessageClass));
-  //
-  //     return request(app.getHttpServer())
-  //       .put(`/chat/send/${ChatClass.id}`)
-  //       .send(bodyMessage)
-  //       .set('Authorization', `Bearer ${authToken}`)
-  //       .expect(200)
-  //       .expect(JSON.stringify(MessageClass))
-  //       .expect(() => {
-  //         expect(createMessage).toHaveBeenCalledWith(ChatClass.id, bodyMessage, { lastName: UserClass.lastName, firstName: UserClass.firstName, id: UserClass.id, role: UserClass.role, avatar: UserClass.avatar})
-  //       })
-  //   })
-  // })
+  describe('(PUT) sendNewMessage()', () => {
+    let message = 'Message text.'
+    it('should be append new message to chat', () => {
+      return request(app.getHttpServer())
+        .put(`/chat/send/${chatData.chat.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .send({message})
+        .expect(200)
+        .expect((res: Response & {body: MessageInterface}) => {
+          chatData.message = res.body;
+          expect(res.body.message).toEqual(message);
+        })
+    })
+  })
 
+  describe('(GET) getMessages()', () => {
+    it('should be return message from chat on id chat', () => {
+      let query = { take: 1, skip: 0 };
+
+      return request(app.getHttpServer())
+        .get(`/chat/messages?take=${query.take}&skip=${query.skip}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          expect(res.body['messages'].length).toEqual(1);
+          expect(res.body['limited']).toBeFalsy();
+        })
+    })
+  })
+
+  describe('(DELETE) deleteMessage()', () => {
+    it('should be delete message on id', () => {
+      return request(app.getHttpServer())
+        .delete(`/chat/messages?chat=${chatData.chat.id}&message=${chatData.message.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toEqual({ raw: [], affected: 1 });
+        })
+    })
+  })
 });

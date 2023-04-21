@@ -50,7 +50,7 @@ export class ChatController {
 
   @Put('/send/:chatID')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'send and set new message in chat', type: MessageInterface})
+  @ApiResponse({ status: 200, description: 'send and set new message in chat', type: MessageInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   sendNewMessage(@Param('chatID') chatID, @Body() body, @Req() req): Observable<MessageInterface> {
     return this.chatService.createMessage(chatID, body, req.user);
@@ -58,7 +58,7 @@ export class ChatController {
 
   @Get('/messages')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'receive message on query params', type: ChatInterface})
+  @ApiResponse({ status: 200, description: 'receive message on query params', type: ChatInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   getMessages(@Req() req, @Query() query: {id: string, take: string, skip: string}):
     Observable<{messages: MessageInterface[], limited: boolean}> {
@@ -79,7 +79,7 @@ export class ChatController {
 
   @Delete('/messages')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 201, description: 'delete own messages, on id', type: MessageInterface})
+  @ApiResponse({ status: 200, description: 'delete own messages, on id', type: MessageInterface})
   @ApiResponse({ status: 403, description: 'Forbidden.'})
   deleteMessage(@Query() query, @Req() req): Observable<DeleteResult> {
     let { chat, message } = query

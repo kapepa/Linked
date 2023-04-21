@@ -189,6 +189,7 @@ export class ChatService {
       switchMap((chat: ChatInterface) => {
         return from(this.messageRepository.save({...message, owner: user})).pipe(
           switchMap( (message: MessageInterface) => {
+            console.log(message)
             return from([message]).pipe(
               tap(() => {
                 of(this.chatRepository.save({ ...chat, chat: chat.chat.concat(message),  updated_at: new Date()}))
