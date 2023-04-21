@@ -4,7 +4,7 @@ const EventClass = {
   id: 'eventID',
   user: UserClass,
   date: new Date(Date.now()),
-  img: 'eventImg',
+  img: 'eventImg.png',
   link: 'eventLink',
   time: '10:10',
   title: 'Title',

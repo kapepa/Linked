@@ -1,10 +1,10 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {EventEntity} from "./event.entity";
-import {Repository} from "typeorm";
+import {DeleteResult, Repository} from "typeorm";
 import {EventDto} from "./event.dto";
 import {EventInterface} from "./event.interface";
-import {from, Observable} from "rxjs";
+import {from, Observable, tap} from "rxjs";
 
 @Injectable()
 export class EventService {
@@ -18,7 +18,7 @@ export class EventService {
   }
 
   createEvent(event: EventDto): Observable<EventDto | EventInterface> {
-    return this.saveEvent(event);
+    return this.saveEvent(event)
   }
 
   findEvents(find?: {
@@ -35,5 +35,9 @@ export class EventService {
     relations?: string[],
   }): Observable<EventInterface>{
     return from(this.eventRepository.findOne(find));
+  }
+
+  deleteEvent(eventID: string): Observable<DeleteResult> {
+    return from(this.eventRepository.delete({id: eventID}))
   }
 }

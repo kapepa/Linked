@@ -8,13 +8,13 @@ export class EventEntity implements EventInterface{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne( () => User, (user) => user.event )
+  @ManyToOne( () => User, (user) => user.event, { onDelete: 'CASCADE' } )
   user: User;
 
   @Column({ type: 'date', default: () => 'NOW()', })
   date: Date
 
-  @Column()
+  @Column({ default: '' })
   img: string;
 
   @Column()

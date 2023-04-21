@@ -1,8 +1,13 @@
 import {Repository} from "typeorm";
 import {JwtService} from "@nestjs/jwt";
 import * as dotenv from "dotenv";
+import {UsersInterface} from "../../src/users/users.interface";
 
 dotenv.config();
+
+interface ProfileInterface {
+  token: string, profile: UsersInterface,
+}
 
 const MemoryDb = {
   createUser: async function (user: any, repository: Repository<any>) {
@@ -26,4 +31,4 @@ const MemoryDb = {
   }
 }
 
-export { MemoryDb }
+export { MemoryDb, ProfileInterface }
