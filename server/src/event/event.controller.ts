@@ -1,4 +1,16 @@
-import {Body, Controller, Get, Param, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common';
 import {ApiBody, ApiConsumes, ApiForbiddenResponse, ApiTags} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {FileInterceptor} from "@nestjs/platform-express";
@@ -7,6 +19,7 @@ import {Observable, of} from "rxjs";
 import {EventInterface} from "./event.interface";
 import {EventDto} from "./event.dto";
 import {EventService} from "./event.service";
+import {DeleteResult} from "typeorm";
 
 @ApiTags('event')
 @Controller('event')
@@ -42,4 +55,12 @@ export class EventController {
     let { take, skip } = query;
     return this.eventService.findEvents({...query, skip: Number(skip), take: Number(take)});
   };
+
+  @Delete('del/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({description: 'delete event on id', type: EventInterface})
+  @ApiForbiddenResponse({status: 403, description: 'Forbidden.'})
+  deleteEvent(@Param('id') param, @Req() req): Observable<DeleteResult>{
+    return this.eventService.deleteEvent(param);
+  }
 }

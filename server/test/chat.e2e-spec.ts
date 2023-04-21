@@ -9,15 +9,10 @@ import {User} from "../src/users/users.entity";
 import {Chat} from "../src/chat/chat.entity";
 import * as dotenv from "dotenv";
 import {Repository} from "typeorm";
-import {MemoryDb} from "./utility/memory.db";
-import {UsersInterface} from "../src/users/users.interface";
+import {MemoryDb, ProfileInterface} from "./utility/memory.db";
 import {MessageInterface} from "../src/chat/message.interface";
 
 dotenv.config();
-
-interface ProfileInterface {
-  token: string, profile: UsersInterface,
-}
 
 describe('ChatController (e2e)',  () => {
   let app: INestApplication;
@@ -26,8 +21,6 @@ describe('ChatController (e2e)',  () => {
 
   let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: '123456', email: UserClass.email, avatar: UserClass.avatar };
   let friendClass = { firstName: 'FirstFriend', lastName: 'LastFriend', password: '123456', email: 'friend@mail.com', avatar: 'FriendAvatar.png' }
-  let chatClass = ChatClass;
-  let messageClass = MessageClass;
 
   let userData: ProfileInterface = {token: undefined, profile: undefined};
   let friendData: ProfileInterface = {token: undefined, profile: undefined};
