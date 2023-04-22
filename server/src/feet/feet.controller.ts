@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeetDto } from "./feet.dto";
 import { FeetService } from "./feet.service";
-import {from, map, Observable, of, switchMap, tap, throwError} from "rxjs";
+import {catchError, from, map, Observable, tap, throwError} from "rxjs";
 import { FeetInterface } from "./feet.interface";
 import { DeleteResult, Like } from "typeorm";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -24,7 +24,7 @@ import { RolesGuard } from "../auth/roles.guard";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FounderGuard } from "../auth/founder.guard";
 import { CommentInterface } from "./comment.interface";
-import {FileFieldsInterceptor, FileInterceptor, FilesInterceptor} from "@nestjs/platform-express";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { FileService, multerOption, } from "../file/file.service";
 
 @ApiTags('feet')
@@ -49,6 +49,14 @@ export class FeetController {
     let { img, video, file } = JSON.parse(JSON.stringify(files ?? {}));
     let imgFilename = img?.map(picture => picture.filename) ?? [];
 
+    console.log({
+      ...JSON.parse(JSON.stringify(body)),
+      ...(!!img && !!img?.length) ? { img: imgFilename } : undefined,
+      ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
+      ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
+      author: req.user,
+    })
+
     return this.feetService.createFeet({
       ...JSON.parse(JSON.stringify(body)),
       ...(!!img && !!img?.length) ? { img: imgFilename } : undefined,
@@ -60,6 +68,10 @@ export class FeetController {
         from(imgFilename).pipe(
           map((name: string) => this.fileService.formFile(name))
         ).subscribe()
+      }),
+      catchError((err) => {
+        console.log(err);
+        return err
       })
     )
   }
