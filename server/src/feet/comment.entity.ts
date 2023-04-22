@@ -7,10 +7,10 @@ export class CommentEntity{
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => User, (user) => user.comment)
+  @ManyToOne(() => User, (user) => user.comment, { onDelete: 'CASCADE' })
   host: User;
 
-  @ManyToOne(() => Feet, (feet) => feet.comments)
+  @ManyToOne(() => Feet, (feet) => feet.comments, { onDelete: 'CASCADE' })
   feet: Feet;
 
   @Column()

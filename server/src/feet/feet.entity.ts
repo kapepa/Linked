@@ -18,7 +18,7 @@ export class Feet {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: 'simple-array', nullable: true, })
+  @Column({ type: 'simple-array', nullable: true, default: [] })
   img: string[];
 
   @Column({ default: '' })
@@ -37,20 +37,20 @@ export class Feet {
   } )
   access: AccessEnum
 
-  @OneToOne(() => AdditionEntity, (addition) => addition.post)
+  @OneToOne(() => AdditionEntity, (addition) => addition.post, { onDelete: 'CASCADE' })
   @JoinColumn()
   addition: AdditionEntity
 
-  @ManyToOne(() => User, (user) => user.feet)
+  @ManyToOne(() => User, (user) => user.feet, { onDelete: 'CASCADE' })
   author: User;
 
-  @ManyToMany(() => User, (user) => user.my_like)
+  @ManyToMany(() => User, (user) => user.my_like, { onDelete: 'CASCADE' })
   like: User[];
 
   @Column({ default: 0 })
   like_count: number
 
-  @OneToMany(() => CommentEntity, (comment) => comment.feet)
+  @OneToMany(() => CommentEntity, (comment) => comment.feet, { onDelete: 'CASCADE' })
   comments: CommentEntity[];
 
   @CreateDateColumn({ name: 'created_at'})

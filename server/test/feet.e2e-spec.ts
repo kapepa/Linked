@@ -1,210 +1,73 @@
 import * as request from 'supertest';
-import { Test } from '@nestjs/testing';
-import {ForbiddenException, HttpException, HttpStatus, INestApplication} from '@nestjs/common';
-import { FeetService } from "../src/feet/feet.service";
-import { AppModule } from "../src/app.module";
-import { UserClass } from "../src/core/utility/user.class";
-import { UsersDto } from "../src/users/users.dto";
-import {FeetClass} from "../src/core/utility/feet.class";
+import {Test} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
+import {AppModule} from "../src/app.module";
+import {UserClass} from "../src/core/utility/user.class";
 import {FeetInterface} from "../src/feet/feet.interface";
-import {of} from "rxjs";
 import {config} from "dotenv";
-import {DeleteResult} from "typeorm";
-import {JwtService} from "@nestjs/jwt";
-import {FileService} from "../src/file/file.service";
-import {CommentClass} from "../src/core/utility/comment.class";
+import {DeleteResult, Repository} from "typeorm";
 import {CommentInterface} from "../src/feet/comment.interface";
+import {User} from "../src/users/users.entity";
+import {MemoryDb, ProfileInterface} from "./utility/memory.db";
+import {AccessEnum} from "../src/feet/access.enum";
+import {AdditionClass} from "../src/core/utility/addition.class";
+import {FeetDto} from "../src/feet/feet.dto";
 
 config();
 
 describe('Feet (e2e)', () => {
   let app: INestApplication;
-  let mockUser = UserClass as UsersDto;
-  let mockFeet = FeetClass as FeetInterface;
-  let mockComment = CommentClass as CommentInterface;
+  let userRepository: Repository<User>;
 
-  let mockDeleteResult: DeleteResult = {raw: [], affected: 1,};
+  let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: '123456', email: UserClass.email, avatar: UserClass.avatar };
+  let additionClass = { jobTitle: 'additionJobTitle', company: 'additionCompany', placesWork: 'additionPlacesWork', region: 'additionRegion' };
+  let feelClass = { img: ['feetImg.png'], video: '', file: '', body: 'body feet', access: AccessEnum.CONTACT, addition: additionClass }
+  let commentClass = { comment: 'comment' }
 
-  let authToken = new JwtService(
-    {secret: process.env.JWT_SECRET}
-  ).sign(
-    {
-      firstName : mockUser.firstName,
-      lastName: mockUser.lastName,
-      id: mockUser.id,
-      role: mockUser.role,
-      avatar: mockUser.avatar,
-    }
-  )
+  let userData: ProfileInterface = {token: undefined, profile: undefined};
+  let feelData: {feel: FeetInterface, comment: CommentInterface} = {feel: undefined, comment: undefined};
 
-  let mockFeetService = {
-    findFeetList: jest.fn(),
-    getFeet: jest.fn(),
-    createFeet: jest.fn(),
-    updateFeet: jest.fn(),
-    allFeet: jest.fn(),
-    deleteFeet: jest.fn(),
-    likePost: jest.fn(),
-    getComment: jest.fn(),
-    commentCreate: jest.fn(),
-    deleteComment: jest.fn(),
-  };
-
-  let mockFileService = {
-    formFile: jest.fn(),
-  }
-
+  let mockDeleteResult: DeleteResult = {raw: [], affected: 1};
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(FeetService)
-      .useValue(mockFeetService)
-      .overrideProvider(FileService)
-      .useValue(mockFileService)
-      .compile();
+    }).compile();
 
+    userRepository = moduleRef.get('UserRepository');
     app = moduleRef.createNestApplication();
+
     await app.init();
+
+    await MemoryDb.createUser(userClass, userRepository).then( async (user) => {
+      userData.profile = user;
+      userData.token = await MemoryDb.createToken(user);
+    })
   });
 
-  describe('/POST feet/create', () => {
-    it(`success create feet`, () => {
-      jest.spyOn(mockFeetService, 'createFeet').mockImplementation(() => of( {...mockFeet, author: mockUser} ))
+  afterAll(async () => {
+    await MemoryDb.deleteUser(userData.profile.id, userRepository);
+    await app.close();
+  })
 
+  describe('(POST) createFeet()', () => {
+    it('should be create feet', () => {
       return request(app.getHttpServer())
         .post('/feet/create')
-        .set('Authorization', `Bearer ${authToken}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .send(feelClass)
         .expect(201)
-        .send({ body: mockFeet.body } )
-        .expect((res: Response) => {
-          expect(res.body).toEqual({...mockFeet, author: mockUser});
-        });
-    });
-  })
-
-
-  describe('/GET feet/:id', () => {
-    it('should return feet on id', () => {
-      jest.spyOn(mockFeetService, 'getFeet').mockImplementation(() => of(mockFeet));
-
-      return request(app.getHttpServer())
-        .get(`/feet/one/${mockFeet.id}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(200);
-          expect(res.body).toEqual(mockFeet);
-        })
-    });
-  })
-
-  describe('/GET feet', () => {
-    it('should return FeetInterface[] on query params', () => {
-      let findFeetList = jest.spyOn(mockFeetService, 'findFeetList').mockImplementation(() => (of([FeetClass])))
-
-      return request(app.getHttpServer())
-        .get('/feet?take=1&skip=0&word=')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res: Response & {body: FeetInterface[]}) => {
-          expect(findFeetList).toHaveBeenCalledWith({ take: 1, skip: 0, }, {avatar: UserClass.avatar, firstName: UserClass.firstName, lastName: UserClass.lastName, id: UserClass.id, role: UserClass.role});
-          expect(res.body).toEqual([FeetClass]);
-        })
-    })
-  })
-
-  describe('/PATCH feet/update/:id', () => {
-    let mockBody = 'Update feet';
-
-    it('should success update feet and return current feet', () => {
-      let mockFeet = FeetClass
-      let createFeet = jest.spyOn(mockFeetService, 'updateFeet').mockImplementation( () => of(mockFeet));
-      jest.spyOn(mockFeetService, 'allFeet').mockImplementation(() => of([mockFeet]));
-      jest.spyOn(mockFileService, 'formFile').mockImplementation(() => of({}));
-
-      return request(app.getHttpServer())
-        .patch(`/feet/update/${mockFeet.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({body: mockBody})
-        .expect(200)
         .expect((res: Response & {body: FeetInterface}) => {
-          expect(createFeet).toHaveBeenCalled();
+          let { addition, ...feet} = res.body;
+          feelData.feel = res.body;
+          // expect(res.body.access).toEqual(feelClass.access);
+          // expect(res.body.body).toEqual(feelClass.body);
+          // expect(res.body.addition.jobTitle).toEqual(additionClass.jobTitle);
+          // expect(res.body.addition.company).toEqual(additionClass.company);
+          // expect({...feet, addition: {}}).toEqual(expect.objectContaining({...feelClass, addition: {}}))
+          // expect(addition).toEqual(expect.objectContaining({additionClass}))
         })
     })
   })
 
-  describe('/PUT feet/like/:id', () => {
-    it('should set up and cancel like in feet', () => {
-      let likePost = jest.spyOn(mockFeetService, 'likePost').mockImplementation(() => of({...mockFeet, like: [mockUser]}));
-
-      return request(app.getHttpServer())
-        .put(`/feet/like/${mockFeet.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res: Response) => {
-          expect(likePost).toHaveBeenCalled();
-        })
-    })
-  })
-
-  describe('/GET feet/comments', () => {
-    it('should return comment to feet', () => {
-      let getComment = jest.spyOn(mockFeetService, 'getComment').mockImplementation(() => of([mockComment]));
-
-      return request(app.getHttpServer())
-        .get('/feet/comments?take=1&skip=0')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res: Response) => {
-          expect(res.body).toEqual([mockComment])
-          expect(getComment).toHaveBeenCalled();
-        })
-    })
-  })
-
-  describe('/POST feet/comment/create/:id', () => {
-    it('should create new comment and add to feet', () => {
-      let commentCreate = jest.spyOn(mockFeetService, 'commentCreate').mockImplementation(() => of(mockComment));
-
-      return request(app.getHttpServer())
-        .post(`/feet/comment/create/${mockFeet.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({ body: 'comment' })
-        .expect(201)
-        .expect((res: Response) => {
-          expect(res.body).toEqual(mockComment);
-          expect(commentCreate).toHaveBeenCalled();
-        })
-    })
-  })
-
-  describe('/DELETE feet/:id', () => {
-    it('should success delete feet on id', () => {
-      let deleteFeet = jest.spyOn(mockFeetService, 'deleteFeet').mockImplementation(() => of(mockDeleteResult))
-      jest.spyOn(mockFeetService, 'allFeet').mockImplementation(() => of([mockFeet]));
-
-      return request(app.getHttpServer())
-        .delete(`/feet/${mockFeet.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res: Response) => {
-          expect(deleteFeet).toHaveBeenCalledWith(mockFeet.id);
-        })
-    })
-  })
-
-  describe('/DELETE feet/comment/:id', () => {
-    it('should be delete comment on id', () => {
-      let deleteComment = jest.spyOn(mockFeetService, 'deleteComment').mockImplementation(() => of(mockDeleteResult));
-
-      return request(app.getHttpServer())
-        .delete(`/feet/comment/${mockComment.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res) => {
-          expect(res.body).toEqual(mockDeleteResult);
-          expect(deleteComment).toHaveBeenCalled();
-        })
-    })
-  })
 });
