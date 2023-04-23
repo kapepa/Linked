@@ -68,7 +68,7 @@ export class FileService {
 
   async removeFile( filePath:string ): Promise<Observable<boolean>> {
     const existPath = join(__dirname, '..', '..', 'static', filePath);
-    await fs.unlinkSync(existPath);
+    if( fs.existsSync(existPath) ) await fs.unlinkSync(existPath);
     return of(!fs.existsSync(existPath)).pipe(
       catchError(() => {
         throw new HttpException('I made a mistake while deleting', HttpStatus.BAD_REQUEST);

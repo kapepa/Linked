@@ -49,14 +49,6 @@ export class FeetController {
     let { img, video, file } = JSON.parse(JSON.stringify(files ?? {}));
     let imgFilename = img?.map(picture => picture.filename) ?? [];
 
-    console.log({
-      ...JSON.parse(JSON.stringify(body)),
-      ...(!!img && !!img?.length) ? { img: imgFilename } : undefined,
-      ...(!!video && !!video?.length) ? { video: video[0]?.filename } : undefined,
-      ...(!!file && !!file?.length) ? { file: file[0]?.filename } : undefined,
-      author: req.user,
-    })
-
     return this.feetService.createFeet({
       ...JSON.parse(JSON.stringify(body)),
       ...(!!img && !!img?.length) ? { img: imgFilename } : undefined,
@@ -127,20 +119,20 @@ export class FeetController {
     return this.feetService.likePost(id, req.user);
   }
 
+  @Post('/comment/create/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 201, description: 'create new comment'})
+  @ApiResponse({ status: 404, description: 'didn\'t create comment'})
+  commentCreate(@Param('id') id, @Body() body: CommentInterface, @Req() req): Observable<any> {
+    return this.feetService.commentCreate(id, body, req.user);
+  }
+
   @Get('/comments')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'get comment in feet on query'})
   @ApiResponse({ status: 404, description: 'didn\'t get comment'})
   getComment(@Query() query): Observable<CommentInterface[]> {
     return this.feetService.getComment(query);
-  }
-
-  @Post('/comment/create/:id')
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'create new comment'})
-  @ApiResponse({ status: 404, description: 'didn\'t create comment'})
-  commentCreate(@Param('id') id, @Body() body: CommentInterface, @Req() req): Observable<any> {
-    return this.feetService.commentCreate(id, body, req.user);
   }
 
   @Delete('/:id')
