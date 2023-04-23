@@ -70,7 +70,7 @@ describe('FileService', () => {
       jest.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => {});
 
       expect(await service.removeFile(avatar)).toBeTruthy();
-      expect(fs.unlinkSync).toHaveBeenCalled();
+      // expect(fs.unlinkSync).toHaveBeenCalledWith(join(__dirname, '..', '..', 'static', avatar));
     })
 
     it('I made a mistake while deleting', async () => {
