@@ -37,8 +37,7 @@ export class Feet {
   } )
   access: AccessEnum
 
-  @OneToOne(() => AdditionEntity, (addition) => addition.post, { onDelete: 'CASCADE' })
-  @JoinColumn()
+  @OneToOne(() => AdditionEntity, (addition) => addition.post, { eager: true })
   addition: AdditionEntity
 
   @ManyToOne(() => User, (user) => user.feet, { onDelete: 'CASCADE' })

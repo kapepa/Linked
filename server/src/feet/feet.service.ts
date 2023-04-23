@@ -188,7 +188,7 @@ export class FeetService {
       switchMap(( feet: FeetInterface ) => {
         return  from(this.feetRepository.delete({ id })).pipe(
           tap( async () => {
-            if (!!feet.img) from(feet.img).pipe(
+            if (!!feet.img && feet.img.length) from(feet.img).pipe(
               map((img: string) => this.fileService.removeFile(img))
             ).subscribe();
             if (!!feet.video) await this.fileService.removeFile(feet.video);

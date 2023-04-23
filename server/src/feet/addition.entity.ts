@@ -1,4 +1,4 @@
-import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Feet} from "./feet.entity";
 
 @Entity()
@@ -6,7 +6,8 @@ export  class AdditionEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @OneToOne(() => Feet, (feet) => feet.addition)
+  @OneToOne(() => Feet, (feet) => feet.addition, { onDelete: "CASCADE" })
+  @JoinColumn()
   post?: Feet;
 
   @Column()

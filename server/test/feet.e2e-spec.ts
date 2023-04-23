@@ -10,8 +10,6 @@ import {CommentInterface} from "../src/feet/comment.interface";
 import {User} from "../src/users/users.entity";
 import {MemoryDb, ProfileInterface} from "./utility/memory.db";
 import {AccessEnum} from "../src/feet/access.enum";
-import {AdditionClass} from "../src/core/utility/addition.class";
-import {FeetDto} from "../src/feet/feet.dto";
 
 config();
 
@@ -58,16 +56,99 @@ describe('Feet (e2e)', () => {
         .send(feelClass)
         .expect(201)
         .expect((res: Response & {body: FeetInterface}) => {
-          let { addition, ...feet} = res.body;
+          let { addition, ...feet } = res.body;
+          let { id, ...restAddition } = addition
           feelData.feel = res.body;
-          // expect(res.body.access).toEqual(feelClass.access);
-          // expect(res.body.body).toEqual(feelClass.body);
-          // expect(res.body.addition.jobTitle).toEqual(additionClass.jobTitle);
-          // expect(res.body.addition.company).toEqual(additionClass.company);
-          // expect({...feet, addition: {}}).toEqual(expect.objectContaining({...feelClass, addition: {}}))
-          // expect(addition).toEqual(expect.objectContaining({additionClass}))
+          expect({...feet, addition: {}}).toEqual(expect.objectContaining({...feelClass, addition: {}}));
+          expect(restAddition).toEqual(expect.objectContaining(additionClass));
         })
     })
   })
 
+  describe('(GET) getFeet()', () => {
+    it('should be find feet on id', () => {
+      return request(app.getHttpServer())
+        .get(`/feet/one/${feelData.feel.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          let { like, ...feel } = feelData.feel
+          expect(res.body).toEqual({...feel, comments: []});
+        });
+    })
+  })
+
+  describe('(GET) allFeet()', () => {
+    it('should be return array from feel', () => {
+      let query = { take: 1, skip: 0 };
+      return request(app.getHttpServer())
+        .get(`/feet?take=${query.take}&skip=${query.skip}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          let { password, created_at, ...author} = userData.profile;
+          expect(res.body).toEqual([{...feelData.feel, author}]);
+        })
+    })
+  })
+
+  describe('(PUT) postLike()', () => {
+    it('should be set feet line, on id', () => {
+      return request(app.getHttpServer())
+        .put(`/feet/like/${feelData.feel.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          let { password, created_at, ...profile} = userData.profile;
+          expect(res.body).toEqual(expect.objectContaining({...feelData.feel, like_count: 1, like: [profile]}))
+        })
+    })
+  })
+
+  describe('(POST) commentCreate()', () => {
+    it('should be create comment in feet on id', () => {
+      return request(app.getHttpServer())
+        .post(`/feet/comment/create/${feelData.feel.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .send(commentClass)
+        .expect(201)
+        .expect((res: Response & {body: CommentInterface}) => {
+          feelData.comment = res.body;
+          expect(res.body).toEqual(expect.objectContaining(commentClass));
+        })
+    })
+  })
+
+  describe('(GET) getComment()', () => {
+    it('should be find comment on id feet', () => {
+      let query = { id: feelData.feel.id, take: 1, skip: 0 };
+      return request(app.getHttpServer())
+        .get(`/feet/comments?id=${query.id}&take=${query.take}&skip=${query.skip}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response) => {
+          expect(res.body).toEqual([feelData.comment]);
+        })
+    })
+  })
+
+  describe('(DELETE) deleteComment()', () => {
+    it('should be delete comment on id', () => {
+      return request(app.getHttpServer())
+        .delete(`/feet/comment/${feelData.comment.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect(mockDeleteResult)
+    })
+  })
+
+  describe('(DELETE) deleteFeet()' ,() => {
+    it('should be delete feet on id', () => {
+      return request(app.getHttpServer())
+        .delete(`/feet/${feelData.feel.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect(mockDeleteResult)
+    })
+  })
 });
