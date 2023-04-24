@@ -102,9 +102,7 @@ export class FriendsService {
                     this.friendsGateway.changeFriendSuggest(user.id, friends.id)
                     return this.usersService.saveUser(user).pipe(
                       switchMap(() => this.chatService.saveChat(chat).pipe(
-                        switchMap(() => this.usersService.saveUser(friend).pipe(
-                          switchMap(() => this.deleteRequest(friendsDto.id)),
-                        )),
+                        switchMap(() => this.usersService.saveUser(friend)),
                       ))
                     )
                   }),
@@ -141,17 +139,26 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, userDto: UsersDto): Observable<UsersInterface[]> {
-    return this.usersService.findOneUser({where: {id: friendID, chat: {conversation: {id: userDto.id}} }, relations: ['friends', 'chat',]}).pipe(
+    let delFriend = (userID, friendID) => this.usersService.findOneUser({where: {id: userID, chat: {conversation: {id: friendID}} }, relations: ['friends', 'chat',]}).pipe(
       switchMap((profile: UsersInterface) => {
         let friendIndex = profile.friends.findIndex(p => p.id === userDto.id);
         profile.friends.splice(friendIndex, 1);
-        return of(profile.friends).pipe(
-          tap(() => {
-            this.usersService.saveUser({...profile, friends: profile.friends}).subscribe();
-            this.chatService.deleteChatAndMessage(profile.chat[0]).subscribe();
-            this.friendsGateway.deleteFriendSuggest( userDto.id, friendID );
+        return this.usersService.saveUser({...profile, friends: profile.friends})
+      })
+    )
+
+    return delFriend(userDto.id, friendID).pipe(
+      switchMap((ownProfile: UsersInterface | UsersDto) => {
+        return delFriend(friendID, userDto.id).pipe(
+          switchMap((friendProfile: UsersInterface | UsersDto) => {
+            return of(friendProfile.friends).pipe(
+              tap(() => {
+                this.chatService.deleteChatAndMessage(friendProfile.chat[0]).subscribe();
+                this.friendsGateway.deleteFriendSuggest( friendID, userDto.id );
+              })
+            )
           })
-        );
+        )
       })
     )
   }
