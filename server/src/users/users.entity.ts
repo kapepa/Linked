@@ -43,7 +43,7 @@ export class User implements UsersInterface{
   @OneToMany(() => FriendsEntity, (friendsRequest) => friendsRequest.friends, { onDelete: 'CASCADE' })
   suggest: FriendsEntity[];
 
-  @ManyToMany(() => User,{ onDelete: 'CASCADE' })
+  @ManyToMany(() => User,{ onDelete: 'CASCADE', eager: true })
   @JoinTable({ name: 'user-friends' })
   friends: User[]
 
