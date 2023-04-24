@@ -70,6 +70,7 @@ describe('Friends (e2e)', () => {
     })
   })
 
+
   // describe('(GET) suggest()', () => {
   //   it('should be return receive all list offer add to friends', () => {
   //     return request(app.getHttpServer())
