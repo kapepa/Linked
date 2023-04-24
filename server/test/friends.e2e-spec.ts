@@ -1,153 +1,143 @@
 import * as request from 'supertest';
-import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { AppModule } from "../src/app.module";
-import { FriendsService } from "../src/friends/friends.service";
-import { FriendCLass } from "../src/core/utility/friend.class";
-import { FriendsDto } from "../src/friends/friends.dto";
-import { UserClass } from "../src/core/utility/user.class";
-import { UsersDto } from "../src/users/users.dto";
-import * as jwt from "jsonwebtoken";
-import { config } from 'dotenv';
-import {of} from "rxjs";
-import {DeleteResult} from "typeorm";
-import {JwtService} from "@nestjs/jwt";
+import {Test} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
+import {AppModule} from "../src/app.module";
+import {UserClass} from "../src/core/utility/user.class";
+import {DeleteResult, In, Repository} from "typeorm";
+import {config} from 'dotenv';
+import {User} from "../src/users/users.entity";
+import {MemoryDb, ProfileInterface} from "./utility/memory.db";
+import {FriendsInterface} from "../src/friends/friends.interface";
+import {UsersInterface} from "../src/users/users.interface";
+import {FriendsEntity} from "../src/friends/friends.entity";
 
 config();
 
-describe('Friends', () => {
+describe('Friends (e2e)', () => {
   let app: INestApplication;
-  let mockUser = UserClass as UsersDto;
-  let mockFriend = FriendCLass as FriendsDto;
-  let jwt_token =  new JwtService(
-    {secret: process.env.JWT_SECRET}
-  ).sign(
-    {
-      firstName : mockUser.firstName,
-      lastName: mockUser.lastName,
-      id: mockUser.id,
-      role: mockUser.role,
-      avatar: mockUser.avatar,
-    }
-  )
+  let userRepository: Repository<User>;
+  let friendRepository: Repository<FriendsEntity>;
 
-  const mockDeleteResult: DeleteResult = {
-    raw: [],
-    affected: 1,
-  };
+  let userClass = { firstName: UserClass.firstName, lastName: UserClass.lastName, password: '123456', email: UserClass.email, avatar: UserClass.avatar };
+  let friendClass = { firstName: 'FriendFirst', lastName: 'FriendLast', password: '123456', email: 'friend@email.com', avatar: 'friendAvatar.png' };
 
-  let mockFriendsService = {
-    create: jest.fn((id, user) => {
-      return of({ ...mockFriend, user, friends: { id } });
-    }),
-    suggest: jest.fn((id) => {
-      return of([{...mockUser, suggest: [mockFriend]} as UsersDto].find(user => user.id === id).suggest);
-    }),
-    offer: jest.fn((id) => {
-      return of([{...mockUser, request: [mockUser]} as UsersDto].find(user => user.id === id).request);
-    }),
-    confirm: jest.fn((id) => of(mockUser)),
-    cancel: jest.fn((id) => of(mockDeleteResult)),
-    delFriend: jest.fn(() => of(mockDeleteResult)),
-  };
+  let userData: ProfileInterface = {token: undefined, profile: undefined};
+  let friendData: ProfileInterface = {token: undefined, profile: undefined};
+
+  let suggestFriend: FriendsInterface;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(FriendsService)
-      .useValue(mockFriendsService)
-      .compile();
+    }).compile();
 
     app = moduleRef.createNestApplication();
+    userRepository = moduleRef.get('UserRepository');
+    friendRepository = moduleRef.get('FriendsEntityRepository');
     await app.init();
+
+    await MemoryDb.createUser(friendClass, userRepository).then(async (user) => {
+      friendData.profile = user;
+      friendData.token = await MemoryDb.createToken(user);
+    })
+
+    await MemoryDb.createUser(userClass, userRepository).then(async (profile) => {
+      userData.profile = profile;
+      userData.token = await MemoryDb.createToken(profile);
+    })
   });
 
-  describe('/POST friends/add/:id', () => {
-    let friendID = 'friendID';
-    it('success create friend on id', () => {
+
+  describe('(POST) create()', () => {
+    it('should be send suggest add to friend', () => {
       return request(app.getHttpServer())
-        .post(`/friends/add/${mockFriend.id}`)
-        .set('Authorization', `Bearer ${jwt_token}`)
-        .expect((res: Response) => {
-          let { chat, email, request, suggest, friends, ...other} = mockUser;
+        .post(`/friends/add/${friendData.profile.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(201)
+        .expect((res: Response & { body: FriendsInterface }) => {
+          let profileCompare = (user: UsersInterface) => {
+            let {created_at, password, ...profile} = user;
+            return {...profile, friends: [], request: [], suggest: []};
+          }
+          suggestFriend = res.body;
+          expect(res.body)
+            .toEqual(expect.objectContaining({
+              user: profileCompare(userData.profile),
+              friends: profileCompare(friendData.profile),
+              status: 'pending',
+            }))
+        })
+    })
+  })
 
-          expect(res.status).toEqual(201);
-          expect(mockFriendsService.create).toHaveBeenCalledWith(friendID, other);
-          expect(res.body).toEqual({ ...mockFriend, user: other, friends: { id: friendID } })
-        });
-    });
-  });
-
-  describe('/GET friends/suggest', () => {
-    it('receive all suggest about friending', () => {
+  describe('(GET) suggest()', () => {
+    it('should be return receive all list offer add to friends', () => {
       return request(app.getHttpServer())
         .get('/friends/suggest')
-        .set('Authorization', `Bearer ${jwt_token}`)
-        .expect((res: Response) => {
-          expect(res.status).toEqual(200);
-          expect(mockFriendsService.suggest).toHaveBeenCalledWith(mockUser.id);
-          expect(res.body).toEqual( [ mockFriend ])
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response & {body: FriendsInterface[]}) => {
+          expect(res.body.length).toEqual(1);
         })
     })
   })
 
-  describe('/GET friends/offer', () => {
-    it('receive all offer about friending', () => {
+  describe('(GET) offer()', () => {
+    it('should be return my list offer add to friends', () => {
       return request(app.getHttpServer())
         .get('/friends/offer')
-        .set('Authorization', `Bearer ${jwt_token}`)
-        .expect((res: Response) => {
-
-          expect(res.status).toEqual(200);
-          expect(mockFriendsService.suggest).toHaveBeenCalledWith(mockUser.id);
-          expect(res.body).toEqual( [ mockUser ]);
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response & { body: FriendsInterface[] }) => {
+          expect(res.body.length).toEqual(1);
         })
     })
   })
 
-  describe('/PUT confirm/:id', () => {
-    it('confirm offer friends', () => {
+  describe('(PUT) confirm()', () => {
+    it('should be confirm offer from friend', () => {
       return request(app.getHttpServer())
-        .put(`/friends/confirm/${mockFriend.id}`)
-        .set('Authorization', `Bearer ${jwt_token}`)
-        .expect((res: Response) => {
-          let { chat, email, request, suggest, friends, ...other} = mockUser;
-
-          expect(res.status).toEqual(200);
-          expect(mockFriendsService.confirm).toHaveBeenCalledWith(mockFriend.id, other);
-          expect(res.body).toEqual(mockUser);
+        .put(`/friends/confirm/${userData.profile.id}`)
+        .set('Authorization', `Bearer ${friendData.token}`)
+        .expect(200)
+        .expect(async (res: Response) => {
+          expect(res.body).toEqual({
+            user: expect.objectContaining({id: friendData.profile.id}),
+            friend: expect.objectContaining({id: userData.profile.id}),
+          })
         })
     })
   })
 
-  describe('/DELETE cancel/:id', () => {
-    it('cancel offer friends', () => {
+  describe('(DELETE) delFriend()', () => {
+    it('should be delete my friend', async () => {
       return request(app.getHttpServer())
-        .delete(`/friends/cancel/${mockFriend.id}`)
-        .set('Authorization', `Bearer ${jwt_token}`)
-        .expect((res: Response) => {
-          let { chat, email, request, suggest, friends, ...other} = mockUser;
-
-          expect(res.status).toEqual(200);
-          expect(mockFriendsService.cancel).toHaveBeenCalledWith(mockFriend.id, other);
-          expect(res.body).toEqual(mockDeleteResult);
+        .delete(`/friends/delete/${userData.profile.id}`)
+        .set('Authorization', `Bearer ${friendData.token}`)
+        .expect(200)
+        .expect((res: Response & {body: UsersInterface[]}) => {
+          expect(res.body.length).toEqual(0);
         })
     })
   })
 
-  describe('/DELETE delete/:id', () => {
-    it('del friends', () => {
-      return request(app.getHttpServer())
-        .delete(`/friends/delete/${mockFriend.id}`)
-        .set('Authorization', `Bearer ${jwt_token}`)
-        .expect((res: Response) => {
-          let { chat, email, request, suggest, friends, ...other} = mockUser;
+  describe('(DELETE) cancel()', () => {
+    it('should be canceled offer about friendship', async () => {
+      let req = await friendRepository.save({user: userData.profile, friends: friendData.profile});
 
-          expect(res.status).toEqual(200);
-          expect(mockFriendsService.cancel).toHaveBeenCalledWith(mockFriend.id, other);
-          expect(res.body).toEqual(mockDeleteResult);
+      return request(app.getHttpServer())
+        .delete(`/friends/cancel/${req.id}`)
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response & {body: FriendsInterface[]}) => {
+          expect(res.body.length).toEqual(0);
         })
     })
+  })
+
+  afterAll(async () => {
+    await MemoryDb.deleteUser(userData.profile.id, userRepository);
+    await MemoryDb.deleteUser(friendData.profile.id, userRepository);
+    await app.close();
   })
 });

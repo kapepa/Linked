@@ -13,10 +13,10 @@ export class FriendsEntity implements FriendsInterface{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.request)
+  @ManyToOne(() => User, (user) => user.request, { onDelete: 'CASCADE' })
   user: User
 
-  @ManyToOne(() => User, (user) => user.suggest)
+  @ManyToOne(() => User, (user) => user.suggest, { onDelete: 'CASCADE' })
   friends: User
 
   @Column({ type: "enum", enum: Status, default: Status.PENDING })

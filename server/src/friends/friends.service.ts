@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersDto } from "../users/users.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FriendsEntity } from "./friends.entity";
-import { DeleteResult, Repository } from "typeorm";
+import {DeleteResult, In, Repository} from "typeorm";
 import { from, Observable, of, switchMap, tap, toArray, map } from "rxjs";
 import { UsersService } from "../users/users.service";
 import { UsersInterface } from "../users/users.interface";
@@ -132,7 +132,7 @@ export class FriendsService {
         return from([[] as FriendsInterface[]]).pipe(
           tap(() => {
             this.deleteRequest(requestID).subscribe();
-            this.chatService.deleteChat(user.id, friend.id).subscribe();
+            // this.chatService.deleteChat(user.id, friend.id).subscribe();
             this.friendsGateway.declineFriend(friend.user.id, friend.friends.id);
           }),
         );
@@ -141,43 +141,16 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, userDto: UsersDto): Observable<UsersInterface[]> {
-    return of([]).pipe(
-      tap(() => {
-        this.chatService.findOneChat({where: { conversation: { id: friendID, friends: { id: userDto.id } } }}).pipe(
-          switchMap((chatDto: ChatInterface) => {
-            return this.chatService.findOneChat({
-              where: {id: chatDto.id},
-              relations: ['conversation.friends', 'conversation.chat', 'chat', 'conversation', ],
-            }).pipe(
-              switchMap((chat: ChatInterface) => {
-                let [user, friend] = chat.conversation;
-
-                return this.chatService.deleteChatAndMessage(chat).pipe(
-                  switchMap(() => {
-                    user.friends = user.friends.filter((person: UsersInterface) => person.id !== friend.id);
-                    user.chat = user.chat.filter((ch: ChatInterface) => ch.id !== chat.id);
-
-                    return this.usersService.saveUser(user).pipe(
-                      switchMap(() => {
-                        friend.friends = friend.friends.filter((person: UsersInterface) => person.id !== user.id);
-                        friend.chat = friend.chat.filter((ch: ChatInterface) => ch.id !== chat.id);
-
-                        return this.usersService.saveUser(friend).pipe(
-                          tap(() => {
-                            let toUser = userDto.id !== user.id ? user.id: friend.id;
-                            let toFriend = userDto.id === user.id ? user.id: friend.id;
-
-                            this.friendsGateway.deleteFriendSuggest( toUser, toFriend );
-                          })
-                        )
-                      })
-                    )
-                  })
-                )
-              })
-            )
+    return this.usersService.findOneUser({where: {id: friendID, chat: {conversation: {id: userDto.id}} }, relations: ['friends', 'chat', 'chat.conversation']}).pipe(
+      switchMap((profile: UsersInterface) => {
+        let friendIndex = profile.friends.findIndex(p => p.id === userDto.id);
+        profile.friends.splice(friendIndex, 1);
+        return of(profile.friends).pipe(
+          tap(() => {
+            this.usersService.saveUser({...profile, friends: profile.friends}).subscribe();
+            this.chatService.deleteChatAndMessage(profile.chat[0]).subscribe();
           })
-        ).subscribe()
+        );
       })
     )
   }
