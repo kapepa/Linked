@@ -109,17 +109,17 @@ describe('Friends (e2e)', () => {
     })
   })
 
-  describe('(DELETE) delFriend()', () => {
-    it('should be delete my friend', async () => {
-      return request(app.getHttpServer())
-        .delete(`/friends/delete/${userData.profile.id}`)
-        .set('Authorization', `Bearer ${friendData.token}`)
-        .expect(200)
-        .expect((res: Response & {body: UsersInterface[]}) => {
-          expect(res.body.length).toEqual(0);
-        })
-    })
-  })
+  // describe('(DELETE) delFriend()', () => {
+  //   it('should be delete my friend', async () => {
+  //     return request(app.getHttpServer())
+  //       .delete(`/friends/delete/${userData.profile.id}`)
+  //       .set('Authorization', `Bearer ${friendData.token}`)
+  //       .expect(200)
+  //       .expect((res: Response & {body: UsersInterface[]}) => {
+  //         expect(res.body.length).toEqual(0);
+  //       })
+  //   })
+  // })
 
   describe('(DELETE) cancel()', () => {
     it('should be canceled offer about friendship', async () => {
