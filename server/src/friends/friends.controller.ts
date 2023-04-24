@@ -33,7 +33,7 @@ export class FriendsController {
 
   @Get('/offer')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'My offer on friends'})
+  @ApiResponse({ status: 200, description: 'The receive my list offer add to friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
   offer(@Req() req): Observable<FriendsInterface[]>{
     return this.friendsService.offer(req.user.id);
