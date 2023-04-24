@@ -100,12 +100,12 @@ describe('Friends (e2e)', () => {
         .put(`/friends/confirm/${userData.profile.id}`)
         .set('Authorization', `Bearer ${friendData.token}`)
         .expect(200)
-        // .expect(async (res: Response) => {
-        //   expect(res.body).toEqual({
-        //     user: expect.objectContaining({id: friendData.profile.id}),
-        //     friend: expect.objectContaining({id: userData.profile.id}),
-        //   })
-        // })
+        .expect(async (res: Response) => {
+          // expect(res.body).toEqual({
+          //   user: expect.objectContaining({id: friendData.profile.id}),
+          //   friend: expect.objectContaining({id: userData.profile.id}),
+          // })
+        })
     })
   })
 
