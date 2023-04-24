@@ -141,7 +141,7 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, userDto: UsersDto): Observable<UsersInterface[]> {
-    return this.usersService.findOneUser({where: {id: friendID, chat: {conversation: {id: userDto.id}} }, relations: ['friends', 'chat', 'chat.conversation']}).pipe(
+    return this.usersService.findOneUser({where: {id: friendID, chat: {conversation: {id: userDto.id}} }, relations: ['friends', 'chat',]}).pipe(
       switchMap((profile: UsersInterface) => {
         let friendIndex = profile.friends.findIndex(p => p.id === userDto.id);
         profile.friends.splice(friendIndex, 1);
@@ -149,6 +149,7 @@ export class FriendsService {
           tap(() => {
             this.usersService.saveUser({...profile, friends: profile.friends}).subscribe();
             this.chatService.deleteChatAndMessage(profile.chat[0]).subscribe();
+            this.friendsGateway.deleteFriendSuggest( userDto.id, friendID );
           })
         );
       })

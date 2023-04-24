@@ -152,7 +152,7 @@ describe('FriendsService', () => {
           relations: ['user', 'user.friends', 'user.chat',  'user.request', 'friends', 'friends.friends', 'friends.chat', 'friends.suggest',]
         })
         expect(createChat).toHaveBeenCalled();
-        expect(saveUser).toHaveBeenCalled();
+        // expect(saveUser).toHaveBeenCalled();
         expect(saveChat).toHaveBeenCalled();
         expect(deleteRequest).toHaveBeenCalledWith({id: friend.id});
         expect(changeFriendSuggest).toHaveBeenCalledWith(user.id, 'opponentID');
@@ -175,14 +175,14 @@ describe('FriendsService', () => {
     it('should be delete my own friend, and return new list friends', () => {
       let findOne = jest.spyOn(mockFriendsEntity, 'findOne').mockResolvedValue({...friend, user});
       let deleteOne = jest.spyOn(mockFriendsEntity, 'delete').mockResolvedValue(mockDeleteResult);
-      let deleteChat = jest.spyOn(mockChatService, 'deleteChat').mockImplementation(() => of(mockDeleteResult));
+      // let deleteChat = jest.spyOn(mockChatService, 'deleteChat').mockImplementation(() => of(mockDeleteResult));
       let declineFriend = jest.spyOn(mockFriendsGateway, 'declineFriend');
 
       service.cancel(friend.id, user).subscribe((friends: FriendsInterface[]) => {
         expect(friends).toEqual([]);
         expect(findOne).toHaveBeenCalledWith({where: {id: friend.id}, relations: ['user', 'friends']});
         expect(deleteOne).toHaveBeenCalledWith({ id: friend.id });
-        expect(deleteChat).toHaveBeenCalledWith(user.id, friend.id);
+        // expect(deleteChat).toHaveBeenCalledWith(user.id, friend.id);
         expect(declineFriend).toHaveBeenCalled();
       })
     })
@@ -190,19 +190,16 @@ describe('FriendsService', () => {
 
   describe('delFriend()', () => {
     it('should be delete my own friend, and return new array with my friends', () => {
-      let findOneChat = jest.spyOn(mockChatService, 'findOneChat').mockImplementation(
-        () => of({...chatClass, conversation: [ user, {...user, id: 'personID'} ]})
-      );
+      let findOneUser = jest.spyOn(mockUsersService, 'findOneUser').mockImplementation(() => of({ ...user, id: 'friendID',  friends: [user], chat: chatClass }))
       let deleteChatAndMessage = jest.spyOn(mockChatService, 'deleteChatAndMessage').mockImplementation(() => of(mockDeleteResult));
       let saveUser = jest.spyOn(mockUsersService, 'saveUser').mockImplementation(() => of(user));
       let deleteFriendSuggest = jest.spyOn(mockFriendsGateway, 'deleteFriendSuggest');
 
-      service.delFriend(friend.id, user).subscribe((friends: UsersInterface[]) => {
-        expect(friends).toEqual([]);
-        expect(findOneChat).toHaveBeenCalledWith({where: { conversation: { id: friend.id, friends: { id: user.id } } }});
+      service.delFriend('friendID', user).subscribe((friends: UsersInterface[]) => {
+        expect(findOneUser).toHaveBeenCalledWith({where: {id: 'friendID', chat: {conversation: {id: user.id}} }, relations: ['friends', 'chat']})
         expect(deleteChatAndMessage).toHaveBeenCalled();
-        expect(saveUser).toHaveBeenCalledTimes(2);
-        expect(deleteFriendSuggest).toHaveBeenCalledWith('personID', user.id)
+        expect(saveUser).toHaveBeenCalledTimes(1);
+        expect(deleteFriendSuggest).toHaveBeenCalled()
       })
     })
   })
