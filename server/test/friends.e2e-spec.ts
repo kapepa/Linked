@@ -70,30 +70,30 @@ describe('Friends (e2e)', () => {
     })
   })
 
-  // describe('(GET) suggest()', () => {
-  //   it('should be return receive all list offer add to friends', () => {
-  //     return request(app.getHttpServer())
-  //       .get('/friends/suggest')
-  //       .set('Authorization', `Bearer ${userData.token}`)
-  //       .expect(200)
-  //       .expect((res: Response & {body: FriendsInterface[]}) => {
-  //         expect(res.body.length).toEqual(1);
-  //       })
-  //   })
-  // })
-  //
-  // describe('(GET) offer()', () => {
-  //   it('should be return my list offer add to friends', () => {
-  //     return request(app.getHttpServer())
-  //       .get('/friends/offer')
-  //       .set('Authorization', `Bearer ${userData.token}`)
-  //       .expect(200)
-  //       .expect((res: Response & { body: FriendsInterface[] }) => {
-  //         expect(res.body.length).toEqual(1);
-  //       })
-  //   })
-  // })
-  //
+  describe('(GET) suggest()', () => {
+    it('should be return receive all list offer add to friends', () => {
+      return request(app.getHttpServer())
+        .get('/friends/suggest')
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response & {body: FriendsInterface[]}) => {
+          expect(res.body.length).toEqual(1);
+        })
+    })
+  })
+
+  describe('(GET) offer()', () => {
+    it('should be return my list offer add to friends', () => {
+      return request(app.getHttpServer())
+        .get('/friends/offer')
+        .set('Authorization', `Bearer ${userData.token}`)
+        .expect(200)
+        .expect((res: Response & { body: FriendsInterface[] }) => {
+          expect(res.body.length).toEqual(1);
+        })
+    })
+  })
+
   // describe('(PUT) confirm()', () => {
   //   it('should be confirm offer from friend', () => {
   //     return request(app.getHttpServer())
