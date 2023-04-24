@@ -94,20 +94,20 @@ describe('Friends (e2e)', () => {
     })
   })
 
-  // describe('(PUT) confirm()', () => {
-  //   it('should be confirm offer from friend', () => {
-  //     return request(app.getHttpServer())
-  //       .put(`/friends/confirm/${userData.profile.id}`)
-  //       .set('Authorization', `Bearer ${friendData.token}`)
-  //       .expect(200)
-  //       .expect(async (res: Response) => {
-  //         expect(res.body).toEqual({
-  //           user: expect.objectContaining({id: friendData.profile.id}),
-  //           friend: expect.objectContaining({id: userData.profile.id}),
-  //         })
-  //       })
-  //   })
-  // })
+  describe('(PUT) confirm()', () => {
+    it('should be confirm offer from friend', () => {
+      return request(app.getHttpServer())
+        .put(`/friends/confirm/${userData.profile.id}`)
+        .set('Authorization', `Bearer ${friendData.token}`)
+        .expect(200)
+        // .expect(async (res: Response) => {
+        //   expect(res.body).toEqual({
+        //     user: expect.objectContaining({id: friendData.profile.id}),
+        //     friend: expect.objectContaining({id: userData.profile.id}),
+        //   })
+        // })
+    })
+  })
 
   // describe('(DELETE) delFriend()', () => {
   //   it('should be delete my friend', async () => {
