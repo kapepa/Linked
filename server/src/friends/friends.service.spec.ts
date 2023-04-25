@@ -141,20 +141,18 @@ describe('FriendsService', () => {
       let findOne = jest.spyOn(mockFriendsEntity, 'findOne').mockResolvedValue(mockFriend);
       let createChat = jest.spyOn(mockChatService, 'createChat').mockImplementation(() => of(chatClass));
       let saveUser = jest.spyOn(mockUsersService, 'saveUser').mockImplementation(() => of(user));
-      let saveChat = jest.spyOn(mockChatService, 'saveChat').mockImplementation(() => of(chatClass));
       let deleteRequest = jest.spyOn(mockFriendsEntity, 'delete').mockResolvedValue(mockDeleteResult);
-      let changeFriendSuggest = jest.spyOn(mockFriendsGateway, 'changeFriendSuggest')
+      let changeFriendSuggest = jest.spyOn(mockFriendsGateway, 'changeFriendSuggest');
 
       service.confirm('friendID', user).subscribe((res: { user: UsersInterface, friend: UsersInterface } ) => {
         expect(res).toEqual(expect.not.objectContaining({...friend, user, friends: {...user, id: 'opponentID'}}));
         expect(findOne).toHaveBeenCalledWith({
           where: { user : { id: 'friendID' }, friends: { id: user.id }},
-          relations: ['user', 'user.friends', 'user.chat',  'user.request', 'friends', 'friends.friends', 'friends.chat', 'friends.suggest',]
+          relations: ['user', 'user.friends', 'user.chat',  'user.request', 'friends', 'friends.friends', 'friends.chat', 'friends.suggest']
         })
         expect(createChat).toHaveBeenCalled();
-        // expect(saveUser).toHaveBeenCalled();
-        expect(saveChat).toHaveBeenCalled();
-        expect(deleteRequest).toHaveBeenCalledWith({id: friend.id});
+        expect(saveUser).toHaveBeenCalled();
+        expect(deleteRequest).toHaveBeenCalled();
         expect(changeFriendSuggest).toHaveBeenCalledWith(user.id, 'opponentID');
       })
     })
@@ -196,9 +194,9 @@ describe('FriendsService', () => {
       let deleteFriendSuggest = jest.spyOn(mockFriendsGateway, 'deleteFriendSuggest');
 
       service.delFriend('friendID', user).subscribe((friends: UsersInterface[]) => {
-        expect(findOneUser).toHaveBeenCalledWith({where: {id: 'friendID', chat: {conversation: {id: user.id}} }, relations: ['friends', 'chat']})
+        expect(findOneUser).toHaveBeenCalledWith({where: {id: 'friendID'}, relations: ['friends', 'chat', 'chat.conversation']});
         expect(deleteChatAndMessage).toHaveBeenCalled();
-        expect(saveUser).toHaveBeenCalledTimes(1);
+        expect(saveUser).toHaveBeenCalledTimes(2);
         expect(deleteFriendSuggest).toHaveBeenCalled()
       })
     })

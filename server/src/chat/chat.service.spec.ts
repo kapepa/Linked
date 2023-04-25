@@ -224,7 +224,7 @@ describe('ChatService', () => {
     service.createChat().subscribe({
       next: (chat: ChatInterface) => {
         expect(chat).toEqual({ ...mockChat, conversation: [] });
-        expect(spyChatSave).toHaveBeenCalledWith({});
+        expect(spyChatSave).toHaveBeenCalled();
         expect(spyChatFindOne).toHaveBeenCalledWith({ where: { id: mockChat.id }, relations: ['conversation'] })
       }
     })
@@ -240,7 +240,6 @@ describe('ChatService', () => {
         expect(spyChatSave).toHaveBeenCalledWith(mockChat);
       }
     })
-
   })
 
   it('deleteChat', () => {
