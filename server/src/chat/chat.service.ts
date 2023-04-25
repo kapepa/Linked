@@ -162,8 +162,8 @@ export class ChatService {
     return this.usersService.findOneUser({ where: { id } });
   }
 
-  createChat(): Observable<ChatInterface>{
-    return from(this.chatRepository.save( {} )).pipe(
+  createChat(chat?: ChatInterface): Observable<ChatInterface> {
+    return from(this.chatRepository.save( chat )).pipe(
       switchMap((chat: ChatInterface) => {
         return from(this.chatRepository.findOne({ where: { id: chat.id }, relations: ['conversation'] }));
       })

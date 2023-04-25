@@ -64,51 +64,44 @@ export class FriendsService {
   }
 
   confirm(friendID: string, userDto: UsersDto): Observable<{ user: UsersInterface, friend: UsersInterface }> {
+    let userProps = (user: UsersInterface) => {
+      let { friends, chat, suggest, request, ...profile} = user;
+      return profile;
+    }
+
     return this.findOneFriend({
       where: { user : { id: friendID }, friends: { id: userDto.id }},
-      relations: ['user', 'user.friends', 'user.chat',  'user.request', 'friends', 'friends.friends', 'friends.chat', 'friends.suggest',]
+      relations: ['user', 'user.friends', 'user.chat',  'user.request', 'friends', 'friends.friends', 'friends.chat', 'friends.suggest']
     }).pipe(
       switchMap((friendsDto: FriendsInterface) => {
         let { user, friends } = friendsDto;
-        let appendFriend = userDto.id === user.id ? friends : user;
+        let userBase = userProps(user);
+        let friendBase = userProps(friends);
 
         if (friends.friends.some((profile: UsersInterface) => profile.id === user.id))
           throw new HttpException('Something went wrong with friend', HttpStatus.BAD_REQUEST);
 
-        return of({user: userDto as UsersInterface, friend: {...appendFriend, request: []} }).pipe(
-          tap(() => {
-            let takeUser = (profile: UsersInterface): UsersInterface => {
-              let { friends, chat, request, suggest, ...otherFriend } = profile;
-              return otherFriend;
-            }
+        return this.deleteRequest(friendsDto.id).pipe(
+          switchMap(() => {
+            return this.usersService.findOneUser({ where: {id: user.id}, relations: ['request'] }).pipe(
+              switchMap((profile: UsersInterface) => {
+                return from([{user: friends as UsersInterface, friend: profile }]).pipe(
+                  tap(() => {
+                    friends.friends.push(userBase);
+                    user.friends.push(friendBase);
 
-            this.chatService.createChat().pipe(
-              switchMap((chat: ChatInterface) => {
-                return from([friendsDto.user, friendsDto.friends]).pipe(
-                  map((person: UsersInterface) => {
-                    let newFriend = userDto.id !== person.id ? friendsDto.friends : friendsDto.user;
-                    let takeFriend = takeUser(newFriend);
-                    let fieldName = userDto.id !== person.id ? 'request' : 'suggest';
-                    person[fieldName].filter((fr: FriendsInterface) => fr.id !== friendsDto.id);
-                    person.friends.push(takeFriend);
-                    person.chat.push(chat);
-                    chat.conversation.push(takeUser(person));
+                    this.chatService.createChat({conversation: [user, friends]}).subscribe((chat: ChatInterface) => {
+                      user.chat.push(chat);
+                      friends.chat.push(chat);
 
-                    return person;
-                  }),
-                  toArray(),
-                  switchMap((users: UsersInterface[]) => {
-                    let [user, friend] = users;
-                    this.friendsGateway.changeFriendSuggest(user.id, friends.id)
-                    return this.usersService.saveUser(user).pipe(
-                      switchMap(() => this.chatService.saveChat(chat).pipe(
-                        switchMap(() => this.usersService.saveUser(friend)),
-                      ))
-                    )
-                  }),
+                      this.usersService.saveUser(user).subscribe();
+                      this.usersService.saveUser(friends).subscribe();
+                      this.friendsGateway.changeFriendSuggest(user.id, friends.id);
+                    })
+                  })
                 )
               })
-            ).subscribe(() => this.friendsGateway.changeFriendSuggest(user.id, friends.id));
+            )
           })
         )
       }),
@@ -139,10 +132,14 @@ export class FriendsService {
   }
 
   delFriend(friendID: string, userDto: UsersDto): Observable<UsersInterface[]> {
-    let delFriend = (userID, friendID) => this.usersService.findOneUser({where: {id: userID, chat: {conversation: {id: friendID}} }, relations: ['friends', 'chat',]}).pipe(
+    let delFriend = (userID, friendID) => this.usersService.findOneUser({
+      where: {id: userID},
+      relations: ['friends', 'chat', 'chat.conversation'],
+    }).pipe(
       switchMap((profile: UsersInterface) => {
-        let friendIndex = profile.friends.findIndex(p => p.id === userDto.id);
+        let friendIndex = profile.friends.findIndex(p => p.id === friendID);
         profile.friends.splice(friendIndex, 1);
+
         return this.usersService.saveUser({...profile, friends: profile.friends})
       })
     )
@@ -162,6 +159,7 @@ export class FriendsService {
       })
     )
   }
+
 
   deleteRequest(requestID: string): Observable<DeleteResult>{
     return from(this.friendsRepository.delete({id: requestID}));
