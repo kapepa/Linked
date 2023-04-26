@@ -3,15 +3,12 @@ import {Test} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import {AppModule} from "../src/app.module";
 import {UserClass} from "../src/core/utility/user.class";
-import {DeleteResult, In, Repository} from "typeorm";
-import {config} from 'dotenv';
+import {Repository} from "typeorm";
 import {User} from "../src/users/users.entity";
 import {MemoryDb, ProfileInterface} from "./utility/memory.db";
 import {FriendsInterface} from "../src/friends/friends.interface";
 import {UsersInterface} from "../src/users/users.interface";
 import {FriendsEntity} from "../src/friends/friends.entity";
-
-config();
 
 describe('Friends (e2e)', () => {
   let app: INestApplication;

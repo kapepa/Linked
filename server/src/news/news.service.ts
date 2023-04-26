@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {NewsEntity} from "./news.entity";
-import {Repository} from "typeorm";
+import {DeleteResult, Repository} from "typeorm";
 import {from, Observable} from "rxjs";
 import {NewsDto} from "./news.dto";
 import {NewsInterface} from "./news.interface";
@@ -37,5 +37,9 @@ export class NewsService {
 
   saveNews(event: NewsDto | NewsInterface): Observable<NewsDto | NewsInterface>{
     return from(this.newsRepository.save(event));
+  }
+
+  delNews(newsID: string): Observable<DeleteResult> {
+    return from(this.newsRepository.delete({ id: newsID }));
   }
 }
