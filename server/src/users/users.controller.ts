@@ -50,7 +50,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Find user on id, receive his data and friends'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong with friend'})
-  person(@Param('id') id, @Req() req): Observable<any> {
+  person(@Param('id') id, @Req() req): Observable<UsersInterface> {
     return this.usersService.person(id, req.user);
   }
 
@@ -62,20 +62,20 @@ export class UsersController {
     return this.usersService.recommendedUsers(req.user);
   }
 
-  @Patch('update')
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'Update own data'})
-  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong when update'})
-  update(@Body() body, @Req() req): Observable<UpdateResult>{
-    return this.usersService.updateUser('id', req.user.id, body);
-  }
-
   @Get('/one/:id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Should be receive user on id'})
   @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'User not found'})
   findUser(@Param('id') id, @Req() req){
     return this.usersService.findOneUser({where: { id }});
+  }
+
+  @Patch('update')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Update own data'})
+  @ApiForbiddenResponse({ status: HttpStatus.BAD_REQUEST, description: 'Something went wrong when update'})
+  update(@Body() body, @Req() req): Observable<UpdateResult>{
+    return this.usersService.updateUser('id', req.user.id, body);
   }
 
   @Delete(':id')
