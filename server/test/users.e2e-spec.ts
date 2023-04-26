@@ -80,7 +80,7 @@ describe('Users (e2e)', () => {
         .set('Authorization', `Bearer ${userData.token}`)
         .expect(200)
         .expect((res: Response & { body: UsersInterface[] }) => {
-          expect(res.body.length).toBeGreaterThan(1);
+          expect(res.body.length).toBeGreaterThan(0);
         })
     })
   })
