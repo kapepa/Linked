@@ -84,4 +84,9 @@ describe('News (e2e)', () => {
         .expect(mockDeleteResult);
     })
   })
+
+  afterAll( async () => {
+    await MemoryDb.deleteUser(userData.profile.id, userRepository);
+    await app.close();
+  })
 });
